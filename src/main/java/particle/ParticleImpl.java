@@ -11,6 +11,10 @@ public class ParticleImpl implements Particle {
         setRadius(radius);
     }
 
+    public ParticleImpl(double radius) {
+        this.radius = radius;
+    }
+
     public double getRadius() {
         return radius;
     }
