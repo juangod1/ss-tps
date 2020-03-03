@@ -26,4 +26,8 @@ public class ParticleImpl implements Particle {
     public void setPosition(Point position) {
         this.position = position;
     }
+
+    public double getDistanceModule(Particle p2){
+        return Math.sqrt(Math.pow(this.position.x, 2) + Math.pow(this.position.y, 2));
+    }
 }
