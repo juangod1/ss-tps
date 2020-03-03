@@ -7,10 +7,13 @@ import java.util.List;
 
 public class Terrain {
     private Cell terrain[][];
-    private int length;
+    private double length;
     private int cellsDimension;
 
-    public Terrain(double length, int cellsDimension, List<Particle> particles){
+    public Terrain(double length, int cellsDimension, List<Particle> particles) {
+        this.length = length;
+        this.cellsDimension = cellsDimension;
+
         double lengthOfCell = length/cellsDimension;
         terrain = new Cell[cellsDimension][cellsDimension];
 
@@ -41,7 +44,7 @@ public class Terrain {
         return terrain;
     }
 
-    public int getLength() {
+    public double getLength() {
         return length;
     }
 

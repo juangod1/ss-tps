@@ -78,7 +78,8 @@ public class CellIndexMethod {
     }
 
     public static void main(String args[]) {
-        ArrayList<String> argsList = new ArrayList<>(Arrays.asList(args));
+        long startTime = System.nanoTime();
+        ArrayList<String> argsList = new ArrayList<String>(Arrays.asList(args));
         File staticFile, dynamicFile;
 
         try {
@@ -119,5 +120,12 @@ public class CellIndexMethod {
 
         State state = parseInput(staticFile, dynamicFile);
         cellIndexMethod(state);
+        
+        // TODO: write result in file in output
+
+        long endTime = System.nanoTime();
+        // get difference of two nanoTime values
+        long timeElapsed = endTime - startTime;
+        System.out.println("Execution time in milliseconds : " + timeElapsed / 1000000);
     }
 }
