@@ -5,13 +5,13 @@ import particle.Particle;
 import java.util.List;
 
 public class Cell {
-    private int column;
     private int row;
+    private int column;
     private List<Particle> particles;
 
-    public Cell(int column, int row, List<Particle> particles){
-        this.column = column;
+    public Cell(int row, int column, List<Particle> particles){
         this.row = row;
+        this.column = column;
         this.particles = particles;
     }
 
@@ -19,11 +19,11 @@ public class Cell {
         return particles;
     }
 
-    public int getColumn() {
-        return column;
-    }
-
     public int getRow() {
         return row;
+    }
+
+    public int getColumn() {
+        return column;
     }
 }

@@ -9,6 +9,7 @@ public class Terrain {
     private Cell terrain[][];
     private double length;
     private int cellsDimension;
+    private int[][] directions = {{0,1},{-1,-1},{-1,0},{-1,1}};
 
     public Terrain(double length, int cellsDimension, List<Particle> particles) {
         this.length = length;
@@ -50,5 +51,13 @@ public class Terrain {
 
     public int getCellsDimension() {
         return cellsDimension;
+    }
+
+    public int[][] getDirections() { return directions; }
+
+    public Cell getCellAt(int row, int col) {
+        if (row > cellsDimension || row < 0 || col > cellsDimension || col < 0)
+            return null;
+        return terrain[row][col];
     }
 }

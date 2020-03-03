@@ -41,7 +41,18 @@ public class CellIndexMethod {
     }
 
     private static List<Cell> getHalfOfNeighborCells(Terrain terrain, Cell cell){
-        return null;
+        List<Cell> neighbors = new ArrayList<>();
+
+        for (int i = 0; i < terrain.getDirections().length; i++) {
+            int row = cell.getRow() + terrain.getDirections()[i][0];
+            int col = cell.getColumn() + terrain.getDirections()[i][1];
+
+            Cell neighbor = terrain.getCellAt(row,col);
+            if (neighbor != null)
+                neighbors.add(neighbor);
+        }
+
+        return neighbors;
     }
 
     private static State parseInput(File staticFile, File dynamicFile) {
@@ -119,7 +130,7 @@ public class CellIndexMethod {
         }
 
         State state = parseInput(staticFile, dynamicFile);
-        cellIndexMethod(state);
+        Map<UnorderedParticlePair, Double> solution = cellIndexMethod(state);
 
         // TODO: write result in file in output
 
