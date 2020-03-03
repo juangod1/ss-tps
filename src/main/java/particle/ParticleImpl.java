@@ -1,3 +1,5 @@
+package particle;
+
 import java.awt.*;
 
 public class ParticleImpl implements Particle {
