@@ -24,7 +24,7 @@ public class Terrain {
             int cellRow = particleCell[1];
 
             if(terrain[cellRow][cellColumn] == null) {
-                List<Particle> cellParticles = new ArrayList<Particle>();
+                List<Particle> cellParticles = new ArrayList<>();
                 terrain[cellRow][cellColumn] = new Cell(cellColumn, cellRow, cellParticles);
             }
 

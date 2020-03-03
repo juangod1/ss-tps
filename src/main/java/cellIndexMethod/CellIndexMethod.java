@@ -13,7 +13,7 @@ import java.util.List;
 public class CellIndexMethod {
     public static Map<UnorderedParticlePair, Double> cellIndexMethod(State state){
 
-        Map<UnorderedParticlePair, Double> distances = new HashMap<UnorderedParticlePair, Double>();
+        Map<UnorderedParticlePair, Double> distances = new HashMap<>();
 
         // Calculates in which cell each particle resides, O(N)
         Terrain terrain = new Terrain(state.getAreaLength(), state.getNumCells(), state.getParticles());
@@ -45,7 +45,7 @@ public class CellIndexMethod {
     }
 
     private static State parseInput(File staticFile, File dynamicFile) {
-        List<Particle> particles = new ArrayList<Particle>();
+        List<Particle> particles = new ArrayList<>();
         double areaLength = 0;
         int numCells = 0;
         double interactionRadius = 0;
@@ -79,7 +79,7 @@ public class CellIndexMethod {
 
     public static void main(String args[]) {
         long startTime = System.nanoTime();
-        ArrayList<String> argsList = new ArrayList<String>(Arrays.asList(args));
+        ArrayList<String> argsList = new ArrayList<>(Arrays.asList(args));
         File staticFile, dynamicFile;
 
         try {
@@ -120,7 +120,7 @@ public class CellIndexMethod {
 
         State state = parseInput(staticFile, dynamicFile);
         cellIndexMethod(state);
-        
+
         // TODO: write result in file in output
 
         long endTime = System.nanoTime();
