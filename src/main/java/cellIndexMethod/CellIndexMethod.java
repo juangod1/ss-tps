@@ -20,12 +20,12 @@ public class CellIndexMethod {
 
 
         for(Particle particle : state.getParticles()){
-            int[] particleCell = terrain.getParticleCell(particle, state.getAreaLength());
+            int[] particleCell = terrain.getParticleCell(particle, terrain.getCellsDimension());
 
             int cellColumn = particleCell[1];
             int cellRow = particleCell[0];
 
-            List<Cell> neighbors = getHalfOfNeighborCells(terrain, terrain.getTerrain()[cellRow][cellColumn]);
+            List<Cell> neighbors = getHalfOfNeighborCells(terrain, terrain.getTerrain()[cellRow][cellColumn], state.getPeriodicContour());
 
             for(Cell neighbor : neighbors){
                 for(Particle particleInNeighbor : neighbor.getParticles()){
@@ -40,14 +40,14 @@ public class CellIndexMethod {
         return distances;
     }
 
-    private static List<Cell> getHalfOfNeighborCells(Terrain terrain, Cell cell){
+    private static List<Cell> getHalfOfNeighborCells(Terrain terrain, Cell cell, boolean periodicContour){
         List<Cell> neighbors = new ArrayList<>();
 
         for (int i = 0; i < terrain.getDirections().length; i++) {
             int row = cell.getRow() + terrain.getDirections()[i][0];
             int col = cell.getColumn() + terrain.getDirections()[i][1];
 
-            Cell neighbor = terrain.getCellAt(row,col);
+            Cell neighbor = terrain.getCellAt(row,col, periodicContour);
             if (neighbor != null)
                 neighbors.add(neighbor);
         }
@@ -92,9 +92,10 @@ public class CellIndexMethod {
         long startTime = System.nanoTime();
         ArrayList<String> argsList = new ArrayList<>(Arrays.asList(args));
         File staticFile, dynamicFile;
+        boolean periodicContour = true;
 
         try {
-            if (argsList.size() != 4)
+            if (argsList.size() != 5)
                 throw new IllegalArgumentException();
             else {
                 int staticInput = argsList.indexOf("-s");
@@ -120,16 +121,23 @@ public class CellIndexMethod {
                 if (!dynamicFile.exists()) {
                     throw new IllegalArgumentException();
                 }
+
+                int periodic = argsList.indexOf("-p");
+
+                if (periodic == -1)
+                    periodicContour = false;
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid parameters, try: \n" +
                     "\tjava -jar CIM.jar -s path -d path\n\n" +
                     "\t-s path\n\t\t determines static input path\n" +
-                    "\t-d path\n\t\t determines dynamic input path\n");
+                    "\t-d path\n\t\t determines dynamic input path\n" +
+                    "\t-p\n\t\t sets periodic contour true\n");
             return;
         }
 
         State state = parseInput(staticFile, dynamicFile);
+        state.setPeriodicContour(periodicContour);
         Map<UnorderedParticlePair, Double> solution = cellIndexMethod(state);
 
         // TODO: write result in file in output

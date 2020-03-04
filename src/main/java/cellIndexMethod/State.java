@@ -9,6 +9,7 @@ public class State {
     private double areaLength;
     private int numCells;
     private double interactionRadius;
+    private boolean periodicContour;
 
     public State(List<Particle> particles, double areaLength, int numCells, double interactionRadius) {
         this.particles = particles;
@@ -31,5 +32,11 @@ public class State {
 
     public double getInteractionRadius() {
         return interactionRadius;
+    }
+
+    public boolean getPeriodicContour() { return periodicContour; }
+
+    public void setPeriodicContour(boolean periodicContour) {
+        this.periodicContour = periodicContour;
     }
 }

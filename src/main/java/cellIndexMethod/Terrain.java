@@ -9,7 +9,7 @@ public class Terrain {
     private Cell terrain[][];
     private double length;
     private int cellsDimension;
-    private int[][] directions = {{0,1},{-1,-1},{-1,0},{-1,1}};
+    private int[][] directions = {{0,1},{1,-1},{1,0},{1,1}};
 
     public Terrain(double length, int cellsDimension, List<Particle> particles) {
         this.length = length;
@@ -55,9 +55,17 @@ public class Terrain {
 
     public int[][] getDirections() { return directions; }
 
-    public Cell getCellAt(int row, int col) {
-        if (row > cellsDimension || row < 0 || col > cellsDimension || col < 0)
-            return null;
+    public Cell getCellAt(int row, int col, boolean periodicContour) {
+        if (periodicContour) {
+            if (row < 0) row += cellsDimension;
+            if (col < 0) col += cellsDimension;
+            row %= cellsDimension;
+            col %= cellsDimension;
+
+        } else if (row > cellsDimension || row < 0 || col > cellsDimension || col < 0) {
+                return null;
+        }
+
         return terrain[row][col];
     }
 }
