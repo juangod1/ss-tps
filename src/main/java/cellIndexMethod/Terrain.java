@@ -21,12 +21,12 @@ public class Terrain {
         for(Particle particle : particles){
             int[] particleCell = getParticleCell(particle, lengthOfCell);
 
-            int cellColumn = particleCell[0];
-            int cellRow = particleCell[1];
+            int cellRow = particleCell[0];
+            int cellColumn = particleCell[1];
 
             if(terrain[cellRow][cellColumn] == null) {
                 List<Particle> cellParticles = new ArrayList<>();
-                terrain[cellRow][cellColumn] = new Cell(cellColumn, cellRow, cellParticles);
+                terrain[cellRow][cellColumn] = new Cell(cellRow, cellColumn, cellParticles);
             }
 
             terrain[cellRow][cellColumn].getParticles().add(particle);
