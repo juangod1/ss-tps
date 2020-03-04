@@ -3,6 +3,7 @@ package generator;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class Generator {
     private int N;
@@ -12,7 +13,9 @@ public class Generator {
     private int amount;
     private String path;
 
-    public Generator() {}
+    public Generator() {
+        N = 0;
+    }
 
     public void setN(int n) {
         N = n;
@@ -36,8 +39,14 @@ public class Generator {
 
     public void setPath(String path) { this.path = path; }
 
-    public static void generate() {
-
+    public void generate() {
+        if (N == 0) {
+            Random randomGenerator = new Random();
+	        N = randomGenerator.nextInt();
+	        L = 20;
+	        rc = 1;
+	        M = randomGenerator.nextInt((int) (L/rc));
+        }
     }
 
     public static void main(String[] args) {
