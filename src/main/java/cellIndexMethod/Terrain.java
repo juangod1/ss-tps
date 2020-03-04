@@ -9,7 +9,7 @@ public class Terrain {
     private Cell terrain[][];
     private double length;
     private int cellsDimension;
-    private int[][] directions = {{0,1},{1,-1},{1,0},{1,1}};
+    private final int[][] directions = {{0,1},{1,-1},{1,0},{1,1}};
 
     public Terrain(double length, int cellsDimension, List<Particle> particles) {
         this.length = length;
@@ -19,25 +19,68 @@ public class Terrain {
         terrain = new Cell[cellsDimension][cellsDimension];
 
         for(Particle particle : particles){
-            int[] particleCell = getParticleCell(particle, lengthOfCell);
-
-            int cellRow = particleCell[0];
-            int cellColumn = particleCell[1];
-
-            if(terrain[cellRow][cellColumn] == null) {
-                List<Particle> cellParticles = new ArrayList<>();
-                terrain[cellRow][cellColumn] = new Cell(cellRow, cellColumn, cellParticles);
-            }
-
-            terrain[cellRow][cellColumn].getParticles().add(particle);
+            initializeParticleCells(particle, lengthOfCell, terrain);
+            initializeOverlappingParticleCells(particle, lengthOfCell, terrain);
         }
     }
 
+    private void initializeParticleCells(Particle particle, double lengthOfCell, Cell[][] terrain){
+        int[] particleCell = getParticleCell(particle, lengthOfCell);
+
+        int cellRow = particleCell[0];
+        int cellColumn = particleCell[1];
+
+        if(terrain[cellRow][cellColumn] == null) {
+            List<Particle> cellParticles = new ArrayList<>();
+            terrain[cellRow][cellColumn] = new Cell(cellRow, cellColumn, cellParticles, null);
+        }
+
+        terrain[cellRow][cellColumn].getParticles().add(particle);
+    }
+
+    private void initializeOverlappingParticleCells(Particle particle, double lengthOfCell, Cell[][] terrain){
+        for(Cell cell: getOverlappingParticleCells(particle, lengthOfCell)){
+            if(cell.getOverlappingParticles() == null){
+                List<Particle> list = new ArrayList<>();
+                cell.setOverlappingParticles(list);
+            }
+
+            cell.getOverlappingParticles().add(particle);
+        }
+    }
+
+    private ArrayList<Cell> getOverlappingParticleCells(Particle particle, double lengthOfCell){
+        ArrayList<Cell> overlaps = new ArrayList<>();
+
+        for(int[] direction : directions){
+            int[] particleCell = getParticleCell(particle, lengthOfCell);
+            int[] positionCell = getPositionCell(
+                    particle.getPosition().x + direction[0],
+                    particle.getPosition().y + direction[1],
+                    lengthOfCell);
+
+            if(particleCell != positionCell){
+                if(terrain[positionCell[0]][positionCell[1]] == null){
+                    List<Particle> cellParticles = new ArrayList<>();
+                    terrain[positionCell[0]][positionCell[1]] = new Cell(positionCell[0], positionCell[1], cellParticles, null);
+                }
+
+                overlaps.add(terrain[positionCell[0]][positionCell[1]]);
+            }
+        }
+
+        return overlaps;
+    }
+
     // [ row, col ]
-    public int[] getParticleCell(Particle particle, double lengthOfCell){
+    protected int[] getParticleCell(Particle particle, double lengthOfCell){
+        return getPositionCell(particle.getPosition().x, particle.getPosition().y, lengthOfCell);
+    }
+
+    protected int[] getPositionCell(int x, int y, double lengthOfCell){
         return new int[]{
-                (int)(particle.getPosition().y/lengthOfCell),
-                (int)(particle.getPosition().x/lengthOfCell)
+                (int)(y/lengthOfCell),
+                (int)(x/lengthOfCell)
         };
     }
 
