@@ -29,15 +29,22 @@ public class CellIndexMethod {
 
             for(Cell neighbor : neighbors){
                 for(Particle particleInNeighbor : neighbor.getParticles()){
+                    double distance = particle.getDistanceModule(particleInNeighbor);
+
                     UnorderedParticlePair pair = new UnorderedParticlePair(particle, particleInNeighbor);
-                    if(!distances.containsKey(pair)){
-                        distances.put(pair, particle.getDistanceModule(particleInNeighbor));
+                    if(!distances.containsKey(pair) && checkIfParticlesInteract(particle, particleInNeighbor, state, distance)){
+                        distances.put(pair, distance);
                     }
                 }
             }
         }
 
         return distances;
+    }
+
+    private static boolean checkIfParticlesInteract(Particle p1, Particle p2, State state, double distance){
+        return p1 != p2 &&
+            distance <= state.getInteractionRadius() + p1.getRadius() + p2.getRadius();
     }
 
     private static List<Cell> getHalfOfNeighborCells(Terrain terrain, Cell cell, boolean periodicContour){
@@ -51,6 +58,8 @@ public class CellIndexMethod {
             if (neighbor != null)
                 neighbors.add(neighbor);
         }
+
+        neighbors.add(cell);
 
         return neighbors;
     }
