@@ -97,14 +97,14 @@ public class CellIndexMethod {
         return new State(particles, areaLength, numCells, interactionRadius);
     }
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         long startTime = System.nanoTime();
         ArrayList<String> argsList = new ArrayList<>(Arrays.asList(args));
         File staticFile, dynamicFile;
         boolean periodicContour = true;
 
         try {
-            if (argsList.size() != 5)
+            if (argsList.size() < 4 || argsList.size() > 5)
                 throw new IllegalArgumentException();
             else {
                 int staticInput = argsList.indexOf("-s");
