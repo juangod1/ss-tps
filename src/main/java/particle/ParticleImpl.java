@@ -48,4 +48,15 @@ public class ParticleImpl implements Particle {
     public String toString() {
         return String.valueOf(id);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof ParticleImpl))
+            return false;
+        ParticleImpl p = (ParticleImpl)o;
+
+        return p.getId() == this.id;
+    }
 }
