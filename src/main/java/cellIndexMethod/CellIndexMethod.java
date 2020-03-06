@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.List;
 
 public class CellIndexMethod {
-    public static Map<UnorderedParticlePair, Double> cellIndexMethod(State state){
+    private static Map<UnorderedParticlePair, Double> cellIndexMethodMap(State state){
 
         Map<UnorderedParticlePair, Double> distances = new HashMap<>();
 
@@ -40,6 +40,24 @@ public class CellIndexMethod {
         }
 
         return distances;
+    }
+
+    public static Map<Particle, List<Particle>> cellIndexMethod(State state){
+        Map<UnorderedParticlePair, Double> map = cellIndexMethodMap(state);
+
+        Map<Particle, List<Particle>> finalMap = new HashMap<>();
+
+        for(UnorderedParticlePair particlePair : map.keySet()){
+            for(Particle particle : particlePair.getPair()){
+                if(!finalMap.containsKey(particle)){
+                    finalMap.put(particle, new ArrayList<>());
+                }
+
+                finalMap.get(particle).add(particlePair.getOtherParticle(particle));
+            }
+        }
+
+        return finalMap;
     }
 
     private static boolean checkIfParticlesInteract(Particle p1, Particle p2, State state, double distance){
@@ -78,7 +96,7 @@ public class CellIndexMethod {
             interactionRadius = Double.parseDouble(scanner.nextLine());
 
             for (int i = 0; i < numParticles; i++) {
-                particles.add(new ParticleImpl(Double.parseDouble(scanner.nextLine())));
+                particles.add(new ParticleImpl(Double.parseDouble(scanner.nextLine()), i));
             }
 
             scanner.close();
@@ -147,7 +165,7 @@ public class CellIndexMethod {
 
         State state = parseInput(staticFile, dynamicFile);
         state.setPeriodicContour(periodicContour);
-        Map<UnorderedParticlePair, Double> solution = cellIndexMethod(state);
+        Map<Particle, List<Particle>> solution = cellIndexMethod(state);
 
         // TODO: write result in file in output
 

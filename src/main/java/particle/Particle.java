@@ -9,5 +9,7 @@ public interface Particle {
     Point getPosition();
     void setPosition(Point position);
 
+    int getId();
+
     public double getDistanceModule(Particle p2);
 }
