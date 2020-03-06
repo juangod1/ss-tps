@@ -75,10 +75,10 @@ public class CellIndexMethod {
             int numParticles = Integer.parseInt(scanner.nextLine());
             areaLength = Integer.parseInt(scanner.nextLine());
             numCells = Integer.parseInt(scanner.nextLine());
-            interactionRadius = Integer.parseInt(scanner.nextLine());
+            interactionRadius = Double.parseDouble(scanner.nextLine());
 
             for (int i = 0; i < numParticles; i++) {
-                particles.add(new ParticleImpl(Integer.parseInt(scanner.nextLine())));
+                particles.add(new ParticleImpl(Double.parseDouble(scanner.nextLine())));
             }
 
             scanner.close();
