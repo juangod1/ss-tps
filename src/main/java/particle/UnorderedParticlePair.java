@@ -23,4 +23,13 @@ public class UnorderedParticlePair {
     public Set<Particle> getPair(){
         return pair;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof UnorderedParticlePair){
+            return this.getPair().equals(((UnorderedParticlePair)obj).getPair());
+        } else {
+            return false;
+        }
+    }
 }
