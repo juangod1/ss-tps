@@ -38,16 +38,16 @@ public class Terrain {
         terrain[cellRow][cellColumn].getParticles().add(particle);
     }
 
-    private void initializeOverlappingParticleCells(Particle particle, double lengthOfCell, Cell[][] terrain){
-        for(Cell cell: getOverlappingParticleCells(particle, lengthOfCell)){
-            if(cell.getOverlappingParticles() == null){
-                List<Particle> list = new ArrayList<>();
-                cell.setOverlappingParticles(list);
-            }
-
-            cell.getOverlappingParticles().add(particle);
-        }
-    }
+//    private void initializeOverlappingParticleCells(Particle particle, double lengthOfCell, Cell[][] terrain){
+//        for(Cell cell: getOverlappingParticleCells(particle, lengthOfCell)){
+//            if(cell.getOverlappingParticles() == null){
+//                List<Particle> list = new ArrayList<>();
+//                cell.setOverlappingParticles(list);
+//            }
+//
+//            cell.getOverlappingParticles().add(particle);
+//        }
+//    }
 
     private ArrayList<Cell> getOverlappingParticleCells(Particle particle, double lengthOfCell){
         ArrayList<Cell> overlaps = new ArrayList<>();
