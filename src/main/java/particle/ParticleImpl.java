@@ -59,4 +59,9 @@ public class ParticleImpl implements Particle {
 
         return p.getId() == this.id;
     }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
 }

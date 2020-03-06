@@ -32,4 +32,9 @@ public class UnorderedParticlePair {
             return false;
         }
     }
+
+    @Override
+    public int hashCode() {
+        return this.getPair().hashCode();
+    }
 }
