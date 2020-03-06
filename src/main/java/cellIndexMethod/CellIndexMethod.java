@@ -115,7 +115,7 @@ public class CellIndexMethod {
     }
 
     public static void writeSolution(Map<Particle, List<Particle>> solution, File output) throws IOException {
-        FileWriter fr = new FileWriter(output, true);
+        FileWriter fr = new FileWriter(output, false);
 
         for (Map.Entry<Particle, List<Particle>> entry : solution.entrySet()) {
             fr.append(entry.getKey().toString()).append(" ");
@@ -169,16 +169,10 @@ public class CellIndexMethod {
                 int output = argsList.indexOf("-o");
 
                 if (output == -1) {
-                    System.out.println(5);
                     throw new IllegalArgumentException();
                 }
 
                 outputFile = new File(argsList.get(output+1));
-
-                if (!outputFile.exists()) {
-                    System.out.println(6);
-                    throw new IllegalArgumentException();
-                }
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid parameters, try: \n" +
