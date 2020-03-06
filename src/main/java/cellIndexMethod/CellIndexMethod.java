@@ -5,8 +5,7 @@ import particle.ParticleImpl;
 import particle.UnorderedParticlePair;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 
@@ -115,14 +114,27 @@ public class CellIndexMethod {
         return new State(particles, areaLength, numCells, interactionRadius);
     }
 
-    public static void main(String[] args) {
+    public static void writeSolution(Map<Particle, List<Particle>> solution, File output) throws IOException {
+        FileWriter fr = new FileWriter(output, true);
+
+        for (Map.Entry<Particle, List<Particle>> entry : solution.entrySet()) {
+            fr.append(entry.getKey().toString()).append(" ");
+            for (Particle proximate : entry.getValue()) {
+                fr.append(proximate.toString()).append(" ");
+            }
+            fr.append("\n");
+        }
+        fr.close();
+    }
+
+    public static void main(String[] args) throws IOException {
         long startTime = System.nanoTime();
         ArrayList<String> argsList = new ArrayList<>(Arrays.asList(args));
-        File staticFile, dynamicFile;
+        File staticFile, dynamicFile, outputFile;
         boolean periodicContour = true;
 
         try {
-            if (argsList.size() < 4 || argsList.size() > 5)
+            if (argsList.size() < 6 || argsList.size() > 7)
                 throw new IllegalArgumentException();
             else {
                 int staticInput = argsList.indexOf("-s");
@@ -153,13 +165,28 @@ public class CellIndexMethod {
 
                 if (periodic == -1)
                     periodicContour = false;
+
+                int output = argsList.indexOf("-o");
+
+                if (output == -1) {
+                    System.out.println(5);
+                    throw new IllegalArgumentException();
+                }
+
+                outputFile = new File(argsList.get(output+1));
+
+                if (!outputFile.exists()) {
+                    System.out.println(6);
+                    throw new IllegalArgumentException();
+                }
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid parameters, try: \n" +
-                    "\tjava -jar CIM.jar -s path -d path\n\n" +
+                    "\tjava -jar CIM.jar -s path -d path [-p] -o path\n\n" +
                     "\t-s path\n\t\t determines static input path\n" +
                     "\t-d path\n\t\t determines dynamic input path\n" +
-                    "\t-p\n\t\t sets periodic contour true\n");
+                    "\t-p\n\t\t sets periodic contour true\n" +
+                    "\t-o path\n\t\t determines output path\n");
             return;
         }
 
@@ -167,7 +194,7 @@ public class CellIndexMethod {
         state.setPeriodicContour(periodicContour);
         Map<Particle, List<Particle>> solution = cellIndexMethod(state);
 
-        // TODO: write result in file in output
+        writeSolution(solution, outputFile);
 
         long endTime = System.nanoTime();
         // get difference of two nanoTime values

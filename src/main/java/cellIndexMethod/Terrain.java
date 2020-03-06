@@ -20,7 +20,7 @@ public class Terrain {
 
         for(Particle particle : particles){
             initializeParticleCells(particle, lengthOfCell, terrain);
-            initializeOverlappingParticleCells(particle, lengthOfCell, terrain);
+            //initializeOverlappingParticleCells(particle, lengthOfCell, terrain);
         }
     }
 
