@@ -68,7 +68,7 @@ public class Board2D {
         StringBuilder string = new StringBuilder();
         for(int i=0; i < boardHeight; i++){
             for(int j=0; j < boardWidth; j++){
-                string.append(board[i][j]?"O    ":"-    ");
+                string.append(board[i][j]?"o":"-");
             }
             string.append('\n');
         }
