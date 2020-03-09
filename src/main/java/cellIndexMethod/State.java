@@ -1,6 +1,6 @@
 package cellIndexMethod;
 
-import particle.Particle;
+import cellIndexMethod.particle.Particle;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package generator;
+package cellIndexMethod.generator;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -136,7 +136,7 @@ public class Generator {
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid parameters, try: \n" +
-                    "\tjava -jar generator.jar [-n N] [-l L] [-m M] [-r rc] -a amount -p path\n\n" +
+                    "\tjava -jar cellIndexMethod.generator.jar [-n N] [-l L] [-m M] [-r rc] -a amount -p path\n\n" +
                     "\t-n N\n\t\t determines amount of particles\n" +
                     "\t-l L\n\t\t determines simulation area length\n" +
                     "\t-m M\n\t\t determines amount of cells\n" +

@@ -1,6 +1,6 @@
 package cellIndexMethod;
 
-import particle.Particle;
+import cellIndexMethod.particle.Particle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class Terrain {
 
         for(Particle particle : particles){
             initializeParticleCells(particle, lengthOfCell, terrain);
-            //initializeOverlappingParticleCells(particle, lengthOfCell, terrain);
+            //initializeOverlappingParticleCells(cellIndexMethod.particle, lengthOfCell, terrain);
         }
     }
 
@@ -38,14 +38,14 @@ public class Terrain {
         terrain[cellRow][cellColumn].getParticles().add(particle);
     }
 
-//    private void initializeOverlappingParticleCells(Particle particle, double lengthOfCell, Cell[][] terrain){
-//        for(Cell cell: getOverlappingParticleCells(particle, lengthOfCell)){
+//    private void initializeOverlappingParticleCells(Particle cellIndexMethod.particle, double lengthOfCell, Cell[][] terrain){
+//        for(Cell cell: getOverlappingParticleCells(cellIndexMethod.particle, lengthOfCell)){
 //            if(cell.getOverlappingParticles() == null){
 //                List<Particle> list = new ArrayList<>();
 //                cell.setOverlappingParticles(list);
 //            }
 //
-//            cell.getOverlappingParticles().add(particle);
+//            cell.getOverlappingParticles().add(cellIndexMethod.particle);
 //        }
 //    }
 

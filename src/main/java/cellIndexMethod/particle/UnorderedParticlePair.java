@@ -1,4 +1,4 @@
-package particle;
+package cellIndexMethod.particle;
 
 import java.util.HashSet;
 import java.util.Set;

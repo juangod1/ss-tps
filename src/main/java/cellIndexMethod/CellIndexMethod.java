@@ -1,8 +1,8 @@
 package cellIndexMethod;
 
-import particle.Particle;
-import particle.ParticleImpl;
-import particle.UnorderedParticlePair;
+import cellIndexMethod.particle.Particle;
+import cellIndexMethod.particle.ParticleImpl;
+import cellIndexMethod.particle.UnorderedParticlePair;
 
 import java.awt.*;
 import java.io.*;
@@ -14,7 +14,7 @@ public class CellIndexMethod {
 
         Map<UnorderedParticlePair, Double> distances = new HashMap<>();
 
-        // Calculates in which cell each particle resides, O(N)
+        // Calculates in which cell each cellIndexMethod.particle resides, O(N)
         Terrain terrain = new Terrain(state.getAreaLength(), state.getNumCells(), state.getParticles());
 
 
