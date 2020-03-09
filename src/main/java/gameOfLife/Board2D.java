@@ -1,8 +1,16 @@
 package gameOfLife;
 
+import util.Util;
+
+import java.util.Arrays;
+
 public class Board2D {
     private boolean board[][];
     int minAlive, maxAlive, boardHeight, boardWidth;
+
+    public boolean[][] getBoard(){
+        return board;
+    }
 
     private int[][] neighborDirections = {
             {-1,-1},{-1,0},{-1,1},
@@ -25,13 +33,18 @@ public class Board2D {
     }
 
     public boolean[][] iterate(){
+        boolean[][] clone = Arrays.stream(board).map(boolean[]::clone).toArray(boolean[][]::new);;
+
         for(int i=0; i < boardHeight; i++){
             for(int j=0; j < boardWidth; j++){
                 if(cellWillLive(i,j)){
-
+                    clone[i][j] = true;
+                } else {
+                    clone[i][j] = false;
                 }
             }
         }
+        board = clone;
         return board;
     }
 
@@ -43,10 +56,22 @@ public class Board2D {
             rowAux += direction[0];
             colAux += direction[1];
 
-            if(board[rowAux % boardHeight][colAux % boardWidth]){
+            if(board[Util.naturalModulus(rowAux,boardHeight)][Util.naturalModulus(colAux,boardWidth)]){
                 liveNeighbors++;
             }
         }
         return liveNeighbors <= maxAlive && liveNeighbors >= minAlive;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder string = new StringBuilder();
+        for(int i=0; i < boardHeight; i++){
+            for(int j=0; j < boardWidth; j++){
+                string.append(board[i][j]?"O    ":"-    ");
+            }
+            string.append('\n');
+        }
+        return string.toString();
     }
 }

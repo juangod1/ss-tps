@@ -49,7 +49,7 @@ public class CellIndexMethod {
         for(UnorderedParticlePair particlePair : map.keySet()){
             for(Particle particle : particlePair.getPair()){
                 if(!finalMap.containsKey(particle)){
-                    finalMap.put(particle, new ArrayList<>());
+                    //finalMap.put(particle, new ArrayList<>());
                 }
 
                 finalMap.get(particle).add(particlePair.getOtherParticle(particle));
