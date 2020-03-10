@@ -1,10 +1,16 @@
 package cellIndexMethod.generator;
 
+import cellIndexMethod.particle.Particle;
+import cellIndexMethod.particle.ParticleImpl;
+
+import java.awt.*;
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class Generator {
@@ -15,12 +21,7 @@ public class Generator {
     private int amount;
     private String path;
 
-    private Generator() {
-        N = 0;
-        L = 0;
-        M = 0;
-        rc = 0;
-    }
+    private Generator() {}
 
     private void setN(int n) {
         N = n;
@@ -44,61 +45,52 @@ public class Generator {
 
     private void setPath(String path) { this.path = path; }
 
+    private boolean notViolates(Particle curr, List<Particle> particles) {
+        for (Particle particle : particles) {
+            if (Math.sqrt(Math.pow(curr.getPosition().getX()-particle.getPosition().getX(),2) + Math.pow(curr.getPosition().getY()-particle.getPosition().getY(),2)) <= (curr.getRadius() + particle.getRadius()))
+                return false;
+        }
+        return true;
+    }
+
     private void generate() throws IOException {
+        List<Particle> particlesGenerated = new ArrayList<>();
         Random randomGenerator = new Random();
         long now = System.currentTimeMillis();
-        boolean nSent;
-        boolean mSent;
-
-        if (L == 0)
-            L = 20;
-        if (rc == 0)
-            rc = 1;
-
-        int start = 0;
-        int end = L;
+        Particle curr;
+        double randomX, randomY;
+        int added = 0;
 
         for (int i = 0; i < amount; i++) {
-            File file = new File(path + "/static" + now + i);
-            FileWriter fr = new FileWriter(file, true);
-            Double random;
+            File fileStatic = new File(path + "/static"); //+ now + i);
+            FileWriter frStatic = new FileWriter(fileStatic, true);
+            File fileDynamic = new File(path + "/dynamic"); // + now + i);
+            FileWriter frDynamic = new FileWriter(fileDynamic, true);
 
-            if (N == 0) {
-                N = randomGenerator.nextInt(10000);
-                nSent = false;
-            } else
-                nSent = true;
-            fr.append(String.valueOf(N)).append("\n");
+            frStatic.append(String.valueOf(N)).append("\n");
+            frStatic.append(String.valueOf(L)).append("\n");
+            frStatic.append(String.valueOf(M)).append("\n").append(String.valueOf(rc)).append("\n");
 
-            if (M == 0) {
-                M = randomGenerator.nextInt((int) (L / rc));
-                mSent = false;
-            } else
-                mSent = true;
-            fr.append(String.valueOf(M)).append("\n");
-
-            if (!mSent)
-                M = 0;
-            if (!nSent)
-                N = 0;
-
-            fr.append(String.valueOf(L)).append("\n").append(String.valueOf(rc)).append("\n");
-            for (int j = 0; j < N; j++) {
-                fr.append(String.valueOf(0.25)).append("\n");
+            while (added < N) {
+                randomX = randomGenerator.nextDouble();
+                randomY = randomGenerator.nextDouble();
+                curr = new ParticleImpl(0.25, new Point2D.Double(randomX * L, randomY * L), 0);
+                if (notViolates(curr, particlesGenerated)) {
+                    particlesGenerated.add(curr);
+                    added++;
+                }
             }
-            fr.close();
 
-            file = new File(path + "/dynamic" + now + i);
-            fr = new FileWriter(file, true);
+            frDynamic.append(String.valueOf(N)).append("\n\n");
 
-            for (int j = 0; j < N; j++) {
-                random = randomGenerator.nextDouble();
-                fr.append(String.valueOf(start + (random * (end - start)))).append(" ");
-
-                random = randomGenerator.nextDouble();
-                fr.append(String.valueOf(start + (random * (end - start)))).append("\n");
+            for (Particle particle : particlesGenerated) {
+                frStatic.append(String.valueOf(particle.getRadius())).append("\n");
+                frDynamic.append(String.valueOf(particle.getPosition().getX())).append(" ").append(String.valueOf(particle.getPosition().getY())).append(" ").append(String.valueOf(particle.getRadius()));
+                frDynamic.append(" 140 137 136").append("\n");
             }
-            fr.close();
+
+            frStatic.close();
+            frDynamic.close();
         }
     }
 
@@ -107,7 +99,7 @@ public class Generator {
         Generator generator = new Generator();
 
         try {
-            if (argsList.size() < 2 || argsList.size() > 6)
+            if (argsList.size() < 4 || argsList.size() > 12)
                 throw new IllegalArgumentException();
             else {
                 int particlesParameter = argsList.indexOf("-n");
@@ -136,7 +128,7 @@ public class Generator {
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid parameters, try: \n" +
-                    "\tjava -jar cellIndexMethod.generator.jar [-n N] [-l L] [-m M] [-r rc] -a amount -p path\n\n" +
+                    "\tjava -jar cellIndexMethod.generator.jar -n N -l L -m M -r rc -a amount -p path\n\n" +
                     "\t-n N\n\t\t determines amount of particles\n" +
                     "\t-l L\n\t\t determines simulation area length\n" +
                     "\t-m M\n\t\t determines amount of cells\n" +

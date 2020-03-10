@@ -77,7 +77,7 @@ public class Terrain {
         return getPositionCell(particle.getPosition().x, particle.getPosition().y, lengthOfCell);
     }
 
-    protected int[] getPositionCell(int x, int y, double lengthOfCell){
+    protected int[] getPositionCell(double x, double y, double lengthOfCell){
         return new int[]{
                 (int)(y/lengthOfCell),
                 (int)(x/lengthOfCell)

@@ -4,7 +4,7 @@ import cellIndexMethod.particle.Particle;
 import cellIndexMethod.particle.ParticleImpl;
 import cellIndexMethod.particle.UnorderedParticlePair;
 
-import java.awt.*;
+import java.awt.geom.Point2D;
 import java.io.*;
 import java.util.*;
 import java.util.List;
@@ -85,44 +85,82 @@ public class CellIndexMethod {
         List<Particle> particles = new ArrayList<>();
         double areaLength = 0;
         int numCells = 0;
+        int numParticles;
         double interactionRadius = 0;
+        double maxRadius = 0;
 
         try {
             Scanner scanner = new Scanner(staticFile);
-            int numParticles = Integer.parseInt(scanner.nextLine());
+            numParticles = Integer.parseInt(scanner.nextLine());
             areaLength = Integer.parseInt(scanner.nextLine());
             numCells = Integer.parseInt(scanner.nextLine());
             interactionRadius = Double.parseDouble(scanner.nextLine());
 
             for (int i = 0; i < numParticles; i++) {
-                particles.add(new ParticleImpl(Double.parseDouble(scanner.nextLine()), i));
+                double radius = Double.parseDouble(scanner.nextLine());
+                particles.add(new ParticleImpl(radius, i));
+                if (radius>maxRadius)
+                    maxRadius = radius;
             }
 
             scanner.close();
 
             scanner = new Scanner(dynamicFile);
+            scanner.nextLine();
+            scanner.nextLine();
             for (int i = 0; i < numParticles; i++) {
                 String position = scanner.nextLine();
-                String[] coordenates = position.split(" ");
-                int x = Integer.parseInt(coordenates[0]);
-                int y = Integer.parseInt(coordenates[1]);
-                particles.get(i).setPosition(new Point(x,y));
+                String[] coordinates = position.split(" ");
+                double x = Double.parseDouble(coordinates[0]);
+                double y = Double.parseDouble(coordinates[1]);
+                particles.get(i).setPosition(new Point2D.Double(x,y));
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        return new State(particles, areaLength, numCells, interactionRadius);
+
+        if ((areaLength/numCells) > (interactionRadius + 2 * maxRadius))
+            return new State(particles, areaLength, numCells, interactionRadius);
+        return null;
     }
 
-    public static void writeSolution(Map<Particle, List<Particle>> solution, File output) throws IOException {
+    public static void writeSolution(Map<Particle, List<Particle>> solution, File output, int id, File dynamic) throws IOException {
         FileWriter fr = new FileWriter(output, false);
+        RandomAccessFile raf = new RandomAccessFile(dynamic, "rw");
+        long pointer;
+        String lineData;
+        int line = -2;
+        List<Integer> ids = new ArrayList<>();
 
         for (Map.Entry<Particle, List<Particle>> entry : solution.entrySet()) {
             fr.append(entry.getKey().toString()).append(" ");
             for (Particle proximate : entry.getValue()) {
                 fr.append(proximate.toString()).append(" ");
+                if (entry.getKey().getId() == id) {
+                    ids.add(proximate.getId());
+                }
             }
             fr.append("\n");
+            if (entry.getKey().getId() == id) {
+                while ((lineData = raf.readLine()) != null) {
+                    if (line == id) {
+                        lineData = lineData.replace(" 140", " 255");
+                        lineData = lineData.replace(" 137", " 000");
+                        lineData = lineData.replace(" 136", " 000");
+                        pointer = raf.getFilePointer() - lineData.length()-2;
+                        raf.seek(pointer);
+                        raf.writeBytes("\n" + lineData);
+                    } else if (ids.contains(line)) {
+                        lineData = lineData.replace(" 140", " 000");
+                        lineData = lineData.replace(" 137", " 000");
+                        lineData = lineData.replace(" 136", " 204");
+                        pointer = raf.getFilePointer() - lineData.length()-2;
+                        raf.seek(pointer);
+                        raf.writeBytes("\n" + lineData);
+                    }
+                    line++;
+                }
+            }
         }
         fr.close();
     }
@@ -132,9 +170,10 @@ public class CellIndexMethod {
         ArrayList<String> argsList = new ArrayList<>(Arrays.asList(args));
         File staticFile, dynamicFile, outputFile;
         boolean periodicContour = true;
+        int id = 0;
 
         try {
-            if (argsList.size() < 6 || argsList.size() > 7)
+            if (argsList.size() < 6 || argsList.size() > 9)
                 throw new IllegalArgumentException();
             else {
                 int staticInput = argsList.indexOf("-s");
@@ -173,22 +212,30 @@ public class CellIndexMethod {
                 }
 
                 outputFile = new File(argsList.get(output+1));
+
+                int idIndex = argsList.indexOf("-i");
+                id = Integer.parseInt(argsList.get(idIndex+1));
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid parameters, try: \n" +
-                    "\tjava -jar CIM.jar -s path -d path [-p] -o path\n\n" +
+                    "\tjava -jar CIM.jar -s path -d path [-p] -o path -i id\n\n" +
                     "\t-s path\n\t\t determines static input path\n" +
                     "\t-d path\n\t\t determines dynamic input path\n" +
                     "\t-p\n\t\t sets periodic contour true\n" +
-                    "\t-o path\n\t\t determines output path\n");
+                    "\t-o path\n\t\t determines output path\n" +
+                    "\t-i id\n\t\t determines the id of the particle to color\n");
             return;
         }
 
         State state = parseInput(staticFile, dynamicFile);
+        if (state == null) {
+            System.out.println("Invalid number of cells\n");
+            return;
+        }
         state.setPeriodicContour(periodicContour);
         Map<Particle, List<Particle>> solution = cellIndexMethod(state);
 
-        writeSolution(solution, outputFile);
+        writeSolution(solution, outputFile, id, dynamicFile);
 
         long endTime = System.nanoTime();
         // get difference of two nanoTime values
