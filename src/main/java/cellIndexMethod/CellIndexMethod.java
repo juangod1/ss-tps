@@ -49,7 +49,7 @@ public class CellIndexMethod {
         for(UnorderedParticlePair particlePair : map.keySet()){
             for(Particle particle : particlePair.getPair()){
                 if(!finalMap.containsKey(particle)){
-                    //finalMap.put(particle, new ArrayList<>());
+                    finalMap.put(particle, new ArrayList<>());
                 }
 
                 finalMap.get(particle).add(particlePair.getOtherParticle(particle));
@@ -129,8 +129,8 @@ public class CellIndexMethod {
         RandomAccessFile raf = new RandomAccessFile(dynamic, "rw");
         long pointer;
         String lineData;
-        int line = -2;
-        List<Integer> ids = new ArrayList<>();
+        int line = -1;
+        List<Integer> ids = new ArrayList<>();;
 
         for (Map.Entry<Particle, List<Particle>> entry : solution.entrySet()) {
             fr.append(entry.getKey().toString()).append(" ");
@@ -143,6 +143,8 @@ public class CellIndexMethod {
             fr.append("\n");
             if (entry.getKey().getId() == id) {
                 while ((lineData = raf.readLine()) != null) {
+                    if (lineData.length() == 0)
+                        continue;
                     if (line == id) {
                         lineData = lineData.replace(" 140", " 255");
                         lineData = lineData.replace(" 137", " 000");
