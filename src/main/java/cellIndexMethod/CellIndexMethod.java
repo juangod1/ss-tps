@@ -19,7 +19,7 @@ public class CellIndexMethod {
 
 
         for(Particle particle : state.getParticles()){
-            int[] particleCell = terrain.getParticleCell(particle, terrain.getCellsDimension());
+            int[] particleCell = terrain.getParticleCell(particle, terrain.getLength()/terrain.getCellsDimension());
 
             int cellColumn = particleCell[1];
             int cellRow = particleCell[0];

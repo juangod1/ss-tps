@@ -105,7 +105,7 @@ public class Terrain {
             row %= cellsDimension;
             col %= cellsDimension;
 
-        } else if (row > cellsDimension || row < 0 || col > cellsDimension || col < 0) {
+        } else if (row >= cellsDimension || row < 0 || col >= cellsDimension || col < 0) {
                 return null;
         }
 
