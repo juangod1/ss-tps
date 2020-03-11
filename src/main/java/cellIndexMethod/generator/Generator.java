@@ -3,7 +3,6 @@ package cellIndexMethod.generator;
 import cellIndexMethod.particle.Particle;
 import cellIndexMethod.particle.ParticleImpl;
 
-import java.awt.*;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileWriter;
@@ -56,15 +55,14 @@ public class Generator {
     private void generate() throws IOException {
         List<Particle> particlesGenerated = new ArrayList<>();
         Random randomGenerator = new Random();
-        long now = System.currentTimeMillis();
         Particle curr;
         double randomX, randomY;
         int added = 0;
 
         for (int i = 0; i < amount; i++) {
-            File fileStatic = new File(path + "/static"); //+ now + i);
+            File fileStatic = new File(path + "/static" + i);
             FileWriter frStatic = new FileWriter(fileStatic, true);
-            File fileDynamic = new File(path + "/dynamic"); // + now + i);
+            File fileDynamic = new File(path + "/dynamic" + i);
             FileWriter frDynamic = new FileWriter(fileDynamic, true);
 
             frStatic.append(String.valueOf(N)).append("\n");
