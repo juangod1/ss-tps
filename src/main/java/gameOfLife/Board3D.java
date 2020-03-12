@@ -44,8 +44,7 @@ public class Board3D {
     }
 
     public boolean[][][] iterate(){
-        // todo: a chequear esto, funciona para 2d pero aca no se
-        boolean[][][] clone = Arrays.stream(board).map(boolean[][]::clone).toArray(boolean[][][]::new);;
+        boolean[][][] clone = Util.clone3dArray(board,boardHeight,boardWidth,boardDepth);
         currentAlive = 0;
         for(int i=0; i < boardHeight; i++){
             for(int j=0; j < boardWidth; j++){
