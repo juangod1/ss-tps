@@ -5,9 +5,9 @@ import java.io.IOException;
 public class GameOfLife {
     public static void main(String[] args) throws IOException {
         int[][] initialState = {
-                {0,0,0},{1,0,0},{2,0,0}
+                {50,50,50},{49,50,50},{49,49,50},{49,50,49},{50,50,49},{49,49,49}
         };
 
-        FilePrinter.print3d(initialState, 4,4,4,2,3,20);
+        gameOfLife.FilePrinter.print3d(initialState, 100,100,100,4,4,100);
     }
 }
