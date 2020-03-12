@@ -1,18 +1,13 @@
 package gameOfLife;
 
+import java.io.IOException;
+
 public class GameOfLife {
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException {
         int[][] initialState = {
-                {0,0},{1,0},{2,0},{5,3},{2,2},{1,1}
+                {0,0,0},{1,0,0},{2,0,0},{1,1,1},{1,1,2}
         };
 
-        Board2D board = new Board2D(initialState, 20,100,2,6);
-
-        while(true){
-            System.out.print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-            board.iterate();
-            System.out.println(board);
-            try{Thread.sleep(400);} catch (InterruptedException e){}
-        }
+        FilePrinter.print3d(initialState, 20,20,20,3,5,20);
     }
 }
