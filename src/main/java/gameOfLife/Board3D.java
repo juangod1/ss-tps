@@ -1,17 +1,9 @@
 package gameOfLife;
 
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Particle;
 import util.Util;
 
-import java.util.Arrays;
-
-public class Board3D {
-    private boolean board[][][];
-    int minAlive, maxAlive, boardHeight, boardWidth, boardDepth, currentAlive;
-
-    public boolean[][][] getBoard(){
-        return board;
-    }
+public class Board3D extends Board {
+    private boolean[][][] board;
 
     private int[][] neighborDirections = {
             {-1,-1,-1},{-1,0,-1},{-1,1,-1},
@@ -28,7 +20,7 @@ public class Board3D {
     };
 
     // initial state is a vector of the coordinates of the living cells
-    public Board3D(int[][] initialState, int boardHeight, int boardWidth, int boardDepth, int minAlive, int maxAlive){
+    Board3D(int[][] initialState, int boardHeight, int boardWidth, int boardDepth, int minAlive, int maxAlive){
         this.maxAlive = maxAlive;
         this.minAlive = minAlive;
         this.boardHeight = boardHeight;
@@ -43,7 +35,7 @@ public class Board3D {
         }
     }
 
-    public boolean[][][] iterate(){
+    void iterate(){
         boolean[][][] clone = Util.clone3dArray(board,boardHeight,boardWidth,boardDepth);
         currentAlive = 0;
         for(int i=0; i < boardHeight; i++){
@@ -60,7 +52,6 @@ public class Board3D {
         }
 
         board = clone;
-        return board;
     }
 
     private boolean cellWillLive(int row, int col, int depth){
@@ -84,7 +75,7 @@ public class Board3D {
 
     @Override
     public String toString() {
-        StringBuilder boardString = new StringBuilder("");
+        StringBuilder boardString = new StringBuilder();
 
         boardString.append(currentAlive);
         boardString.append("\n\n");
@@ -93,12 +84,7 @@ public class Board3D {
             for (int j = 0; j < boardWidth; j++) {
                 for (int k = 0; k < boardDepth; k++) {
                     if (board[i][j][k]) {
-                        boardString.append(i);
-                        boardString.append(" ");
-                        boardString.append(j);
-                        boardString.append(" ");
-                        boardString.append(k);
-                        boardString.append("\n");
+                        boardString.append(j).append(" ").append(i).append(" ").append(k).append(" ").append("0.25").append("\n");
                     }
                 }
             }

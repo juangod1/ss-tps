@@ -4,13 +4,8 @@ import util.Util;
 
 import java.util.Arrays;
 
-public class Board2D {
-    private boolean board[][];
-    int minAlive, maxAlive, boardHeight, boardWidth;
-
-    public boolean[][] getBoard(){
-        return board;
-    }
+public class Board2D extends Board {
+    private boolean[][] board;
 
     private int[][] neighborDirections = {
             {-1,-1},{-1,0},{-1,1},
@@ -19,11 +14,12 @@ public class Board2D {
     };
 
     // initial state is a vector of the coordinates of the living cells
-    public Board2D(int[][] initialState, int boardHeight, int boardWidth, int minAlive, int maxAlive){
+    Board2D(int[][] initialState, int boardHeight, int boardWidth, int minAlive, int maxAlive){
         this.maxAlive = maxAlive;
         this.minAlive = minAlive;
         this.boardHeight = boardHeight;
         this.boardWidth = boardWidth;
+        this.currentAlive = initialState.length;
 
         board = new boolean[boardHeight][boardWidth];
 
@@ -32,20 +28,21 @@ public class Board2D {
         }
     }
 
-    public boolean[][] iterate(){
-        boolean[][] clone = Arrays.stream(board).map(boolean[]::clone).toArray(boolean[][]::new);;
+    void iterate() {
+        boolean[][] clone = Arrays.stream(board).map(boolean[]::clone).toArray(boolean[][]::new);
+        currentAlive = 0;
 
         for(int i=0; i < boardHeight; i++){
             for(int j=0; j < boardWidth; j++){
                 if(cellWillLive(i,j)){
                     clone[i][j] = true;
+                    currentAlive++;
                 } else {
                     clone[i][j] = false;
                 }
             }
         }
         board = clone;
-        return board;
     }
 
     private boolean cellWillLive(int row, int col){
@@ -65,13 +62,19 @@ public class Board2D {
 
     @Override
     public String toString() {
-        StringBuilder string = new StringBuilder();
+        StringBuilder boardString = new StringBuilder();
+
+        boardString.append(currentAlive);
+        boardString.append("\n\n");
+
         for(int i=0; i < boardHeight; i++){
             for(int j=0; j < boardWidth; j++){
-                string.append(board[i][j]?"o":"-");
+                if (board[i][j]) {
+                    boardString.append(j).append(" ").append(i).append("\n");
+                }
             }
-            string.append('\n');
         }
-        return string.toString();
+
+        return boardString.toString();
     }
 }
