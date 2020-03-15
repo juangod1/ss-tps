@@ -70,7 +70,7 @@ public class Board2D extends Board {
         for(int i=0; i < boardHeight; i++){
             for(int j=0; j < boardWidth; j++){
                 if (board[i][j]) {
-                    boardString.append(j).append(" ").append(i).append("\n");
+                    boardString.append(j).append(" ").append(i).append(" 0.25").append("\n");
                 }
             }
         }

@@ -84,7 +84,7 @@ public class Board3D extends Board {
             for (int j = 0; j < boardWidth; j++) {
                 for (int k = 0; k < boardDepth; k++) {
                     if (board[i][j][k]) {
-                        boardString.append(j).append(" ").append(i).append(" ").append(k).append(" ").append("0.25").append("\n");
+                        boardString.append(j).append(" ").append(i).append(" ").append(k).append(" 0.25").append("\n");
                     }
                 }
             }
