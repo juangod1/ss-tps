@@ -1,7 +1,8 @@
 package gameOfLife;
 
 public abstract class Board {
-    int minAlive, maxAlive, boardHeight, boardWidth, boardDepth, currentAlive;
+    int boardHeight, boardWidth, boardDepth, currentAlive;
+    Rule rule;
 
     abstract void iterate();
 

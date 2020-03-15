@@ -14,9 +14,8 @@ public class Board2D extends Board {
     };
 
     // initial state is a vector of the coordinates of the living cells
-    Board2D(int[][] initialState, int boardHeight, int boardWidth, int minAlive, int maxAlive){
-        this.maxAlive = maxAlive;
-        this.minAlive = minAlive;
+    Board2D(int[][] initialState, int boardHeight, int boardWidth, int minAlive, int maxAlive, int becomeAlive){
+        this.rule = new Rule(minAlive, maxAlive, becomeAlive);
         this.boardHeight = boardHeight;
         this.boardWidth = boardWidth;
         this.currentAlive = initialState.length;
@@ -26,6 +25,10 @@ public class Board2D extends Board {
         for(int[] cell : initialState){
             board[cell[0]][cell[1]] = true;
         }
+    }
+
+    int getCurrentAlive() {
+        return currentAlive;
     }
 
     void iterate() {
@@ -57,7 +60,7 @@ public class Board2D extends Board {
                 liveNeighbors++;
             }
         }
-        return liveNeighbors <= maxAlive && liveNeighbors >= minAlive;
+        return rule.cellLives(board[row][col], liveNeighbors);
     }
 
     @Override

@@ -20,9 +20,8 @@ public class Board3D extends Board {
     };
 
     // initial state is a vector of the coordinates of the living cells
-    Board3D(int[][] initialState, int boardHeight, int boardWidth, int boardDepth, int minAlive, int maxAlive){
-        this.maxAlive = maxAlive;
-        this.minAlive = minAlive;
+    Board3D(int[][] initialState, int boardHeight, int boardWidth, int boardDepth, int minAlive, int maxAlive, int becomeAlive){
+        this.rule = new Rule(minAlive, maxAlive, becomeAlive);
         this.boardHeight = boardHeight;
         this.boardWidth = boardWidth;
         this.boardDepth = boardDepth;
@@ -33,6 +32,10 @@ public class Board3D extends Board {
         for(int[] cell : initialState){
             board[cell[0]][cell[1]][cell[2]] = true;
         }
+    }
+
+    int getCurrentAlive() {
+        return currentAlive;
     }
 
     void iterate(){
@@ -70,7 +73,7 @@ public class Board3D extends Board {
                 liveNeighbors++;
             }
         }
-        return liveNeighbors <= maxAlive && liveNeighbors >= minAlive;
+        return rule.cellLives(board[row][col][depth], liveNeighbors);
     }
 
     @Override
