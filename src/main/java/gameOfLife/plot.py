@@ -1,12 +1,14 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from scipy.stats import linregress
 import numpy as np
 
 slopes = []
 
-for i in range(30):
-    data = pd.read_csv("/home/agusosimani/Documents/ss-tp1/table2d{}".format(i), names=["Generation","Cells Alive"], header=None)
+for i in range(10):
+    if i==0:
+        continue
+    print("/home/agusosimani/Documents/ss-tp1/table3d{}".format(i))
+    data = pd.read_csv("/home/agusosimani/Documents/ss-tp1/table3d{}".format(i), names=["Generation","Cells Alive"], header=None)
     data.plot(x="Generation", y="Cells Alive")
 
     log_y_data = np.log(data["Cells Alive"])

@@ -14,6 +14,7 @@ public class FilePrinter {
         while(generations--!=0) {
             f.append(board.toString());
             table.append(String.valueOf(generation)).append(", ").append(String.valueOf(board.getCurrentAlive())).append("\n");
+            generation++;
             board.iterate();
         }
 
