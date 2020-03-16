@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class FilePrinter {
-    public static void print3d(int[][] initialStateint, int boardHeight, int boardWidth, int boardDepth, int minAlive, int maxAlive, int becomeAlive, int generations) throws IOException {
+    public static void print3d(int[][] initialStateint, int boardHeight, int boardWidth, int boardDepth, int minAlive, int maxAlive, int becomeAlive, int generations, int fileIndex) throws IOException {
         Board3D board = new Board3D(initialStateint, boardHeight, boardWidth, boardDepth, minAlive, maxAlive, becomeAlive);
-        FileWriter f = new FileWriter("./output3d");
-        FileWriter table = new FileWriter("./table3d");
+        FileWriter f = new FileWriter("./output3d"+fileIndex);
+        FileWriter table = new FileWriter("./table3d"+fileIndex);
         int generation = 0;
 
         while(generations--!=0) {

@@ -1,12 +1,13 @@
 package gameOfLife;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class GameOfLife {
     public static void main(String[] args) throws IOException {
-
+/*
         int board = 0;
         Random random = new Random();
         ArrayList<ArrayList<ArrayList<Integer>>> states2d = new ArrayList<>();
@@ -35,6 +36,73 @@ public class GameOfLife {
             gameOfLife.FilePrinter.print2d(state, 1000,1000, 0, 2, 3, 300, board+4);
             gameOfLife.FilePrinter.print2d(state, 1000,1000, 1, 3, 4, 300, board+5);
             board+=6;
-        }
+        }*/
+        generate3d();
+    }
+
+    public static void generate3d() throws IOException {
+        int[][] board1 = {
+                {49,49,49},{49,50,49},{49,51,49},
+                {50,49,49},{50,50,49},{50,51,49},
+                {51,49,49},{51,50,49},{51,51,49},
+
+                {49,49,50},{49,50,50},{49,51,50},
+                {50,49,50},{50,50,50},{50,51,50},
+                {51,49,50},{51,50,50},{51,51,50},
+
+                {49,49,51},{49,50,51},{49,51,51},
+                {50,49,51},{50,50,51},{50,51,51},
+                {51,49,51},{51,50,51},{51,51,51}
+        };
+
+        int[][] board2 = {
+                /*{49,49,49},*/{49,50,49},{49,51,49},
+                /*{50,49,49},*/{50,50,49},{50,51,49},
+                /*{51,49,49},{51,50,49},*/{51,51,49},
+/*
+                {49,49,50},{49,50,50},{49,51,50},
+                {50,49,50},{50,50,50},{50,51,50},
+                {51,49,50},{51,50,50},{51,51,50},*/
+
+                {49,49,51},/*{49,50,51},{49,51,51},*/
+                {50,49,51},{50,50,51},/*{50,51,51},*/
+                {51,49,51},{51,50,51},/*{51,51,51}*/
+        };
+
+        int[][] board3 = {
+                {49,49,49}/*,{49,50,49}*/,{49,51,49},
+                {50,49,49}/*,{50,50,49}*/,{50,51,49},
+                {51,49,49}/*,{51,50,49}*/,{51,51,49},
+
+                {49,49,50}/*,{49,50,50}*/,{49,51,50},
+                {50,49,50}/*,{50,50,50}*/,{50,51,50},
+                {51,49,50}/*,{51,50,50}*/,{51,51,50},
+
+                {49,49,51}/*,{49,50,51}*/,{49,51,51},
+                {50,49,51}/*,{50,50,51}*/,{50,51,51},
+                {51,49,51}/*,{51,50,51}*/,{51,51,51}
+        };
+        int minAlive, maxAlive, becomeAlive;
+
+        minAlive=2;
+        maxAlive=3;
+        becomeAlive=3;
+        FilePrinter.print3d(board1,100,100,100, minAlive, maxAlive, becomeAlive, 50, 1);
+        FilePrinter.print3d(board2,100,100,100, minAlive, maxAlive, becomeAlive, 50, 2);
+        FilePrinter.print3d(board3,100,100,100, minAlive, maxAlive, becomeAlive, 50, 3);
+
+        minAlive=1;
+        maxAlive=6;
+        becomeAlive=4;
+        FilePrinter.print3d(board1,100,100,100, minAlive, maxAlive, becomeAlive, 50, 4);
+        FilePrinter.print3d(board2,100,100,100, minAlive, maxAlive, becomeAlive, 50, 5);
+        FilePrinter.print3d(board3,100,100,100, minAlive, maxAlive, becomeAlive, 50, 6);
+
+        minAlive=4;
+        maxAlive=5;
+        becomeAlive=4;
+        FilePrinter.print3d(board1,100,100,100, minAlive, maxAlive, becomeAlive, 50, 7);
+        FilePrinter.print3d(board2,100,100,100, minAlive, maxAlive, becomeAlive, 50, 8);
+        FilePrinter.print3d(board3,100,100,100, minAlive, maxAlive, becomeAlive, 50, 9);
     }
 }
