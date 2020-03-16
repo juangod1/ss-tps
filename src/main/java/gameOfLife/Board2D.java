@@ -2,6 +2,7 @@ package gameOfLife;
 
 import util.Util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Board2D extends Board {
@@ -14,16 +15,16 @@ public class Board2D extends Board {
     };
 
     // initial state is a vector of the coordinates of the living cells
-    Board2D(int[][] initialState, int boardHeight, int boardWidth, int minAlive, int maxAlive, int becomeAlive){
+    Board2D(ArrayList<ArrayList<Integer>> initialState, int boardHeight, int boardWidth, int minAlive, int maxAlive, int becomeAlive){
         this.rule = new Rule(minAlive, maxAlive, becomeAlive);
         this.boardHeight = boardHeight;
         this.boardWidth = boardWidth;
-        this.currentAlive = initialState.length;
+        this.currentAlive = initialState.size();
 
         board = new boolean[boardHeight][boardWidth];
 
-        for(int[] cell : initialState){
-            board[cell[0]][cell[1]] = true;
+        for(ArrayList<Integer> cell : initialState){
+            board[cell.get(0)][cell.get(1)] = true;
         }
     }
 
@@ -73,7 +74,7 @@ public class Board2D extends Board {
         for(int i=0; i < boardHeight; i++){
             for(int j=0; j < boardWidth; j++){
                 if (board[i][j]) {
-                    boardString.append(j).append(" ").append(i).append(" 0.25").append("\n");
+                    boardString.append(j).append(" ").append(i).append(" 0.35").append("\n");
                 }
             }
         }

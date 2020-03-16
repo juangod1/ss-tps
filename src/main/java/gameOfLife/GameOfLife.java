@@ -1,32 +1,40 @@
 package gameOfLife;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class GameOfLife {
     public static void main(String[] args) throws IOException {
-        int[][] initialState3d = {
-                {50,50,50},{49,50,50},{49,49,50},{49,50,49},{50,50,49},{49,49,49}
-        };
-//        int[][] initialState2d = {
-//                {50,50},{51,50},{52,50},{53,50},{50,53},{51,53},{52,53},{53,53}
-//        };
-        int[][] initialState2d = {
-                {51,50},{50,51},{51,51},{50,52},{51,52},{50,53}
-        };
-//        int[][] initialState2d = {
-//                {50,51},{50,52},{51,50},{51,53},{52,50},{52,53},{53,51},{53,52}
-//        };
-//        int[][] initialState2d = {
-//                {50,51},{51,51},{52,51}
-//        };
 
-//        gameOfLife.FilePrinter.print3d(initialState3d, 100,100,100,4,4,100);
-//        gameOfLife.FilePrinter.print2d(initialState2d, 100,100, 0, 1, 3, 200, 0);
-//        gameOfLife.FilePrinter.print2d(initialState2d, 100,100, 1, 2, 3, 200, 1);
-        gameOfLife.FilePrinter.print2d(initialState2d, 100,100, 2, 3, 3, 200, 2);
-//        gameOfLife.FilePrinter.print2d(initialState2d, 100,100, 3, 4, 3, 200, 3);
-//        gameOfLife.FilePrinter.print2d(initialState2d, 100,100, 4, 5, 3, 200, 4);
-//        gameOfLife.FilePrinter.print2d(initialState2d, 100,100, 5, 6, 3, 200, 5);
+        int board = 0;
+        Random random = new Random();
+        ArrayList<ArrayList<ArrayList<Integer>>> states2d = new ArrayList<>();
 
+        while (board < 5) {
+            states2d.add(new ArrayList<>());
+            for (int row=496; row<504; row++) {
+                for (int col=496; col<504; col++) {
+                    if (random.nextBoolean()) {
+                        ArrayList<Integer> point = new ArrayList<>();
+                        point.add(row);
+                        point.add(col);
+                        states2d.get(board).add(point);
+                    }
+                }
+            }
+            board++;
+        }
+
+        board = 0;
+        for (ArrayList<ArrayList<Integer>> state : states2d) {
+            gameOfLife.FilePrinter.print2d(state, 1000,1000, 2, 3, 1, 300, board);
+            gameOfLife.FilePrinter.print2d(state, 1000,1000, 2, 3, 2, 300, board+1);
+            gameOfLife.FilePrinter.print2d(state, 1000,1000, 1, 2, 3, 300, board+2);
+            gameOfLife.FilePrinter.print2d(state, 1000,1000, 1, 3, 2, 300, board+3);
+            gameOfLife.FilePrinter.print2d(state, 1000,1000, 0, 2, 3, 300, board+4);
+            gameOfLife.FilePrinter.print2d(state, 1000,1000, 1, 3, 4, 300, board+5);
+            board+=6;
+        }
     }
 }
