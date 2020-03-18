@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class GameOfLife {
     public static void main(String[] args) throws IOException {
-        //generate2d();
+        generate2d();
         //generate3d();
     }
 
@@ -36,13 +36,19 @@ public class GameOfLife {
         board = 0;
         int M;
         for (ArrayList<ArrayList<Integer>> state : states2d) {
-            M = 2;
+            M = 0;
             gameOfLife.FilePrinter.print2d(state, 1000,1000, M, M+2, M+1, 300, board);
-            M = 3;
-            gameOfLife.FilePrinter.print2d(state, 1000,1000, M, M+2, M+1, 300, board+1);
             M = 1;
+            gameOfLife.FilePrinter.print2d(state, 1000,1000, M, M+2, M+1, 300, board+1);
+            M = 2;
             gameOfLife.FilePrinter.print2d(state, 1000,1000, M, M+2, M+1, 300, board+2);
-            board+=3;
+            M = 3;
+            gameOfLife.FilePrinter.print2d(state, 1000,1000, M, M+2, M+1, 300, board+3);
+            M = 4;
+            gameOfLife.FilePrinter.print2d(state, 1000,1000, M, M+2, M+1, 300, board+4);
+            M = 5;
+            gameOfLife.FilePrinter.print2d(state, 1000,1000, M, M+2, M+1, 300, board+5);
+            board+=6;
         }
     }
 
