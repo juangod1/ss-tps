@@ -1,6 +1,7 @@
 package gameOfLife;
 
 import util.Util;
+import java.util.ArrayList;
 
 public class Board3D extends Board {
     private boolean[][][] board;
@@ -20,17 +21,17 @@ public class Board3D extends Board {
     };
 
     // initial state is a vector of the coordinates of the living cells
-    Board3D(int[][] initialState, int boardHeight, int boardWidth, int boardDepth, int minAlive, int maxAlive, int becomeAlive){
+    Board3D(ArrayList<ArrayList<Integer>> initialState, int boardHeight, int boardWidth, int boardDepth, int minAlive, int maxAlive, int becomeAlive){
         this.rule = new Rule(minAlive, maxAlive, becomeAlive);
         this.boardHeight = boardHeight;
         this.boardWidth = boardWidth;
         this.boardDepth = boardDepth;
-        this.currentAlive = initialState.length;
+        this.currentAlive = initialState.size();
 
         board = new boolean[boardHeight][boardWidth][boardDepth];
 
-        for(int[] cell : initialState){
-            board[cell[0]][cell[1]][cell[2]] = true;
+        for(ArrayList<Integer> cell : initialState){
+            board[cell.get(0)][cell.get(1)][cell.get(2)] = true;
         }
     }
 

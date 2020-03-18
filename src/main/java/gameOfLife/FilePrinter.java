@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class FilePrinter {
-    public static void print3d(int[][] initialStateint, int boardHeight, int boardWidth, int boardDepth, int minAlive, int maxAlive, int becomeAlive, int generations, int fileIndex) throws IOException {
+    public static void print3d(ArrayList<ArrayList<Integer>> initialStateint, int boardHeight, int boardWidth, int boardDepth, int minAlive, int maxAlive, int becomeAlive, int generations, int fileIndex) throws IOException {
         Board3D board = new Board3D(initialStateint, boardHeight, boardWidth, boardDepth, minAlive, maxAlive, becomeAlive);
         FileWriter f = new FileWriter("./output3d"+fileIndex);
         FileWriter table = new FileWriter("./table3d"+fileIndex);

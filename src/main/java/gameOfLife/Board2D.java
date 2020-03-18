@@ -1,7 +1,6 @@
 package gameOfLife;
 
 import util.Util;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 

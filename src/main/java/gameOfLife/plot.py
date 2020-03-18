@@ -42,4 +42,19 @@ import statistics
 #
 # plt.show()
 
+### PLOT EXAMPLES OF BOARDS 3D ###
+
+data = pd.read_csv("/home/agusosimani/Documents/ss-tp1/table3d{}".format(120), names=["Generation","Cells Alive"], header=None)
+ax1 = data.plot(x="Generation", y="Cells Alive")
+data = pd.read_csv("/home/agusosimani/Documents/ss-tp1/table3d{}".format(121), names=["Generation","Cells Alive"], header=None)
+ax2 = data.plot(x="Generation", y="Cells Alive")
+data = pd.read_csv("/home/agusosimani/Documents/ss-tp1/table3d{}".format(122), names=["Generation","Cells Alive"], header=None)
+ax3 = data.plot(x="Generation", y="Cells Alive")
+data = pd.read_csv("/home/agusosimani/Documents/ss-tp1/table3d{}".format(123), names=["Generation","Cells Alive"], header=None)
+ax1 = data.plot(x="Generation", y="Cells Alive")
+data = pd.read_csv("/home/agusosimani/Documents/ss-tp1/table3d{}".format(124), names=["Generation","Cells Alive"], header=None)
+ax2 = data.plot(x="Generation", y="Cells Alive")
+
+plt.show()
+
 ### PLOT RADIUS EVOLUTION ###
