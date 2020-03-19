@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class GameOfLife {
     public static void main(String[] args) throws IOException {
-        //generate2d();
+        generate2d();
         generate3d();
     }
 

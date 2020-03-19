@@ -41,6 +41,7 @@ output
 
 output*
 table*
+radius*
 
 # CMake
 cmake-build-*/
