@@ -39,8 +39,8 @@ public class CollisionManager {
         PriorityQueue<Collision> potentialCollisions = createPQ();
 
         for(Particle stateParticle : state.getParticles()){
-            Double collisionTime = calculateCollisionTime(stateParticle, particle);
-            if(collisionTime!=null){
+            double collisionTime = calculateCollisionTime(stateParticle, particle);
+            if (collisionTime != -1){
                 potentialCollisions.add(new Collision(collisionTime, particle, stateParticle));
             }
         }
@@ -78,8 +78,22 @@ public class CollisionManager {
         }
     }
 
-    private Double calculateCollisionTime(Particle p1, Particle p2){
-        // TODO
-        return null;
+    private double calculateCollisionTime(Particle p1, Particle p2){
+        double deltaX = p2.getPosition().getX() - p1.getPosition().getX();
+        double deltaY = p2.getPosition().getY() - p1.getPosition().getY();
+        double deltaVx = p2.getVx() - p1.getVx();
+        double deltaVy = p2.getVy() - p1.getVy();
+        double deltaV_deltaR = deltaVx * deltaX + deltaVy * deltaY;
+        if (deltaV_deltaR >= 0)
+            return -1;
+
+        double tita = p2.getRadius() + p1.getRadius();
+        double deltaR_deltaR = Math.pow(deltaX, 2) + Math.pow(deltaY, 2);
+        double deltaV_deltaV = Math.pow(deltaVx, 2) + Math.pow(deltaVy, 2);
+        double d = Math.pow(deltaV_deltaR, 2) - deltaV_deltaV * (deltaR_deltaR - Math.pow(tita, 2));
+        if (d < 0)
+            return -1;
+
+        return -1 * (deltaV_deltaR + Math.sqrt(d)) / (deltaV_deltaV);
     }
 }

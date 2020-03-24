@@ -27,7 +27,7 @@ public class State {
         generateWalls();
     }
 
-    public double getFp() { return fpLeft; }
+    double getFp() { return fpLeft; }
 
     public List<Particle> getParticles() {
         return particles;
@@ -44,7 +44,7 @@ public class State {
         walls.add(new Wall(new Point2D.Double(width/2,partitionOpeningEnd), new Point2D.Double(width/2, height),true));
     }
 
-    public void updateParticles() {
+    void updateParticles() {
         for (Particle particle : particles) {
             Point2D.Double position = particle.getPosition();
             double x = position.getX() + particle.getVx() * time;
@@ -55,7 +55,7 @@ public class State {
         // TODO update priority queue
     }
 
-    public void writeFrameToFile(File dynamicFile) throws IOException {
+    void writeFrameToFile(File dynamicFile) throws IOException {
         FileWriter f = new FileWriter(dynamicFile);
         f.append(this.toString());
         f.close();
@@ -65,7 +65,7 @@ public class State {
     public String toString() {
         StringBuilder state = new StringBuilder();
 
-        state.append("\n"+particles.size()+"\n\n");
+        state.append("\n").append(particles.size()).append("\n\n");
 
         for (Particle particle : particles) {
             state.append(particle.getPosition().getX()).append(" ").append(particle.getPosition().getY()).append(" ");
@@ -75,7 +75,7 @@ public class State {
         return state.toString();
     }
 
-    public void updateVelocities() {
+    void updateVelocities() {
         // TODO only of particles that collided
     }
 }
