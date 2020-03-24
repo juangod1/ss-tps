@@ -4,6 +4,7 @@ import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class State {
@@ -18,6 +19,7 @@ public class State {
     State(List<Particle> particles, double width, double height, double partitionOpeningSize) {
         this.time = 0;
         this.particles = particles;
+        this.walls = new ArrayList<>();
         this.width = width;
         this.height = height;
         this.partitionOpeningSize = partitionOpeningSize;
