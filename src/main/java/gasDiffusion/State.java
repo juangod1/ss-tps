@@ -6,15 +6,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class State {
     private double time;
     private List<Particle> particles;
     private List<Wall> walls;
+    private Set<Collision> collisions;
     private double width;
     private double height;
     private double partitionOpeningSize;
     private double fpLeft;
+    private CollisionManager collisionManager;
 
     State(List<Particle> particles, double width, double height, double partitionOpeningSize) {
         this.time = 0;
@@ -24,14 +27,11 @@ public class State {
         this.height = height;
         this.partitionOpeningSize = partitionOpeningSize;
         this.fpLeft = 1;
+        collisionManager = new CollisionManager(particles);
         generateWalls();
     }
 
     double getFp() { return fpLeft; }
-
-    public List<Particle> getParticles() {
-        return particles;
-    }
 
     private void generateWalls() {
         walls.add(new Wall(new Point2D.Double(0,0), new Point2D.Double(0, height),true));
@@ -44,15 +44,26 @@ public class State {
         walls.add(new Wall(new Point2D.Double(width/2,partitionOpeningEnd), new Point2D.Double(width/2, height),true));
     }
 
+    public void calculateNextCollision() {
+        collisions = collisionManager.getNextCollisions();
+        if (!collisions.isEmpty())
+            time = collisions.iterator().next().time;
+    }
+
     void updateParticles() {
+        int particlesOnLeft = 0;
+
         for (Particle particle : particles) {
             Point2D.Double position = particle.getPosition();
             double x = position.getX() + particle.getVx() * time;
             double y = position.getY() + particle.getVy() * time;
             position.setLocation(x,y);
+
+            if (x < width/2)
+                particlesOnLeft++;
         }
-        // TODO calculate new fp
-        // TODO update priority queue
+
+        fpLeft = particlesOnLeft / particles.size();
     }
 
     void writeFrameToFile(File dynamicFile) throws IOException {

@@ -10,7 +10,7 @@ public class GasDiffusion {
 
     private static void diffuse(State state, File dynamicFile) throws IOException {
         while (0.5 - state.getFp() < Math.ulp(state.getFp())) {
-            // TODO call function calculates time
+            state.calculateNextCollision();
             state.updateParticles();
             state.writeFrameToFile(dynamicFile);
             state.updateVelocities();

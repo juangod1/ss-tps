@@ -6,11 +6,11 @@ public class CollisionManager {
     private PriorityQueue<Collision> nextCollisions;
     private HashMap<Particle, HashMap<Particle, Collision>> collisionsIndex;
 
-    public CollisionManager(State initialState){
+    CollisionManager(List<Particle> particles){
         collisionsIndex = new HashMap<>();
         nextCollisions = createPQ();
-        for(Particle particle : initialState.getParticles()){
-            updateCollisionForParticle(particle, initialState);
+        for(Particle particle : particles){
+            updateCollisionForParticle(particle, particles);
         }
     }
 
@@ -25,9 +25,9 @@ public class CollisionManager {
         return collisions;
     }
 
-    public void updateCollisions(List<Particle> changedParticles, State state){
+    public void updateCollisions(List<Particle> changedParticles, List<Particle> particles){
         for(Particle particle : changedParticles){
-            updateCollisionForParticle(particle, state);
+            updateCollisionForParticle(particle, particles);
         }
     }
 
@@ -35,10 +35,10 @@ public class CollisionManager {
         return new PriorityQueue<>(Comparator.comparingDouble(p -> p.time));
     }
 
-    private void updateCollisionForParticle(Particle particle, State state){
+    private void updateCollisionForParticle(Particle particle, List<Particle> particles){
         PriorityQueue<Collision> potentialCollisions = createPQ();
 
-        for(Particle stateParticle : state.getParticles()){
+        for(Particle stateParticle : particles){
             double collisionTime = calculateCollisionTime(stateParticle, particle);
             if (collisionTime != -1){
                 potentialCollisions.add(new Collision(collisionTime, particle, stateParticle));
