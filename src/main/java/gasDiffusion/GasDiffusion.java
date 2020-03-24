@@ -3,9 +3,18 @@ package gasDiffusion;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
 
 public class GasDiffusion {
+
+    private static void diffuse(State state, File dynamicFile) throws IOException {
+        while (0.5 - state.getFp() < Math.ulp(state.getFp())) {
+            // TODO call function calculates time
+            state.updateParticles();
+            state.writeFrameToFile(dynamicFile);
+        }
+    }
 
     private static State parseInput(File staticFile, File dynamicFile) {
         List<Particle> particles = new ArrayList<>();
@@ -49,7 +58,7 @@ public class GasDiffusion {
         return new State(particles, width, height, partitionOpening);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ArrayList<String> argsList = new ArrayList<>(Arrays.asList(args));
         File staticFile, dynamicFile;
 
@@ -79,5 +88,6 @@ public class GasDiffusion {
         }
 
         State state = parseInput(staticFile, dynamicFile);
+        diffuse(state, dynamicFile);
     }
 }

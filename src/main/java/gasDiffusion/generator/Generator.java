@@ -133,7 +133,7 @@ public class Generator {
                     "\t-n N\n\t\t determines amount of particles\n" +
                     "\t-w W\n\t\t determines board width\n" +
                     "\t-h H\n\t\t determines board height\n" +
-                    "\t-o O\n\t\t determines partition opening\n" +
+                    "\t-o O\n\t\t determines partition opening size\n" +
                     "\t-a amount\n\t\t determines number of inputs to generate\n" +
                     "\t-p path\n\t\t determines path were to generate inputs");
             return;
