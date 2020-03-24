@@ -25,8 +25,8 @@ public class CollisionManager {
         return collisions;
     }
 
-    public void updateCollisions(List<Particle> changedParticles, List<Particle> particles){
-        for(Particle particle : changedParticles){
+    public void updateCollisions(Set<Particle> changedParticlesByCollisions, List<Particle> particles){
+        for(Particle particle : changedParticlesByCollisions){
             updateCollisionForParticle(particle, particles);
         }
     }

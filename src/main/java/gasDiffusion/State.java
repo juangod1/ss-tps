@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -88,5 +89,14 @@ public class State {
 
     void updateVelocities() {
         // TODO only of particles that collided
+    }
+
+    public void updateCollisions() {
+        Set<Particle> changedParticlesByCollisions = new HashSet<>();
+        for (Collision collision : collisions) {
+            changedParticlesByCollisions.addAll(collision.particles);
+        }
+
+        collisionManager.updateCollisions(changedParticlesByCollisions, particles);
     }
 }

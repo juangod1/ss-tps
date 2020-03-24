@@ -14,6 +14,7 @@ public class GasDiffusion {
             state.updateParticles();
             state.writeFrameToFile(dynamicFile);
             state.updateVelocities();
+            state.updateCollisions();
         }
     }
 
