@@ -56,6 +56,7 @@ public class Generator {
         Random randomGenerator = new Random();
         Particle curr;
         double randomX, randomY, randomVx, calculatedVy;
+        boolean positive;
         int added = 0;
 
         for (int i = 0; i < amount; i++) {
@@ -72,8 +73,8 @@ public class Generator {
             while (added < N) {
                 randomX = randomGenerator.nextDouble();
                 randomY = randomGenerator.nextDouble();
-                randomVx = randomGenerator.nextDouble() * 0.01;
-                calculatedVy = Math.sqrt(Math.pow(0.01,2)-Math.pow(randomVx,2));
+                randomVx = randomGenerator.nextDouble() * 0.01 * (randomGenerator.nextBoolean()? 1 : -1);
+                calculatedVy = Math.sqrt(Math.pow(0.01,2)-Math.pow(randomVx,2)) * (randomGenerator.nextBoolean()? 1 : -1);
                 curr = new Particle(0.0015, randomVx, calculatedVy, new Point2D.Double(randomX * 0.12, randomY * 0.09), 0);
                 if (notViolates(curr, particlesGenerated)) {
                     particlesGenerated.add(curr);
