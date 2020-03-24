@@ -13,6 +13,7 @@ public class GasDiffusion {
             // TODO call function calculates time
             state.updateParticles();
             state.writeFrameToFile(dynamicFile);
+            state.updateVelocities();
         }
     }
 

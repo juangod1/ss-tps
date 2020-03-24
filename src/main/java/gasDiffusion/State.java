@@ -72,4 +72,8 @@ public class State {
 
         return state.toString();
     }
+
+    public void updateVelocities() {
+        // TODO only of particles that collided
+    }
 }
