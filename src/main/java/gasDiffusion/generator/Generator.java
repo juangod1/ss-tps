@@ -1,6 +1,6 @@
 package gasDiffusion.generator;
 
-import gasDiffusion.particle.Particle;
+import gasDiffusion.Particle;
 
 import java.awt.geom.Point2D;
 import java.io.File;
@@ -15,6 +15,7 @@ public class Generator {
     private int N;
     private double width;
     private double height;
+    private double partitionOpening;
     private int amount;
     private String path;
 
@@ -30,6 +31,10 @@ public class Generator {
 
     public void setHeight(double height) {
         this.height = height;
+    }
+
+    public void setPartitionOpening(double partitionOpening) {
+        this.partitionOpening = partitionOpening;
     }
 
     private void setAmount(int amount) {
@@ -62,6 +67,7 @@ public class Generator {
             frStatic.append(String.valueOf(N)).append("\n");
             frStatic.append(String.valueOf(width)).append("\n");
             frStatic.append(String.valueOf(height)).append("\n");
+            frStatic.append(String.valueOf(partitionOpening)).append("\n");
 
             while (added < N) {
                 randomX = randomGenerator.nextDouble();
@@ -93,7 +99,7 @@ public class Generator {
         Generator generator = new Generator();
 
         try {
-            if (argsList.size() != 10)
+            if (argsList.size() != 12)
                 throw new IllegalArgumentException();
             else {
                 int particlesParameter = argsList.indexOf("-n");
@@ -108,6 +114,10 @@ public class Generator {
                 if (heightParameter != -1)
                     generator.setHeight(Double.parseDouble(argsList.get(heightParameter + 1)));
 
+                int openingParameter = argsList.indexOf("-o");
+                if (openingParameter != -1)
+                    generator.setPartitionOpening(Double.parseDouble(argsList.get(openingParameter + 1)));
+
                 int amountParameter = argsList.indexOf("-a");
                 if (amountParameter != -1)
                     generator.setAmount(Integer.parseInt(argsList.get(amountParameter + 1)));
@@ -118,10 +128,11 @@ public class Generator {
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid parameters, try: \n" +
-                    "\tjava -jar generator.jar -n N -w W -h H -a amount -p path\n\n" +
+                    "\tjava -jar generator.jar -n N -w W -h H -o O -a amount -p path\n\n" +
                     "\t-n N\n\t\t determines amount of particles\n" +
                     "\t-w W\n\t\t determines board width\n" +
                     "\t-h H\n\t\t determines board height\n" +
+                    "\t-o O\n\t\t determines partition opening\n" +
                     "\t-a amount\n\t\t determines number of inputs to generate\n" +
                     "\t-p path\n\t\t determines path were to generate inputs");
             return;

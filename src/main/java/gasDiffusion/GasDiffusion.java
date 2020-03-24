@@ -1,7 +1,5 @@
 package gasDiffusion;
 
-import gasDiffusion.particle.Particle;
-
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,7 +9,7 @@ public class GasDiffusion {
 
     private static State parseInput(File staticFile, File dynamicFile) {
         List<Particle> particles = new ArrayList<>();
-        double width = 0, height = 0;
+        double width = 0, height = 0, partitionOpening = 0;
         int N;
 
         try {
@@ -19,6 +17,7 @@ public class GasDiffusion {
             N = Integer.parseInt(scanner.nextLine());
             width = Double.parseDouble(scanner.nextLine());
             height = Double.parseDouble(scanner.nextLine());
+            partitionOpening = Double.parseDouble(scanner.nextLine());
 
             for (int i = 0; i < N; i++) {
                 String[] properties = scanner.nextLine().split(" ");
@@ -47,15 +46,15 @@ public class GasDiffusion {
             e.printStackTrace();
         }
 
-        return new State(particles, width, height);
+        return new State(particles, width, height, partitionOpening);
     }
 
     public static void main(String[] args) {
         ArrayList<String> argsList = new ArrayList<>(Arrays.asList(args));
-        File staticFile, dynamicFile, outputFile;
+        File staticFile, dynamicFile;
 
         try {
-            if (argsList.size() != 6)
+            if (argsList.size() != 4)
                 throw new IllegalArgumentException();
             else {
                 int staticInput = argsList.indexOf("-s");
@@ -70,16 +69,12 @@ public class GasDiffusion {
                 if (!dynamicFile.exists()) {
                     throw new IllegalArgumentException();
                 }
-
-                int output = argsList.indexOf("-o");
-                outputFile = new File(argsList.get(output+1));
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid parameters, try: \n" +
-                    "\tjava -jar CIM.jar -s path -d path -o path\n\n" +
+                    "\tjava -jar CIM.jar -s path -d path\n\n" +
                     "\t-s path\n\t\t determines static input path\n" +
-                    "\t-d path\n\t\t determines dynamic input path\n" +
-                    "\t-o path\n\t\t determines output path\n");
+                    "\t-d path\n\t\t determines dynamic input path\n");
             return;
         }
 

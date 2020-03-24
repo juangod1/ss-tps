@@ -1,4 +1,4 @@
-package gasDiffusion.particle;
+package gasDiffusion;
 
 import java.awt.geom.Point2D;
 
