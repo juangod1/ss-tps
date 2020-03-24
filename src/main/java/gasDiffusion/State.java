@@ -4,13 +4,15 @@ import java.awt.geom.Point2D;
 import java.util.List;
 
 public class State {
+    private double time;
     private List<Particle> particles;
     private List<Wall> walls;
     private double width;
     private double height;
     private double partitionOpening;
 
-    public State(List<Particle> particles, double width, double height, double partitionOpening) {
+    State(List<Particle> particles, double width, double height, double partitionOpening) {
+        this.time = 0;
         this.particles = particles;
         this.width = width;
         this.height = height;
