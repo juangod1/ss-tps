@@ -18,9 +18,9 @@ public class Particle {
         this.vy = vy;
     }
 
-    public Particle(double radius, int id, double mass) {
-        this.radius = radius;
+    public Particle(int id, double radius, double mass) {
         this.id = id;
+        this.radius = radius;
         this.mass = mass;
     }
 
