@@ -6,11 +6,11 @@ public class CollisionManager {
     private PriorityQueue<Collision> nextCollisions;
     private HashMap<Particle, HashMap<Particle, Collision>> collisionsIndex;
 
-    CollisionManager(List<Particle> particles, List<Wall> wall){
+    CollisionManager(List<Particle> particles, List<Wall> wall, double currentTime){
         collisionsIndex = new HashMap<>();
         nextCollisions = createPQ();
         for(Particle particle : particles){
-            updateCollisionForParticle(particle, particles, wall);
+            updateCollisionForParticle(particle, particles, wall, currentTime);
         }
     }
 
@@ -25,9 +25,9 @@ public class CollisionManager {
         return collisions;
     }
 
-    void updateCollisions(Set<Particle> changedParticlesByCollisions, List<Particle> particles, List<Wall> walls){
+    void updateCollisions(Set<Particle> changedParticlesByCollisions, List<Particle> particles, List<Wall> walls, double currentTime){
         for(Particle particle : changedParticlesByCollisions){
-            updateCollisionForParticle(particle, particles, walls);
+            updateCollisionForParticle(particle, particles, walls, currentTime);
         }
     }
 
@@ -35,7 +35,7 @@ public class CollisionManager {
         return new PriorityQueue<>(Comparator.comparingDouble(p -> p.time));
     }
 
-    private void updateCollisionForParticle(Particle particle, List<Particle> particles, List<Wall> walls){
+    private void updateCollisionForParticle(Particle particle, List<Particle> particles, List<Wall> walls, double currentTime){
         PriorityQueue<Collision> potentialCollisions = createPQ();
 
         for(Particle stateParticle : particles){
@@ -48,7 +48,7 @@ public class CollisionManager {
         for(Wall wall : walls){
             double collisionTime = calculateCollisionTimeWall(particle, wall);
             if (collisionTime != -1){
-                potentialCollisions.add(new Collision(collisionTime, particle, wall));
+                potentialCollisions.add(new Collision(collisionTime + currentTime, particle, wall));
             }
         }
 
