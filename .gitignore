@@ -85,3 +85,5 @@ tp1.iml
 *.pdf
 
 *.zip
+
+src/main/java/gasDiffusion/input/

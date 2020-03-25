@@ -64,8 +64,8 @@ public class State {
         fpLeft = particlesOnLeft / particles.size();
     }
 
-    void writeFrameToFile(File dynamicFile) throws IOException {
-        FileWriter f = new FileWriter(dynamicFile, true);
+    void writeFrameToFile(File outputFile) throws IOException {
+        FileWriter f = new FileWriter(outputFile, true);
         f.append(this.toString());
         f.close();
     }

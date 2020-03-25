@@ -3,16 +3,21 @@ package gasDiffusion;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
 public class GasDiffusion {
 
-    private static void diffuse(State state, File dynamicFile) throws IOException {
+    private static void diffuse(State state, File outputFile) throws IOException {
+        // Delete file data if exists
+        FileWriter f = new FileWriter(outputFile);
+        f.close();
+
         while (0.5 - state.getFp() < Math.ulp(state.getFp())) {
             state.calculateNextCollision();
             state.updateParticles();
-            state.writeFrameToFile(dynamicFile);
+            state.writeFrameToFile(outputFile);
             state.updateVelocities();
             state.updateCollisions();
         }
@@ -62,10 +67,10 @@ public class GasDiffusion {
 
     public static void main(String[] args) throws IOException {
         ArrayList<String> argsList = new ArrayList<>(Arrays.asList(args));
-        File staticFile, dynamicFile;
+        File staticFile, dynamicFile, outputFile;
 
         try {
-            if (argsList.size() != 4)
+            if (argsList.size() != 6)
                 throw new IllegalArgumentException();
             else {
                 int staticInput = argsList.indexOf("-s");
@@ -80,16 +85,20 @@ public class GasDiffusion {
                 if (!dynamicFile.exists()) {
                     throw new IllegalArgumentException();
                 }
+
+                int output = argsList.indexOf("-o");
+                outputFile = new File(argsList.get(output+1));
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid parameters, try: \n" +
-                    "\tjava -jar CIM.jar -s path -d path\n\n" +
+                    "\tjava -jar CIM.jar -s path -d path -o path\n\n" +
                     "\t-s path\n\t\t determines static input path\n" +
-                    "\t-d path\n\t\t determines dynamic input path\n");
+                    "\t-d path\n\t\t determines dynamic input path\n" +
+                    "\t-o path\n\t\t determines output path\n");
             return;
         }
 
         State state = parseInput(staticFile, dynamicFile);
-        diffuse(state, dynamicFile);
+        diffuse(state, outputFile);
     }
 }
