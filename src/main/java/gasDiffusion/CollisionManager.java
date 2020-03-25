@@ -99,7 +99,7 @@ public class CollisionManager {
             double lowerLimit = wall.start.getY();
             double higherLimit = wall.end.getY();
 
-            double tc = (p1.getPosition().getX() - x) / p1.getVx();
+            double tc = (x - p1.getPosition().getX()) / p1.getVx();
 
             if (tc < 0) return -1;
 
@@ -112,7 +112,7 @@ public class CollisionManager {
             double lowerLimit = wall.start.getX();
             double higherLimit = wall.end.getX();
 
-            double tc = (p1.getPosition().getY() - y) / p1.getVy();
+            double tc = (y - p1.getPosition().getY()) / p1.getVy();
 
             if (tc < 0) return -1;
 
