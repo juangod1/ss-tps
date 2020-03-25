@@ -8,6 +8,7 @@ import java.util.*;
 
 public class State {
     private double time;
+    private double previousTime=0;
     private List<Particle> particles;
     private List<Wall> walls;
     private Set<Collision> collisions;
@@ -44,8 +45,10 @@ public class State {
 
     void calculateNextCollision() {
         collisions = collisionManager.getNextCollisions();
-        if (!collisions.isEmpty() && collisions.iterator().next()!=null)
+        if (!collisions.isEmpty() && collisions.iterator().next()!=null) {
+            previousTime = time;
             time = collisions.iterator().next().time;
+        }
     }
 
     void updateParticles() {
@@ -53,8 +56,9 @@ public class State {
 
         for (Particle particle : particles) {
             Point2D.Double position = particle.getPosition();
-            double x = position.getX() + particle.getVx() * time;
-            double y = position.getY() + particle.getVy() * time;
+            double delta_t = time - previousTime;
+            double x = position.getX() + particle.getVx() * delta_t;
+            double y = position.getY() + particle.getVy() * delta_t;
             position.setLocation(x,y);
 
             if (x < width/2)
