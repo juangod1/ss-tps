@@ -19,7 +19,7 @@ public class CollisionManager {
 
         collisions.add(nextCollisions.poll());
 
-        while(nextCollisions.peek().time == collisions.iterator().next().time)
+        while(nextCollisions.peek()!=null && nextCollisions.peek().time == collisions.iterator().next().time)
             collisions.add(nextCollisions.poll());
 
         return collisions;

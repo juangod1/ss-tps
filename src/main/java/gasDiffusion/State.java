@@ -44,7 +44,7 @@ public class State {
 
     void calculateNextCollision() {
         collisions = collisionManager.getNextCollisions();
-        if (!collisions.isEmpty())
+        if (!collisions.isEmpty() && collisions.iterator().next()!=null)
             time = collisions.iterator().next().time;
     }
 
@@ -89,33 +89,38 @@ public class State {
         Particle p1, p2;
         double deltaV_deltaR, tita, j, deltaX, deltaY, deltaVx, deltaVy, jx, jy;
 
-        for (Collision collision : collisions) {
-            it = collision.particles.iterator();
-            p1 = it.next();
-            p2 = it.next();
+        if(collisions.iterator().next()!=null) {
+            for (Collision collision : collisions) {
+                it = collision.particles.iterator();
+                p1 = it.next();
+                p2 = it.next();
 
-            deltaX = p2.getPosition().getX() - p1.getPosition().getX();
-            deltaY = p2.getPosition().getY() - p1.getPosition().getY();
-            deltaVx = p2.getVx() - p1.getVx();
-            deltaVy = p2.getVy() - p1.getVy();
-            deltaV_deltaR = deltaVx * deltaX + deltaVy * deltaY;
-            tita = p2.getRadius() + p1.getRadius();
-            j = (2 * p2.getMass() * p1.getMass() * deltaV_deltaR) / (tita * (p2.getMass() + p1.getMass()));
-            jx = (j * deltaX) / tita;
-            jy = (j * deltaY) / tita;
+                deltaX = p2.getPosition().getX() - p1.getPosition().getX();
+                deltaY = p2.getPosition().getY() - p1.getPosition().getY();
+                deltaVx = p2.getVx() - p1.getVx();
+                deltaVy = p2.getVy() - p1.getVy();
+                deltaV_deltaR = deltaVx * deltaX + deltaVy * deltaY;
+                tita = p2.getRadius() + p1.getRadius();
+                j = (2 * p2.getMass() * p1.getMass() * deltaV_deltaR) / (tita * (p2.getMass() + p1.getMass()));
+                jx = (j * deltaX) / tita;
+                jy = (j * deltaY) / tita;
 
-            p1.setVx(p1.getVx() + jx/p1.getMass());
-            p1.setVy(p1.getVy() + jy/p1.getMass());
+                p1.setVx(p1.getVx() + jx / p1.getMass());
+                p1.setVy(p1.getVy() + jy / p1.getMass());
 
-            p2.setVx(p2.getVx() + jx/p2.getMass());
-            p2.setVy(p2.getVy() + jy/p2.getMass());
+                p2.setVx(p2.getVx() + jx / p2.getMass());
+                p2.setVy(p2.getVy() + jy / p2.getMass());
+            }
         }
     }
 
     void updateCollisions() {
         Set<Particle> changedParticlesByCollisions = new HashSet<>();
-        for (Collision collision : collisions) {
-            changedParticlesByCollisions.addAll(collision.particles);
+
+        if(collisions.iterator().next()!=null) {
+            for (Collision collision : collisions) {
+                changedParticlesByCollisions.addAll(collision.particles);
+            }
         }
 
         collisionManager.updateCollisions(changedParticlesByCollisions, particles);
