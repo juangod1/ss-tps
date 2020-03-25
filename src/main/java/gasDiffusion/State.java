@@ -26,8 +26,8 @@ public class State {
         this.height = height;
         this.partitionOpeningSize = partitionOpeningSize;
         this.fpLeft = 1;
-        collisionManager = new CollisionManager(particles);
         generateWalls();
+        collisionManager = new CollisionManager(particles, walls);
     }
 
     double getFp() { return fpLeft; }
@@ -47,7 +47,7 @@ public class State {
         collisions = collisionManager.getNextCollisions();
         if (!collisions.isEmpty() && collisions.iterator().next()!=null) {
             previousTime = time;
-            time = collisions.iterator().next().time;
+            time = collisions.iterator().next().time + previousTime;
         }
     }
 
@@ -127,6 +127,6 @@ public class State {
             }
         }
 
-        collisionManager.updateCollisions(changedParticlesByCollisions, particles);
+        collisionManager.updateCollisions(changedParticlesByCollisions, particles, walls);
     }
 }

@@ -6,11 +6,11 @@ public class CollisionManager {
     private PriorityQueue<Collision> nextCollisions;
     private HashMap<Particle, HashMap<Particle, Collision>> collisionsIndex;
 
-    CollisionManager(List<Particle> particles){
+    CollisionManager(List<Particle> particles, List<Wall> wall){
         collisionsIndex = new HashMap<>();
         nextCollisions = createPQ();
         for(Particle particle : particles){
-            updateCollisionForParticle(particle, particles);
+            updateCollisionForParticle(particle, particles, wall);
         }
     }
 
@@ -25,9 +25,9 @@ public class CollisionManager {
         return collisions;
     }
 
-    void updateCollisions(Set<Particle> changedParticlesByCollisions, List<Particle> particles){
+    void updateCollisions(Set<Particle> changedParticlesByCollisions, List<Particle> particles, List<Wall> walls){
         for(Particle particle : changedParticlesByCollisions){
-            updateCollisionForParticle(particle, particles);
+            updateCollisionForParticle(particle, particles, walls);
         }
     }
 
@@ -35,13 +35,20 @@ public class CollisionManager {
         return new PriorityQueue<>(Comparator.comparingDouble(p -> p.time));
     }
 
-    private void updateCollisionForParticle(Particle particle, List<Particle> particles){
+    private void updateCollisionForParticle(Particle particle, List<Particle> particles, List<Wall> walls){
         PriorityQueue<Collision> potentialCollisions = createPQ();
 
         for(Particle stateParticle : particles){
             double collisionTime = calculateCollisionTime(stateParticle, particle);
             if (collisionTime != -1){
                 potentialCollisions.add(new Collision(collisionTime, particle, stateParticle));
+            }
+        }
+
+        for(Wall wall : walls){
+            double collisionTime = calculateCollisionTimeWall(particle, wall);
+            if (collisionTime != -1){
+                potentialCollisions.add(new Collision(collisionTime, particle, wall));
             }
         }
 
@@ -63,7 +70,12 @@ public class CollisionManager {
         } else {
             nextCollisions.add(firstPotentialCollision);
             HashMap<Particle, Collision> m1 = new HashMap<>();
-            m1.put(p2, firstPotentialCollision);
+
+            if(firstPotentialCollision.wall == null) {
+                m1.put(p2, firstPotentialCollision);
+            } else {
+                m1.put(null, firstPotentialCollision);
+            }
             collisionsIndex.put(p1, m1);
         }
     }
