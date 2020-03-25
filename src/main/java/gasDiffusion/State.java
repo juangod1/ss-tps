@@ -78,7 +78,17 @@ public class State {
     public String toString() {
         StringBuilder state = new StringBuilder();
 
-        state.append(particles.size()).append("\n\n");
+        state.append(Math.round(particles.size()+(width/particles.get(0).getRadius())+(height/particles.get(0).getRadius()))).append("\n\n");
+
+        for(double i=0;i<width;i+=particles.get(0).getRadius()*2){
+            state.append(i).append(" ").append(0).append(" ").append(0).append(" ").append(0).append(" ").append(particles.get(0).getRadius()).append("\n");
+            state.append(i).append(" ").append(height).append(" ").append(0).append(" ").append(0).append(" ").append(particles.get(0).getRadius()).append("\n");
+        }
+
+        for(double j=0;j<height;j+=particles.get(0).getRadius()*2){
+            state.append(0).append(" ").append(j).append(" ").append(0).append(" ").append(0).append(" ").append(particles.get(0).getRadius()).append("\n");
+            state.append(width).append(" ").append(j).append(" ").append(0).append(" ").append(0).append(" ").append(particles.get(0).getRadius()).append("\n");
+        }
 
         for (Particle particle : particles) {
             state.append(particle.getPosition().getX()).append(" ").append(particle.getPosition().getY()).append(" ");
