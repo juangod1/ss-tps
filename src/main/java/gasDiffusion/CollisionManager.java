@@ -97,6 +97,7 @@ public class CollisionManager {
         if (d < 0)
             return -1;
 
-        return -1 * (deltaV_deltaR + Math.sqrt(d)) / (deltaV_deltaV);
+        double ans = -1 * (deltaV_deltaR + Math.sqrt(d)) / (deltaV_deltaV);
+        return ans >= 0 ? ans : -1;
     }
 }
