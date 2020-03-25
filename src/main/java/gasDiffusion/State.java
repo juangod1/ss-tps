@@ -65,7 +65,7 @@ public class State {
     }
 
     void writeFrameToFile(File dynamicFile) throws IOException {
-        FileWriter f = new FileWriter(dynamicFile);
+        FileWriter f = new FileWriter(dynamicFile, true);
         f.append(this.toString());
         f.close();
     }
