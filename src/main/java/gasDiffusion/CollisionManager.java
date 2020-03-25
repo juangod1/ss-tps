@@ -45,7 +45,10 @@ public class CollisionManager {
             }
         }
 
-        checkIfShouldUpdateCollisionIndex(potentialCollisions.poll());
+        Collision firstPotentialCollision = potentialCollisions.poll();
+
+        if(firstPotentialCollision!=null)
+            checkIfShouldUpdateCollisionIndex(firstPotentialCollision);
     }
 
     private void checkIfShouldUpdateCollisionIndex(Collision firstPotentialCollision){
