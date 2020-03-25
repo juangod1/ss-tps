@@ -61,7 +61,7 @@ public class CollisionManager {
     private void checkIfShouldUpdateCollisionIndex(Collision firstPotentialCollision){
         Iterator<Particle> firstPotentialCollisionParticles = firstPotentialCollision.particles.iterator();
         Particle p1 = firstPotentialCollisionParticles.next();
-        Particle p2 = firstPotentialCollisionParticles.next();
+        Particle p2 = firstPotentialCollisionParticles.hasNext() ? firstPotentialCollisionParticles.next() : null;
 
         if(collisionsIndex.containsKey(p1)){
             checkIfShouldUpdateCollisionIndexKnowingItContainsCertainParticle(firstPotentialCollision, p1, p2);
