@@ -14,7 +14,7 @@ public class CollisionManager {
         }
     }
 
-    public Set<Collision> getNextCollisions(){
+    Set<Collision> getNextCollisions(){
         Set<Collision> collisions = new HashSet<>();
 
         collisions.add(nextCollisions.poll());
@@ -25,7 +25,7 @@ public class CollisionManager {
         return collisions;
     }
 
-    public void updateCollisions(Set<Particle> changedParticlesByCollisions, List<Particle> particles){
+    void updateCollisions(Set<Particle> changedParticlesByCollisions, List<Particle> particles){
         for(Particle particle : changedParticlesByCollisions){
             updateCollisionForParticle(particle, particles);
         }

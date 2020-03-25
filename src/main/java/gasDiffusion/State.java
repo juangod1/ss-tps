@@ -45,14 +45,14 @@ public class State {
         walls.add(new Wall(new Point2D.Double(width/2,partitionOpeningEnd), new Point2D.Double(width/2, height),true));
     }
 
-    public void calculateNextCollision() {
+    void calculateNextCollision() {
         collisions = collisionManager.getNextCollisions();
         if (!collisions.isEmpty())
             time = collisions.iterator().next().time;
     }
 
     void updateParticles() {
-        int particlesOnLeft = 0;
+        double particlesOnLeft = 0;
 
         for (Particle particle : particles) {
             Point2D.Double position = particle.getPosition();
@@ -91,7 +91,7 @@ public class State {
         // TODO only of particles that collided
     }
 
-    public void updateCollisions() {
+    void updateCollisions() {
         Set<Particle> changedParticlesByCollisions = new HashSet<>();
         for (Collision collision : collisions) {
             changedParticlesByCollisions.addAll(collision.particles);
