@@ -81,6 +81,10 @@ public class CollisionManager {
         }
     }
 
+    private double calculateCollisionTimeWall(Particle p1, Wall wall){
+        return 0.0;
+    }
+
     private double calculateCollisionTime(Particle p1, Particle p2){
         double deltaX = p2.getPosition().getX() - p1.getPosition().getX();
         double deltaY = p2.getPosition().getY() - p1.getPosition().getY();
