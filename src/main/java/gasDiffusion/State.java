@@ -74,7 +74,7 @@ public class State {
     public String toString() {
         StringBuilder state = new StringBuilder();
 
-        state.append("\n").append(particles.size()).append("\n\n");
+        state.append(particles.size()).append("\n\n");
 
         for (Particle particle : particles) {
             state.append(particle.getPosition().getX()).append(" ").append(particle.getPosition().getY()).append(" ");

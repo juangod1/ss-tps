@@ -61,9 +61,9 @@ public class Generator {
 
         for (int i = 0; i < amount; i++) {
             File fileStatic = new File(path + "/static" + i);
-            FileWriter frStatic = new FileWriter(fileStatic, true);
+            FileWriter frStatic = new FileWriter(fileStatic);
             File fileDynamic = new File(path + "/dynamic" + i);
-            FileWriter frDynamic = new FileWriter(fileDynamic, true);
+            FileWriter frDynamic = new FileWriter(fileDynamic);
 
             frStatic.append(String.valueOf(N)).append("\n");
             frStatic.append(String.valueOf(width)).append("\n");
