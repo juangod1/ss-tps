@@ -82,7 +82,33 @@ public class CollisionManager {
     }
 
     private double calculateCollisionTimeWall(Particle p1, Wall wall){
-        return 0.0;
+        if (wall.isVertical) {
+            double x = wall.start.getX();
+            double lowerLimit = wall.start.getY();
+            double higherLimit = wall.end.getY();
+
+            double tc = (p1.getPosition().getX() - x) / p1.getVx();
+
+            if (tc < 0) return -1;
+
+            double y = p1.getPosition().getY() + p1.getVy() * tc;
+
+            if (y < lowerLimit || y > higherLimit) return -1;
+            return tc;
+        } else {
+            double y = wall.start.getY();
+            double lowerLimit = wall.start.getX();
+            double higherLimit = wall.end.getX();
+
+            double tc = (p1.getPosition().getY() - y) / p1.getVy();
+
+            if (tc < 0) return -1;
+
+            double x = p1.getPosition().getX() + p1.getVx() * tc;
+
+            if (x < lowerLimit || x > higherLimit) return -1;
+            return tc;
+        }
     }
 
     private double calculateCollisionTime(Particle p1, Particle p2){
