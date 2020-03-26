@@ -22,6 +22,18 @@ public class CollisionManager {
         while(nextCollisions.peek()!=null && nextCollisions.peek().time == collisions.iterator().next().time)
             collisions.add(nextCollisions.poll());
 
+        for(Collision collision : collisions){
+            Iterator<Particle> i = collision.particles.iterator();
+            Particle p1 = i.next();
+            Particle p2 = i.hasNext() ? i.next() : null;
+
+            if(p1!=null)
+                collisionsIndex.get(p1).remove(p2);
+
+            if(p2!=null)
+                collisionsIndex.get(p1).remove(p2);
+        }
+
         return collisions;
     }
 
@@ -40,14 +52,14 @@ public class CollisionManager {
 
         for(Particle stateParticle : particles){
             double collisionTime = calculateCollisionTime(stateParticle, particle);
-            if (collisionTime != -1){
+            if (collisionTime >= 0.0000000000000d){
                 potentialCollisions.add(new Collision(collisionTime, particle, stateParticle));
             }
         }
 
         for(Wall wall : walls){
             double collisionTime = calculateCollisionTimeWall(particle, wall);
-            if (collisionTime != -1){
+            if (collisionTime != -1 && collisionTime != 0){
                 potentialCollisions.add(new Collision(collisionTime + currentTime, particle, wall));
             }
         }
@@ -82,6 +94,13 @@ public class CollisionManager {
 
     private void checkIfShouldUpdateCollisionIndexKnowingItContainsCertainParticle(Collision firstPotentialCollision, Particle p1, Particle p2){
         HashMap<Particle, Collision> currentNextCollisionMap = collisionsIndex.get(p1);
+
+        if(!collisionsIndex.get(p1).values().iterator().hasNext()){
+            nextCollisions.add(firstPotentialCollision);
+            currentNextCollisionMap.put(p2, firstPotentialCollision);
+            return;
+        }
+
         Collision currentNextCollision = collisionsIndex.get(p1).values().iterator().next();
         Particle currentNextCollisionParticle = collisionsIndex.get(p1).keySet().iterator().next();
 
