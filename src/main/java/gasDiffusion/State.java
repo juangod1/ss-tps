@@ -78,7 +78,21 @@ public class State {
     public String toString() {
         StringBuilder state = new StringBuilder();
 
-        state.append(Math.round(particles.size()+(width/particles.get(0).getRadius())+(height/particles.get(0).getRadius()))).append("\n\n");
+        state.append(Math.round(1+particles.size()+
+                (width/particles.get(0).getRadius()) +
+                (height/particles.get(0).getRadius()) +
+                (walls.get(4).end.getY()-walls.get(4).start.getY())/(2*particles.get(0).getRadius()) +
+                (walls.get(5).end.getY()-walls.get(5).start.getY())/(2*particles.get(0).getRadius())
+                )).append("\n\n");
+
+        Wall w = walls.get(4);
+        for(double i=w.start.getY();i<w.end.getY();i+=particles.get(0).getRadius()*2){
+            state.append(width/2).append(" ").append(i).append(" ").append(0).append(" ").append(0).append(" ").append(particles.get(0).getRadius()).append("\n");
+        }
+        w = walls.get(5);
+        for(double i=w.start.getY();i<w.end.getY();i+=particles.get(0).getRadius()*2){
+            state.append(width/2).append(" ").append(i).append(" ").append(0).append(" ").append(0).append(" ").append(particles.get(0).getRadius()).append("\n");
+        }
 
         for(double i=0;i<width;i+=particles.get(0).getRadius()*2){
             state.append(i).append(" ").append(0).append(" ").append(0).append(" ").append(0).append(" ").append(particles.get(0).getRadius()).append("\n");
