@@ -52,14 +52,14 @@ public class CollisionManager {
 
         for(Particle stateParticle : particles){
             double collisionTime = calculateCollisionTime(stateParticle, particle);
-            if (collisionTime >= 0.0000000000000d){
+            if (collisionTime >= 0.00000000000001d){
                 potentialCollisions.add(new Collision(collisionTime, particle, stateParticle));
             }
         }
 
         for(Wall wall : walls){
             double collisionTime = calculateCollisionTimeWall(particle, wall);
-            if (collisionTime != -1 && collisionTime != 0){
+            if (collisionTime >= 0.00000000000001d){
                 potentialCollisions.add(new Collision(collisionTime + currentTime, particle, wall));
             }
         }
