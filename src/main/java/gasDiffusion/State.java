@@ -77,36 +77,36 @@ public class State {
     @Override
     public String toString() {
         StringBuilder state = new StringBuilder();
-
-        state.append(Math.round(1+particles.size()+
-                (width/particles.get(0).getRadius()) +
-                (height/particles.get(0).getRadius()) +
-                (walls.get(4).end.getY()-walls.get(4).start.getY())/(2*particles.get(0).getRadius()) +
-                (walls.get(5).end.getY()-walls.get(5).start.getY())/(2*particles.get(0).getRadius())
+        double wallParticleRadius = particles.get(0).getRadius()/3;
+        state.append(Math.round(particles.size()+
+                (width/wallParticleRadius) +
+                (height/wallParticleRadius) +
+                (walls.get(4).end.getY()-walls.get(4).start.getY())/(2*wallParticleRadius) +
+                (walls.get(5).end.getY()-walls.get(5).start.getY())/(2*wallParticleRadius)
                 )).append("\n\n");
 
         Wall w = walls.get(4);
-        for(double i=w.start.getY();i<w.end.getY();i+=particles.get(0).getRadius()*2){
-            state.append(width/2).append(" ").append(i).append(" ").append(0).append(" ").append(0).append(" ").append(particles.get(0).getRadius());
+        for(double i=w.start.getY();i<w.end.getY();i+=wallParticleRadius*2){
+            state.append(width/2).append(" ").append(i).append(" ").append(0).append(" ").append(0).append(" ").append(wallParticleRadius);
             state.append(" ").append(1).append(" ").append(0).append(" ").append(0).append("\n");
         }
         w = walls.get(5);
-        for(double i=w.start.getY();i<w.end.getY();i+=particles.get(0).getRadius()*2){
-            state.append(width/2).append(" ").append(i).append(" ").append(0).append(" ").append(0).append(" ").append(particles.get(0).getRadius());
+        for(double i=w.start.getY();i<w.end.getY();i+=wallParticleRadius*2){
+            state.append(width/2).append(" ").append(i).append(" ").append(0).append(" ").append(0).append(" ").append(wallParticleRadius);
             state.append(" ").append(1).append(" ").append(0).append(" ").append(0).append("\n");
         }
 
-        for(double i=0;i<width;i+=particles.get(0).getRadius()*2){
-            state.append(i).append(" ").append(0).append(" ").append(0).append(" ").append(0).append(" ").append(particles.get(0).getRadius());
+        for(double i=0;i<width;i+=wallParticleRadius*2){
+            state.append(i).append(" ").append(0).append(" ").append(0).append(" ").append(0).append(" ").append(wallParticleRadius);
             state.append(" ").append(1).append(" ").append(0).append(" ").append(0).append("\n");
-            state.append(i).append(" ").append(height).append(" ").append(0).append(" ").append(0).append(" ").append(particles.get(0).getRadius());
+            state.append(i).append(" ").append(height).append(" ").append(0).append(" ").append(0).append(" ").append(wallParticleRadius);
             state.append(" ").append(1).append(" ").append(0).append(" ").append(0).append("\n");
         }
 
-        for(double j=0;j<height;j+=particles.get(0).getRadius()*2){
-            state.append(0).append(" ").append(j).append(" ").append(0).append(" ").append(0).append(" ").append(particles.get(0).getRadius());
+        for(double j=0;j<height;j+=wallParticleRadius*2){
+            state.append(0).append(" ").append(j).append(" ").append(0).append(" ").append(0).append(" ").append(wallParticleRadius);
             state.append(" ").append(1).append(" ").append(0).append(" ").append(0).append("\n");
-            state.append(width).append(" ").append(j).append(" ").append(0).append(" ").append(0).append(" ").append(particles.get(0).getRadius());
+            state.append(width).append(" ").append(j).append(" ").append(0).append(" ").append(0).append(" ").append(wallParticleRadius);
             state.append(" ").append(1).append(" ").append(0).append(" ").append(0).append("\n");
         }
 
