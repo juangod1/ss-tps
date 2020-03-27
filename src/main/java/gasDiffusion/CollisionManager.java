@@ -51,19 +51,21 @@ public class CollisionManager {
         return new PriorityQueue<>(Comparator.comparingDouble(p -> p.time));
     }
 
+    static final double DELTA = 0.0000001d;
+
     private void updateCollisionForParticle(Particle particle, List<Particle> particles, List<Wall> walls, double currentTime){
         PriorityQueue<Collision> potentialCollisions = createPQ();
 
         for(Particle stateParticle : particles){
             double collisionTime = calculateCollisionTime(stateParticle, particle, walls);
-            if (collisionTime >= 0.00000000000001d){
+            if (collisionTime >= DELTA){
                 potentialCollisions.add(new Collision(collisionTime + currentTime, particle, stateParticle));
             }
         }
 
         for(Wall wall : walls){
             double collisionTime = calculateCollisionTimeWall(particle, wall);
-            if (collisionTime >= 0.00000000000001d){
+            if (collisionTime >= DELTA){
                 potentialCollisions.add(new Collision(collisionTime + currentTime, particle, wall));
             }
         }
