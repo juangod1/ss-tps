@@ -29,11 +29,13 @@ public class CollisionManager {
             Particle p1 = i.next();
             Particle p2 = i.hasNext() ? i.next() : null;
 
-            if(p1!=null)
+            if(p1!=null && collisionsIndex.get(p1)!=null){
                 collisionsIndex.get(p1).remove(p2);
+            }
 
-            if(p2!=null)
-                collisionsIndex.get(p1).remove(p2);
+
+            if(p2!=null && collisionsIndex.get(p2)!=null)
+                collisionsIndex.get(p2).remove(p1);
         }
 
         return collisions;
