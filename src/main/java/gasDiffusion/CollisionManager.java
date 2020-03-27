@@ -1,6 +1,8 @@
 package gasDiffusion;
 
+import java.awt.geom.Point2D;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CollisionManager {
     private PriorityQueue<Collision> nextCollisions;
@@ -51,7 +53,7 @@ public class CollisionManager {
         PriorityQueue<Collision> potentialCollisions = createPQ();
 
         for(Particle stateParticle : particles){
-            double collisionTime = calculateCollisionTime(stateParticle, particle);
+            double collisionTime = calculateCollisionTime(stateParticle, particle, walls);
             if (collisionTime >= 0.00000000000001d){
                 potentialCollisions.add(new Collision(collisionTime + currentTime, particle, stateParticle));
             }
@@ -142,7 +144,7 @@ public class CollisionManager {
         }
     }
 
-    private double calculateCollisionTime(Particle p1, Particle p2){
+    private double calculateCollisionTime(Particle p1, Particle p2, List<Wall> walls){
         double deltaX = p2.getPosition().getX() - p1.getPosition().getX();
         double deltaY = p2.getPosition().getY() - p1.getPosition().getY();
         double deltaVx = p2.getVx() - p1.getVx();
@@ -159,6 +161,44 @@ public class CollisionManager {
             return -1;
 
         double ans = -1 * (deltaV_deltaR + Math.sqrt(d)) / (deltaV_deltaV);
-        return ans >= 0 ? ans : -1;
+
+        if(ans < 0 || checkIfCollisionWillBeStoppedByWall(p1, p2, ans, walls)){
+            return -1;
+        }
+
+        return ans;
+    }
+
+    private boolean checkIfCollisionWillBeStoppedByWall(Particle p1, Particle p2, double time, List<Wall> walls){
+        return checkIfParticleTrajectoryWillHitOpeningWalls(p1, time, walls) || checkIfParticleTrajectoryWillHitOpeningWalls(p2, time, walls);
+    }
+
+    private boolean checkIfParticleTrajectoryWillHitOpeningWalls(Particle p, double time, List<Wall> walls){
+        List<Wall> openingWalls = walls.stream().filter(
+                wall -> wall.isVertical && wall.start.getX() == 0.12
+                ).collect(Collectors.toList());
+
+        Point2D.Double collisionPointDouble = new Point2D.Double(
+                p.getPosition().getX() + time*p.getVx(),
+                p.getPosition().getY() + time*p.getVy());
+
+        if(
+                (collisionPointDouble.getX() < openingWalls.get(0).start.getX()
+                                            && openingWalls.get(0).start.getX() < p.getPosition().getX())
+                ||
+                (collisionPointDouble.getX() > openingWalls.get(0).start.getX()
+                                            && openingWalls.get(0).start.getX() > p.getPosition().getX())
+        ){
+            double collTime = (0.12-p.getPosition().getX())/p.getVx();
+            double yCollision = collTime*p.getVy()+p.getPosition().getY();
+            return
+                    (openingWalls.get(0).start.getY() < yCollision
+                                                 && yCollision < openingWalls.get(0).end.getY())
+                    ||
+                    (openingWalls.get(1).start.getY() < yCollision &&
+                                                     yCollision < openingWalls.get(1).end.getY())
+                    ;
+        }
+        return false;
     }
 }
