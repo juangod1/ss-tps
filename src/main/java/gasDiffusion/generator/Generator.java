@@ -48,6 +48,9 @@ public class Generator {
             if (Math.sqrt(Math.pow(curr.getPosition().getX()-particle.getPosition().getX(),2) + Math.pow(curr.getPosition().getY()-particle.getPosition().getY(),2)) <= (curr.getRadius() + particle.getRadius()))
                 return false;
         }
+        if ((curr.getPosition().getX()-curr.getRadius()) < 0 || curr.getPosition().getX()+curr.getRadius() > width/2) return false;
+        if ((curr.getPosition().getY()-curr.getRadius()) < 0 || curr.getPosition().getY()+curr.getRadius() > height) return false;
+
         return true;
     }
 
