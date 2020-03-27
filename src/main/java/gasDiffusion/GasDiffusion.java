@@ -14,7 +14,9 @@ public class GasDiffusion {
         FileWriter f = new FileWriter(outputFile);
         f.close();
 
-        while (0.5 - state.getFp() < Math.ulp(state.getFp())) {
+        int i=0;
+        while (state.getFp() - 0.5 > Math.ulp(state.getFp())) {
+            i++;
             state.writeFrameToFile(outputFile);
             state.calculateNextCollision();
             state.updateParticles();
