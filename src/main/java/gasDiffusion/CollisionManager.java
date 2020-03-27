@@ -53,7 +53,7 @@ public class CollisionManager {
         for(Particle stateParticle : particles){
             double collisionTime = calculateCollisionTime(stateParticle, particle);
             if (collisionTime >= 0.00000000000001d){
-                potentialCollisions.add(new Collision(collisionTime, particle, stateParticle));
+                potentialCollisions.add(new Collision(collisionTime + currentTime, particle, stateParticle));
             }
         }
 
