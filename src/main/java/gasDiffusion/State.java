@@ -119,6 +119,14 @@ public class State {
         return state.toString();
     }
 
+    private double ceilnumber(double number, double ceil){
+        if(number>ceil){
+            return ceil;
+        } else {
+            return Math.max(number, -1 * ceil);
+        }
+    }
+
     void updateVelocities() {
         Iterator<Particle> it;
         Particle p1, p2;
@@ -132,7 +140,9 @@ public class State {
                     p2 = it.next();
 
                     deltaX = p2.getPosition().getX() - p1.getPosition().getX();
+                    deltaX = ceilnumber(deltaX, 2*p1.getRadius());
                     deltaY = p2.getPosition().getY() - p1.getPosition().getY();
+                    deltaY = ceilnumber(deltaY, 2*p1.getRadius());
                     deltaVx = p2.getVx() - p1.getVx();
                     deltaVy = p2.getVy() - p1.getVy();
                     deltaV_deltaR = deltaVx * deltaX + deltaVy * deltaY;

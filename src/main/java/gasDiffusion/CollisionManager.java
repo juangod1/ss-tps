@@ -19,9 +19,6 @@ public class CollisionManager {
 
         collisions.add(nextCollisions.poll());
 
-        while(nextCollisions.peek()!=null && (Math.abs(nextCollisions.peek().time - collisions.iterator().next().time) < DELTA))
-            collisions.add(nextCollisions.poll());
-
         return collisions;
     }
 
