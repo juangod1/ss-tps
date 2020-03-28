@@ -36,6 +36,5 @@ public class Collision {
         return Double.compare(collision.time, time) == 0 &&
                 particles.equals(collision.particles) && (wall==null ? collision.wall==null :
                 wall.equals(collision.wall));
-
     }
 }

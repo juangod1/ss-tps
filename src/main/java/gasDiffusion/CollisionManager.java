@@ -19,7 +19,7 @@ public class CollisionManager {
 
         collisions.add(nextCollisions.poll());
 
-        while(nextCollisions.peek()!=null && nextCollisions.peek().time == collisions.iterator().next().time)
+        while(nextCollisions.peek()!=null && (Math.abs(nextCollisions.peek().time - collisions.iterator().next().time) < DELTA))
             collisions.add(nextCollisions.poll());
 
         return collisions;
@@ -35,7 +35,7 @@ public class CollisionManager {
         return new PriorityQueue<>(Comparator.comparingDouble(p -> p.time));
     }
 
-    static final double DELTA = 0.0000001d;
+    static final double DELTA = 0.000000000001d;
 
     private void updateCollisionForParticle(Particle particle, List<Particle> particles, List<Wall> walls, double currentTime){
         PriorityQueue<Collision> potentialCollisions = createPQ();

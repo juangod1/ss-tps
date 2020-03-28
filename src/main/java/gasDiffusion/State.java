@@ -47,7 +47,7 @@ public class State {
         collisions = collisionManager.getNextCollisions();
         if (!collisions.isEmpty() && collisions.iterator().next()!=null) {
             previousTime = time;
-            time = collisions.iterator().next().time;
+            time = collisions.stream().map(collision -> collision.time).min((d1,d2) -> d1-d2 > 0 ? -1 : 1 ).get();
         }
     }
 
