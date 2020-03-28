@@ -141,7 +141,7 @@ public class State {
 
                     deltaX = ceilnumber(p2.getPosition().getX() - p1.getPosition().getX(), 2*p1.getRadius());
                     deltaY = ceilnumber(p2.getPosition().getY() - p1.getPosition().getY(), 2*p1.getRadius());
-                    deltaVx = ceilnumber(p2.getVx() - p1.getVx(), particles.size()*0.5*p1.getMass()*Math.pow(0.01, 2));
+                    deltaVx = ceilnumber(p2.getVx() - p1.getVx(), Math.sqrt(particles.size()*0.0001));
                     deltaVy = ceilnumber(p2.getVy() - p1.getVy(), particles.size()*0.5*p1.getMass()*Math.pow(0.01, 2));
                     deltaV_deltaR = deltaVx * deltaX + deltaVy * deltaY;
                     tita = p2.getRadius() + p1.getRadius();
