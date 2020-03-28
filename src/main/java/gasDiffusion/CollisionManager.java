@@ -6,10 +6,8 @@ import java.util.stream.Collectors;
 
 public class CollisionManager {
     private PriorityQueue<Collision> nextCollisions;
-    private HashMap<Particle, HashMap<Particle, Collision>> collisionsIndex;
 
     CollisionManager(List<Particle> particles, List<Wall> wall, double currentTime){
-        collisionsIndex = new HashMap<>();
         nextCollisions = createPQ();
         for(Particle particle : particles){
             updateCollisionForParticle(particle, particles, wall, currentTime);
@@ -23,20 +21,6 @@ public class CollisionManager {
 
         while(nextCollisions.peek()!=null && nextCollisions.peek().time == collisions.iterator().next().time)
             collisions.add(nextCollisions.poll());
-
-        for(Collision collision : collisions){
-            Iterator<Particle> i = collision.particles.iterator();
-            Particle p1 = i.next();
-            Particle p2 = i.hasNext() ? i.next() : null;
-
-            if(p1!=null && collisionsIndex.get(p1)!=null){
-                collisionsIndex.get(p1).remove(p2);
-            }
-
-
-            if(p2!=null && collisionsIndex.get(p2)!=null)
-                collisionsIndex.get(p2).remove(p1);
-        }
 
         return collisions;
     }
@@ -73,52 +57,24 @@ public class CollisionManager {
         Collision firstPotentialCollision = potentialCollisions.poll();
 
         if(firstPotentialCollision!=null)
-            checkIfShouldUpdateCollisionIndex(firstPotentialCollision, particles, walls, currentTime);
+            addCollision(firstPotentialCollision, particle, particles, walls, currentTime);
     }
 
-    private void checkIfShouldUpdateCollisionIndex(Collision firstPotentialCollision, List<Particle> particles, List<Wall> walls, double currentTime){
-        Iterator<Particle> firstPotentialCollisionParticles = firstPotentialCollision.particles.iterator();
-        Particle p1 = firstPotentialCollisionParticles.next();
-        Particle p2 = firstPotentialCollisionParticles.hasNext() ? firstPotentialCollisionParticles.next() : null;
+    private void addCollision(Collision firstPotentialCollision, Particle particle, List<Particle> particles, List<Wall> walls, double currentTime){
+        List<Collision> affectedParticleCollision = nextCollisions.parallelStream().filter(collision ->
+            collision.particles.contains(particle)
+        ).collect(Collectors.toList());
 
-        if(collisionsIndex.containsKey(p1)){
-            checkIfShouldUpdateCollisionIndexKnowingItContainsCertainParticle(firstPotentialCollision, p1, p2, particles, walls, currentTime);
-        } else if(collisionsIndex.containsKey(p2)) {
-            checkIfShouldUpdateCollisionIndexKnowingItContainsCertainParticle(firstPotentialCollision, p2, p1, particles, walls, currentTime);
-        } else {
-            nextCollisions.add(firstPotentialCollision);
-            HashMap<Particle, Collision> m1 = new HashMap<>();
+        if(affectedParticleCollision.size()==1) {
+            List<Particle> orphanParticle = affectedParticleCollision.get(0).particles.stream().filter(p -> !p.equals(particle)).collect(Collectors.toList());
 
-            if(firstPotentialCollision.wall == null) {
-                m1.put(p2, firstPotentialCollision);
-            } else {
-                m1.put(null, firstPotentialCollision);
-            }
-            collisionsIndex.put(p1, m1);
-        }
-    }
+            nextCollisions.remove(affectedParticleCollision.get(0));
 
-    private void checkIfShouldUpdateCollisionIndexKnowingItContainsCertainParticle(Collision firstPotentialCollision, Particle p1, Particle p2, List<Particle> particles, List<Wall> walls, double currentTime){
-        HashMap<Particle, Collision> currentNextCollisionMap = collisionsIndex.get(p1);
-
-        if(!collisionsIndex.get(p1).values().iterator().hasNext()){
-            nextCollisions.add(firstPotentialCollision);
-            currentNextCollisionMap.put(p2, firstPotentialCollision);
-            return;
+            if(orphanParticle.size()==1)
+                updateCollisionForParticle(orphanParticle.get(0), particles, walls, currentTime);
         }
 
-        Collision currentNextCollision = collisionsIndex.get(p1).values().iterator().next();
-        Particle currentNextCollisionParticle = collisionsIndex.get(p1).keySet().iterator().next();
-
-        if(currentNextCollision.time>firstPotentialCollision.time){
-            nextCollisions.remove(currentNextCollision);
-            nextCollisions.add(firstPotentialCollision);
-            Particle otherParticle = currentNextCollisionMap.get(currentNextCollisionParticle).particles.stream()
-                    .filter(particle -> particle != currentNextCollisionParticle).collect(Collectors.toList()).get(0);
-            currentNextCollisionMap.remove(currentNextCollisionParticle);
-            currentNextCollisionMap.put(p2, firstPotentialCollision);
-            updateCollisionForParticle(otherParticle, particles, walls, currentTime);
-        }
+        if(!nextCollisions.contains(firstPotentialCollision)) nextCollisions.add(firstPotentialCollision);
     }
 
     private double calculateCollisionTimeWall(Particle p1, Wall wall){
