@@ -13,9 +13,8 @@ public class GasDiffusion {
         // Delete file data if exists
         FileWriter f = new FileWriter(outputFile);
         f.close();
-        int i=0;
-        while (i<1000) {
-            i++;
+        
+        while (state.getFp() - 0.5 > Math.ulp(state.getFp())) {
             state.writeFrameToFile(outputFile);
             state.calculateNextCollision();
             state.updateParticles();

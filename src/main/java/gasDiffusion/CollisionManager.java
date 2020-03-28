@@ -32,7 +32,7 @@ public class CollisionManager {
         return new PriorityQueue<>(Comparator.comparingDouble(p -> p.time));
     }
 
-    static final double DELTA = 0.000000000001d;
+    static final double DELTA = 0.00000000000001d;
 
     private void updateCollisionForParticle(Particle particle, List<Particle> particles, List<Wall> walls, double currentTime){
         PriorityQueue<Collision> potentialCollisions = createPQ();
