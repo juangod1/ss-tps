@@ -21,7 +21,7 @@ public class GasDiffusion {
             state.updateParticles();
             state.updateVelocities();
             state.updateCollisions();
-            if(i%1000==0) System.out.println(state.getFp());
+            if(i%100==0) System.out.println(state.getFp());
             i++;
         }
 
