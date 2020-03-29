@@ -14,13 +14,18 @@ public class GasDiffusion {
         FileWriter f = new FileWriter(outputFile);
         f.close();
 
+        int i=0;
         while (state.getFp() - 0.5 > Math.ulp(state.getFp())) {
             state.writeFrameToFile(outputFile);
             state.calculateNextCollision();
             state.updateParticles();
             state.updateVelocities();
             state.updateCollisions();
+            if(i%1000==0) System.out.println(state.getFp());
+            i++;
         }
+
+        System.out.printf("finished in %f simulation seconds",state.time);
     }
 
     private static State parseInput(File staticFile, File dynamicFile) {

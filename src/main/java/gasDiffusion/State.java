@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class State {
-    private double time;
+     double time;
     private double previousTime=0;
     private List<Particle> particles;
     private List<Wall> walls;
@@ -51,6 +51,35 @@ public class State {
         }
     }
 
+    private void setPositions(Particle particle, double x, double y){
+        double xp, yp;
+        if(x<=0){
+            xp = 0.001;
+            particle.setVx(Math.abs(particle.getVx()));
+        } else {
+            if(x>=0.239){
+                xp = 0.239;
+                particle.setVx(Math.abs(particle.getVx())*-1);
+            } else {
+                xp = x;
+            }
+        }
+
+        if(y<=0){
+            yp = 0.001;
+            particle.setVy(Math.abs(particle.getVy()));
+        } else {
+            if(y>=0.089){
+                yp = 0.089;
+                particle.setVy(Math.abs(particle.getVy())*-1);
+            } else {
+                yp = y;
+            }
+        }
+        particle.setPosition(new Point2D.Double(xp, yp));
+        collisionManager.updateCollisionForParticle(particle, particles, walls, time);
+    }
+
     void updateParticles() {
         double particlesOnLeft = 0;
 
@@ -59,7 +88,7 @@ public class State {
             double delta_t = time - previousTime;
             double x = position.getX() + particle.getVx() * delta_t;
             double y = position.getY() + particle.getVy() * delta_t;
-            position.setLocation(x,y);
+            setPositions(particle,x,y);
 
             if (x < width/2)
                 particlesOnLeft++;
@@ -139,21 +168,21 @@ public class State {
                     p1 = it.next();
                     p2 = it.next();
 
-                    deltaX = ceilnumber(p2.getPosition().getX() - p1.getPosition().getX(), 2*p1.getRadius());
-                    deltaY = ceilnumber(p2.getPosition().getY() - p1.getPosition().getY(), 2*p1.getRadius());
-                    deltaVx = ceilnumber(p2.getVx() - p1.getVx(), Math.sqrt(particles.size()*0.0001));
-                    deltaVy = ceilnumber(p2.getVy() - p1.getVy(), Math.sqrt(particles.size()*0.0001));
+                    deltaX = p2.getPosition().getX() - p1.getPosition().getX();
+                    deltaY = p2.getPosition().getY() - p1.getPosition().getY();
+                    deltaVx = p2.getVx() - p1.getVx();
+                    deltaVy = p2.getVy() - p1.getVy();
                     deltaV_deltaR = deltaVx * deltaX + deltaVy * deltaY;
                     tita = p2.getRadius() + p1.getRadius();
                     j = (2 * p2.getMass() * p1.getMass() * deltaV_deltaR) / (tita * (p2.getMass() + p1.getMass()));
                     jx = (j * deltaX) / tita;
                     jy = (j * deltaY) / tita;
 
-                    p1.setVx(p1.getVx() + jx / p1.getMass());
-                    p1.setVy(p1.getVy() + jy / p1.getMass());
+                    p1.setVx(ceilnumber(p1.getVx() + jx / p1.getMass(), Math.sqrt(particles.size()*0.0001)));
+                    p1.setVy(ceilnumber(p1.getVy() + jy / p1.getMass(), Math.sqrt(particles.size()*0.0001)));
 
-                    p2.setVx(p2.getVx() + jx / p2.getMass());
-                    p2.setVy(p2.getVy() + jy / p2.getMass());
+                    p2.setVx(ceilnumber(p2.getVx() + jx / p2.getMass(), Math.sqrt(particles.size()*0.0001)));
+                    p2.setVy(ceilnumber(p2.getVy() + jy / p2.getMass(), Math.sqrt(particles.size()*0.0001)));
                 } else {
                     it = collision.particles.iterator();
                     p1 = it.next();

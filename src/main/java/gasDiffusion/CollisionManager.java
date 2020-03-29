@@ -34,7 +34,7 @@ public class CollisionManager {
 
     static final double DELTA = 0.00000000000001d;
 
-    private void updateCollisionForParticle(Particle particle, List<Particle> particles, List<Wall> walls, double currentTime){
+    void updateCollisionForParticle(Particle particle, List<Particle> particles, List<Wall> walls, double currentTime){
         PriorityQueue<Collision> potentialCollisions = createPQ();
 
         for(Particle stateParticle : particles){
@@ -62,12 +62,12 @@ public class CollisionManager {
             collision.particles.contains(particle)
         ).collect(Collectors.toList());
 
-        if(affectedParticleCollision.size()==1) {
+        if(affectedParticleCollision.size()>0) {
             List<Particle> orphanParticle = affectedParticleCollision.get(0).particles.stream().filter(p -> !p.equals(particle)).collect(Collectors.toList());
 
             nextCollisions.remove(affectedParticleCollision.get(0));
 
-            if(orphanParticle.size()==1)
+            if(orphanParticle.size()>0)
                 updateCollisionForParticle(orphanParticle.get(0), particles, walls, currentTime);
         }
 
