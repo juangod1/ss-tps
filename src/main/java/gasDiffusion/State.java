@@ -122,10 +122,10 @@ public class State {
     private double calculateTemp() {
         double avgKineticE = 0;
         for (Particle particle : particles) {
-            avgKineticE += particle.getMass() * Math.pow(Math.sqrt(Math.pow(particle.getVx(), 2) + Math.pow(particle.getVy(), 2)), 2);
+            avgKineticE += particle.getMass() * (Math.pow(particle.getVx(), 2) + Math.pow(particle.getVy(), 2)) / 2;
         }
-        avgKineticE = avgKineticE / (2*particles.size());
-        return avgKineticE * 2 / (3 * 1.380604e-23);
+        System.out.println(avgKineticE);
+        return avgKineticE * 2 / (3 * 1.380648e-23);
     }
 
     @Override
@@ -173,14 +173,6 @@ public class State {
         return state.toString();
     }
 
-    private double ceilnumber(double number, double ceil){
-        if(number>ceil){
-            return ceil;
-        } else {
-            return Math.max(number, -1 * ceil);
-        }
-    }
-
     void updateVelocities() {
         Iterator<Particle> it;
         Particle p1, p2;
@@ -203,11 +195,11 @@ public class State {
                     jx = (j * deltaX) / tita;
                     jy = (j * deltaY) / tita;
 
-                    p1.setVx(ceilnumber(p1.getVx() + jx / p1.getMass(), Math.sqrt(particles.size()*0.0001)));
-                    p1.setVy(ceilnumber(p1.getVy() + jy / p1.getMass(), Math.sqrt(particles.size()*0.0001)));
+                    p1.setVx(p1.getVx() + jx / p1.getMass());
+                    p1.setVy(p1.getVy() + jy / p1.getMass());
 
-                    p2.setVx(ceilnumber(p2.getVx() + jx / p2.getMass(), Math.sqrt(particles.size()*0.0001)));
-                    p2.setVy(ceilnumber(p2.getVy() + jy / p2.getMass(), Math.sqrt(particles.size()*0.0001)));
+                    p2.setVx(p2.getVx() - jx / p2.getMass());
+                    p2.setVy(p2.getVy() - jy / p2.getMass());
                 } else {
                     it = collision.particles.iterator();
                     p1 = it.next();
