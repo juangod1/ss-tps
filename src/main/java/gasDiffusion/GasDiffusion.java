@@ -9,20 +9,22 @@ import java.util.*;
 
 public class GasDiffusion {
 
-    private static void diffuse(State state, File outputFile) throws IOException {
+    private static void diffuse(State state, File outputFile, File tableFile) throws IOException {
         // Delete file data if exists
         FileWriter f = new FileWriter(outputFile);
         f.close();
+        f = new FileWriter(tableFile);
+        f.close();
 
-        int i=0;
+        int frame = 1;
         while (state.getFp() - 0.5 > Math.ulp(state.getFp())) {
-            state.writeFrameToFile(outputFile);
+            if (frame%100 == 0) state.writeFrameToFile(outputFile, tableFile);
             state.calculateNextCollision();
             state.updateParticles();
             state.updateVelocities();
             state.updateCollisions();
-            if(i%100==0) System.out.println(state.getFp());
-            i++;
+            if(frame%100 == 0) System.out.println(state.getFp());
+            frame++;
         }
 
         System.out.printf("finished in %f simulation seconds",state.time);
@@ -72,38 +74,42 @@ public class GasDiffusion {
 
     public static void main(String[] args) throws IOException {
         ArrayList<String> argsList = new ArrayList<>(Arrays.asList(args));
-        File staticFile, dynamicFile, outputFile;
+        int amount;
+        String staticFile, dynamicFile, outputFile, tableFile, pvFile;
 
         try {
-            if (argsList.size() != 6)
+            if (argsList.size() != 10)
                 throw new IllegalArgumentException();
             else {
                 int staticInput = argsList.indexOf("-s");
-                staticFile = new File(argsList.get(staticInput+1));
-                if (!staticFile.exists()) {
-                    throw new IllegalArgumentException();
-                }
+                staticFile = argsList.get(staticInput+1);
 
                 int dynamicInput = argsList.indexOf("-d");
-                dynamicFile = new File(argsList.get(dynamicInput+1));
-
-                if (!dynamicFile.exists()) {
-                    throw new IllegalArgumentException();
-                }
+                dynamicFile = argsList.get(dynamicInput+1);
 
                 int output = argsList.indexOf("-o");
-                outputFile = new File(argsList.get(output+1));
+                outputFile = argsList.get(output+1);
+
+                int table = argsList.indexOf("-t");
+                tableFile = argsList.get(table+1);
+
+                int amountIndex = argsList.indexOf("-a");
+                amount = Integer.parseInt(argsList.get(amountIndex + 1));
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid parameters, try: \n" +
                     "\tjava -jar CIM.jar -s path -d path -o path\n\n" +
                     "\t-s path\n\t\t determines static input path\n" +
                     "\t-d path\n\t\t determines dynamic input path\n" +
-                    "\t-o path\n\t\t determines output path\n");
+                    "\t-o path\n\t\t determines output path\n" +
+                    "\t-t path\n\t\t determines table path\n" +
+                    "\t-a amount\n\t\t determines amount of executions\n");
             return;
         }
 
-        State state = parseInput(staticFile, dynamicFile);
-        diffuse(state, outputFile);
+        for (int i=0; i<amount; i++) {
+            State state = parseInput( new File(staticFile + i), new File(dynamicFile + i));
+            diffuse(state, new File(outputFile + i), new File(tableFile + i));
+        }
     }
 }

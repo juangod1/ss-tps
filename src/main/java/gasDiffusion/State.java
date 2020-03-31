@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class State {
-     double time;
+    double time;
     private double previousTime=0;
     private List<Particle> particles;
     private List<Wall> walls;
@@ -15,7 +15,10 @@ public class State {
     private double width;
     private double height;
     private double partitionOpeningSize;
-    private double fpLeft;
+    private double fpLeft = 1;
+    private Wall wallForDp;
+    private double dp = 0;
+    private double avgKineticE;
     private CollisionManager collisionManager;
 
     State(List<Particle> particles, double width, double height, double partitionOpeningSize) {
@@ -25,7 +28,6 @@ public class State {
         this.width = width;
         this.height = height;
         this.partitionOpeningSize = partitionOpeningSize;
-        this.fpLeft = 1;
         generateWalls();
         collisionManager = new CollisionManager(particles, walls, 0);
     }
@@ -33,7 +35,8 @@ public class State {
     double getFp() { return fpLeft; }
 
     private void generateWalls() {
-        walls.add(new Wall(new Point2D.Double(0,0), new Point2D.Double(0, height),true));
+        wallForDp = new Wall(new Point2D.Double(0,0), new Point2D.Double(0, height),true);
+        walls.add(wallForDp);
         walls.add(new Wall(new Point2D.Double(0,0), new Point2D.Double(width,0),false));
         walls.add(new Wall(new Point2D.Double(width,0), new Point2D.Double(width, height),true));
         walls.add(new Wall(new Point2D.Double(0, height), new Point2D.Double(width, height),false));
@@ -97,10 +100,27 @@ public class State {
         fpLeft = particlesOnLeft / particles.size();
     }
 
-    void writeFrameToFile(File outputFile) throws IOException {
+    void writeFrameToFile(File outputFile, File tableFile) throws IOException {
         FileWriter f = new FileWriter(outputFile, true);
+        FileWriter t = new FileWriter(tableFile, true);
         f.append(this.toString());
         f.close();
+
+        double pressure = dp / (time * (wallForDp.end.getY()));
+        if (time == 0)
+            pressure = 0;
+        double temp = calculateTemp();
+        t.append(String.valueOf(time)).append(", ").append(String.valueOf(fpLeft));
+        t.append(", ").append(String.valueOf(pressure)).append(", ").append(String.valueOf(temp)).append("\n");
+        t.close();
+    }
+
+    private double calculateTemp() {
+        for (Particle particle : particles) {
+            avgKineticE += particle.getMass() * Math.pow(Math.sqrt(Math.pow(particle.getVx(), 2) + Math.pow(particle.getVy(), 2)), 2);
+        }
+        avgKineticE = avgKineticE / (2*particles.size());
+        return avgKineticE * 2 / (3 * 1.380604e-23);
     }
 
     @Override
@@ -186,11 +206,20 @@ public class State {
                 } else {
                     it = collision.particles.iterator();
                     p1 = it.next();
-
-                    if (collision.wall.isVertical) {
-                        p1.setVx(-1 * p1.getVx());
+                    Wall curr = collision.wall;
+                    double vx_after, vy_after;
+                    if (curr.isVertical) {
+                        vx_after = -1 * p1.getVx();
+                        if (curr == wallForDp) {
+                            dp += p1.getMass() * Math.abs(p1.getVx() - vx_after);
+                        }
+                        p1.setVx(vx_after);
                     } else {
-                        p1.setVy(-1 * p1.getVy());
+                        vy_after = -1 * p1.getVy();
+                        if (curr == wallForDp) {
+                            dp += p1.getMass() * Math.abs(p1.getVy() - vy_after);
+                        }
+                        p1.setVy(vy_after);
                     }
                 }
             }

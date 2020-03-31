@@ -55,18 +55,20 @@ public class Generator {
     }
 
     private void generate() throws IOException {
-        List<Particle> particlesGenerated = new ArrayList<>();
+        List<Particle> particlesGenerated;
         Random randomGenerator = new Random();
         Particle curr;
         double randomX, randomY, randomVx, calculatedVy;
-        boolean positive;
-        int added = 0;
+        int added;
 
         for (int i = 0; i < amount; i++) {
             File fileStatic = new File(path + "/static" + i);
             FileWriter frStatic = new FileWriter(fileStatic);
             File fileDynamic = new File(path + "/dynamic" + i);
             FileWriter frDynamic = new FileWriter(fileDynamic);
+
+            added = 0;
+            particlesGenerated = new ArrayList<>();
 
             frStatic.append(String.valueOf(N)).append("\n");
             frStatic.append(String.valueOf(width)).append("\n");
