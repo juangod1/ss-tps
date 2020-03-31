@@ -124,7 +124,6 @@ public class State {
         for (Particle particle : particles) {
             avgKineticE += particle.getMass() * (Math.pow(particle.getVx(), 2) + Math.pow(particle.getVy(), 2)) / 2;
         }
-        System.out.println(avgKineticE);
         return avgKineticE * 2 / (3 * 1.380648e-23);
     }
 
