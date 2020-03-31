@@ -16,10 +16,9 @@ public class State {
     private double height;
     private double partitionOpeningSize;
     private double fpLeft = 1;
-    private Wall wallForDp;
     private double dp = 0;
-    private double avgKineticE;
     private CollisionManager collisionManager;
+    private double totalWallsLength = 0;
 
     State(List<Particle> particles, double width, double height, double partitionOpeningSize) {
         this.time = 0;
@@ -35,15 +34,20 @@ public class State {
     double getFp() { return fpLeft; }
 
     private void generateWalls() {
-        wallForDp = new Wall(new Point2D.Double(0,0), new Point2D.Double(0, height),true);
-        walls.add(wallForDp);
+        walls.add(new Wall(new Point2D.Double(0,0), new Point2D.Double(0, height),true));
+        totalWallsLength += height;
         walls.add(new Wall(new Point2D.Double(0,0), new Point2D.Double(width,0),false));
+        totalWallsLength += width;
         walls.add(new Wall(new Point2D.Double(width,0), new Point2D.Double(width, height),true));
+        totalWallsLength += height;
         walls.add(new Wall(new Point2D.Double(0, height), new Point2D.Double(width, height),false));
+        totalWallsLength += width;
         double partitionOpeningStart = height/2 - partitionOpeningSize /2;
         double partitionOpeningEnd = height/2 + partitionOpeningSize /2;
         walls.add(new Wall(new Point2D.Double(width/2,0), new Point2D.Double(width/2, partitionOpeningStart),true));
+        totalWallsLength += partitionOpeningStart;
         walls.add(new Wall(new Point2D.Double(width/2,partitionOpeningEnd), new Point2D.Double(width/2, height),true));
+        totalWallsLength += height - partitionOpeningEnd;
     }
 
     void calculateNextCollision() {
@@ -106,7 +110,7 @@ public class State {
         f.append(this.toString());
         f.close();
 
-        double pressure = dp / (time * (wallForDp.end.getY()));
+        double pressure = dp / (time * totalWallsLength);
         if (time == 0)
             pressure = 0;
         double temp = calculateTemp();
@@ -116,6 +120,7 @@ public class State {
     }
 
     private double calculateTemp() {
+        double avgKineticE = 0;
         for (Particle particle : particles) {
             avgKineticE += particle.getMass() * Math.pow(Math.sqrt(Math.pow(particle.getVx(), 2) + Math.pow(particle.getVy(), 2)), 2);
         }
@@ -210,15 +215,11 @@ public class State {
                     double vx_after, vy_after;
                     if (curr.isVertical) {
                         vx_after = -1 * p1.getVx();
-                        if (curr == wallForDp) {
-                            dp += p1.getMass() * Math.abs(p1.getVx() - vx_after);
-                        }
+                        dp += p1.getMass() * Math.abs(p1.getVx() - vx_after);
                         p1.setVx(vx_after);
                     } else {
                         vy_after = -1 * p1.getVy();
-                        if (curr == wallForDp) {
-                            dp += p1.getMass() * Math.abs(p1.getVy() - vy_after);
-                        }
+                        dp += p1.getMass() * Math.abs(p1.getVy() - vy_after);
                         p1.setVy(vy_after);
                     }
                 }
