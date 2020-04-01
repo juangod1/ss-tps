@@ -16,6 +16,7 @@ public class Generator {
     private double width;
     private double height;
     private double partitionOpening;
+    private double v;
     private int amount;
     private String path;
 
@@ -36,6 +37,8 @@ public class Generator {
     public void setPartitionOpening(double partitionOpening) {
         this.partitionOpening = partitionOpening;
     }
+
+    public void setV(double v) { this.v = v; }
 
     private void setAmount(int amount) {
         this.amount = amount;
@@ -78,8 +81,8 @@ public class Generator {
             while (added < N) {
                 randomX = randomGenerator.nextDouble();
                 randomY = randomGenerator.nextDouble();
-                randomVx = randomGenerator.nextDouble() * 0.01 * (randomGenerator.nextBoolean()? 1 : -1);
-                calculatedVy = Math.sqrt(Math.pow(0.01,2)-Math.pow(randomVx,2)) * (randomGenerator.nextBoolean()? 1 : -1);
+                randomVx = randomGenerator.nextDouble() * v * (randomGenerator.nextBoolean()? 1 : -1);
+                calculatedVy = Math.sqrt(Math.pow(v,2)-Math.pow(randomVx,2)) * (randomGenerator.nextBoolean()? 1 : -1);
                 curr = new Particle(0.0015, randomVx, calculatedVy, new Point2D.Double(randomX * 0.12, randomY * 0.09), 0);
                 if (notViolates(curr, particlesGenerated)) {
                     particlesGenerated.add(curr);
@@ -105,7 +108,7 @@ public class Generator {
         Generator generator = new Generator();
 
         try {
-            if (argsList.size() != 12)
+            if (argsList.size() != 14)
                 throw new IllegalArgumentException();
             else {
                 int particlesParameter = argsList.indexOf("-n");
@@ -124,6 +127,10 @@ public class Generator {
                 if (openingParameter != -1)
                     generator.setPartitionOpening(Double.parseDouble(argsList.get(openingParameter + 1)));
 
+                int velocityParameter = argsList.indexOf("-v");
+                if (velocityParameter != -1)
+                    generator.setV(Double.parseDouble(argsList.get(velocityParameter + 1)));
+
                 int amountParameter = argsList.indexOf("-a");
                 if (amountParameter != -1)
                     generator.setAmount(Integer.parseInt(argsList.get(amountParameter + 1)));
@@ -139,6 +146,7 @@ public class Generator {
                     "\t-w W\n\t\t determines board width\n" +
                     "\t-h H\n\t\t determines board height\n" +
                     "\t-o O\n\t\t determines partition opening size\n" +
+                    "\t-v V\n\t\t determines initial particles velocity\n" +
                     "\t-a amount\n\t\t determines number of inputs to generate\n" +
                     "\t-p path\n\t\t determines path were to generate inputs");
             return;
