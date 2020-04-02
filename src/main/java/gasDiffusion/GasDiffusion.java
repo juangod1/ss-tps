@@ -75,7 +75,7 @@ public class GasDiffusion {
     public static void main(String[] args) throws IOException {
         ArrayList<String> argsList = new ArrayList<>(Arrays.asList(args));
         int amount;
-        String staticFile, dynamicFile, outputFile, tableFile, pvFile;
+        String staticFile, dynamicFile, outputFile, tableFile;
 
         try {
             if (argsList.size() != 10)
