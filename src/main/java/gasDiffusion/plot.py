@@ -73,6 +73,6 @@ b = [statistics.mean(values[0.01]), statistics.mean(values[0.05]), statistics.me
 c = [statistics.stdev(values[0.01]), statistics.stdev(values[0.05]), statistics.stdev(values[0.1]), statistics.stdev(values[0.15]), statistics.stdev(values[0.2]), statistics.stdev(values[0.25])]
 plt.errorbar(a,b,yerr=c, mfc='red', fmt='-o')
 plt.xlabel('Temperatura [K]')
-plt.ylabel('Presión [N/m^2]')
+plt.ylabel('Presión [N/m]')
 plt.grid()
 plt.show()

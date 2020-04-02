@@ -19,6 +19,7 @@ public class State {
     private double dp = 0;
     private CollisionManager collisionManager;
     private double totalWallsLength = 0;
+    private double clock = 0.1;
 
     State(List<Particle> particles, double width, double height, double partitionOpeningSize) {
         this.time = 0;
@@ -29,6 +30,14 @@ public class State {
         this.partitionOpeningSize = partitionOpeningSize;
         generateWalls();
         collisionManager = new CollisionManager(particles, walls, 0);
+    }
+
+    boolean isTime() {
+        if (time > clock) {
+            clock += 0.1;
+            return true;
+        }
+        return false;
     }
 
     double getFp() { return fpLeft; }
@@ -163,10 +172,18 @@ public class State {
             state.append(" ").append(1).append(" ").append(0).append(" ").append(0).append("\n");
         }
 
+        double max = 0, min = 110;
         for (Particle particle : particles) {
+            double velocity = Math.sqrt(Math.pow(particle.getVx(), 2) + Math.pow(particle.getVy(), 2));
+            if (velocity > max) max = velocity;
+            if (velocity < min) min = velocity;
+        }
+
+        for (Particle particle : particles) {
+            double velocity = Math.sqrt(Math.pow(particle.getVx(), 2) + Math.pow(particle.getVy(), 2));
             state.append(particle.getPosition().getX()).append(" ").append(particle.getPosition().getY()).append(" ");
             state.append(particle.getVx()).append(" ").append(particle.getVy()).append(" ").append(particle.getRadius());
-            state.append(" ").append(1).append(" ").append(1).append(" ").append(1).append("\n");
+            state.append(" ").append(0).append(" ").append(0).append(" ").append(String.valueOf(1-(velocity-min)/((max-min) == 0? 1:(max-min)))).append("\n");
         }
 
         return state.toString();
