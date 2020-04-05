@@ -9,6 +9,8 @@ public class Particle {
     private double vx;
     private double vy;
     private double mass;
+    Point2D.Double initialPosition;
+    boolean isTestigo = false;
 
     public Particle(double radius, double vx, double vy, Point2D.Double position, int id){
         this.position = position;

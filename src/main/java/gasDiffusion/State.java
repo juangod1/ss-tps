@@ -20,6 +20,7 @@ public class State {
     private CollisionManager collisionManager;
     private double totalWallsLength = 0;
     private double clock = 0.1;
+    boolean stop = false;
 
     State(List<Particle> particles, double width, double height, double partitionOpeningSize) {
         this.time = 0;
@@ -34,7 +35,7 @@ public class State {
 
     boolean isTime() {
         if (time > clock) {
-            clock += 0.1;
+            clock += 0.02;
             return true;
         }
         return false;
@@ -114,17 +115,39 @@ public class State {
     }
 
     void writeFrameToFile(File outputFile, File tableFile) throws IOException {
-        FileWriter f = new FileWriter(outputFile, true);
+//        FileWriter f = new FileWriter(outputFile, true);
         FileWriter t = new FileWriter(tableFile, true);
-        f.append(this.toString());
-        f.close();
+//        f.append(this.toString());
+//        f.close();
 
-        double pressure = dp / (time * totalWallsLength);
-        if (time == 0)
-            pressure = 0;
-        double temp = calculateTemp();
-        t.append(String.valueOf(time)).append(", ").append(String.valueOf(fpLeft));
-        t.append(", ").append(String.valueOf(pressure)).append(", ").append(String.valueOf(temp)).append("\n");
+        List<Double> DCM = new ArrayList<>();
+
+        for (Particle particle : particles) {
+            if (particle.isTestigo) {
+                DCM.add(Math.pow(particle.getPosition().getX() - particle.initialPosition.getX(), 2) + Math.pow(particle.getPosition().getY() - particle.initialPosition.getY(), 2));
+            }
+        }
+
+        double avg = 0;
+
+        for (Double d : DCM) {
+            avg += d;
+        }
+        avg /= DCM.size();
+
+        double sd = 0;
+
+        for (Double d : DCM) {
+            sd += Math.pow(d - avg, 2);
+        }
+        sd = Math.sqrt(sd/DCM.size());
+        ;
+//        double pressure = dp / (time * totalWallsLength);
+//        if (time == 0)
+//            pressure = 0;
+//        double temp = calculateTemp();
+        t.append(String.valueOf(time)).append(", ").append(String.valueOf(avg)).append(", ").append(String.valueOf(sd)).append("\n");
+//        t.append(", ").append(String.valueOf(pressure)).append(", ").append(String.valueOf(temp)).append("\n");
         t.close();
     }
 
@@ -230,6 +253,7 @@ public class State {
                         dp += p1.getMass() * Math.abs(p1.getVy() - vy_after);
                         p1.setVy(vy_after);
                     }
+                    if (p1.isTestigo) stop = true;
                 }
             }
         }

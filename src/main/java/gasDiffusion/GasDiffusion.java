@@ -11,13 +11,13 @@ public class GasDiffusion {
 
     private static void diffuse(State state, File outputFile, File tableFile) throws IOException {
         // Delete file data if exists
-        FileWriter f = new FileWriter(outputFile);
-        f.close();
-        f = new FileWriter(tableFile);
+//        FileWriter f = new FileWriter(outputFile);
+//        f.close();
+        FileWriter f = new FileWriter(tableFile);
         f.close();
 
         int frame = 1;
-        while (state.getFp() - 0.5 > Math.ulp(state.getFp())) {
+        while (state.getFp() - 0.5 > Math.ulp(state.getFp()) && !state.stop) {
             if (state.isTime()) state.writeFrameToFile(outputFile, tableFile);
             state.calculateNextCollision();
             state.updateParticles();
@@ -62,6 +62,10 @@ public class GasDiffusion {
                 double vx = Double.parseDouble(properties[2]);
                 double vy = Double.parseDouble(properties[3]);
                 particles.get(i).setPosition(new Point2D.Double(x,y));
+                if ( 0.045 < x && x < 0.075 && 0.03 < y && y < 0.06) {
+                    particles.get(i).initialPosition = new Point2D.Double(x,y);
+                    particles.get(i).isTestigo = true;
+                }
                 particles.get(i).setVx(vx);
                 particles.get(i).setVy(vy);
             }
