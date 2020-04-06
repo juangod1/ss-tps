@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import linregress
 import statistics
+from matplotlib.ticker import FormatStrFormatter
 
 ### PLOT FP VS T - A VARIATION ###
 
@@ -100,10 +101,22 @@ import statistics
 
 ### PLOT DCM VS T ###
 
-data = pd.read_csv("/home/agusosimani/Documents/ss-tp1/src/main/java/gasDiffusion/output/DCM/table{}".format(1), names=["Time", "z", "std"], header=None)
+data = pd.read_csv("/home/juangod/ITBA/ss/ss-tp1/src/main/java/gasDiffusion/output/DCM/table{}".format(1), names=["Time", "z", "std"], header=None)
 plt.errorbar(data['Time'],data['z'],yerr=data['std'], linestyle="None", mfc='red', fmt='-o')
-C = [0.00039, 0.000395, 0.0004, 0.00040021962781296134, 0.000405, 0.00041]
+
+y_pred = 0.000269668*data['Time']
+
+# esta es la recta estimada
+plt.plot(data['Time'], y_pred)
+
+plt.ylabel("Desplazamiento cuadrático medio [m^2]")
+plt.xlabel("Tiempo [s]")
+
+
+C = [x/1000000000 for x in range(268000,271342)]
 errors = []
+
+min_error = 99999999999999999999999999
 
 error = 0
 for c in C:
@@ -111,14 +124,31 @@ for c in C:
     for i in range(len(f_y)):
         error += pow(data['z'][i] - f_y[i] ,2)
     errors.append(error)
+
+    if(error < min_error):
+        min_error = error
+        min_c = c
+
     error = 0
-print(errors)
+
+print("minimum error is: ")
+print(min_error)
+print("with minimum c: ")
+print(min_c)
+
 # slope, intercept, r_value, p_value, std_err = linregress(np.array(data['Time']), np.array(data['z']))
 # print(slope/2)
 # print(std_err)
 # y_pred = intercept + slope*data['Time']
 # plt.plot(data['Time'],y_pred, color="green", label="Fitted line")
-plt.xlabel("Tiempo [s]")
-plt.ylabel("Desplazamiento cuadrático medio [m]")
+
+# esta es la U del error
+# plt.ticklabel_format(axis="x", style="sci", scilimits=(0,0))
+# plt.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+# plt.plot(C,errors,'r,')
+# plt.xlabel("Parametro Ajustado")
+# plt.ylabel("Error")
+
+
 plt.grid()
 plt.show()
