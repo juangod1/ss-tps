@@ -101,28 +101,39 @@ from matplotlib.ticker import FormatStrFormatter
 
 ### PLOT DCM VS T ###
 
-data = pd.read_csv("/home/juangod/ITBA/ss/ss-tp1/src/main/java/gasDiffusion/output/DCM/table{}".format(1), names=["Time", "z", "std"], header=None)
-plt.errorbar(data['Time'],data['z'],yerr=data['std'], linestyle="None", mfc='red', fmt='-o')
+data = pd.read_csv("/home/agusosimani/Documents/ss-tp1/src/main/java/gasDiffusion/output/DCM/table{}".format(1), names=["Time", "z", "std"], header=None)
+size = len(data["Time"])
+new_x = data["Time"][(int)(size/2):].values
+new_y = data["z"][(int)(size/2):].values
 
-y_pred = 0.000269668*data['Time']
+first_x = new_x[0]
+first_y = new_y[0]
+
+for i in range((int)(size/2)):
+    new_x[i] = new_x[i] - first_x
+    new_y[i] = new_y[i] - first_y
+
+plt.errorbar(new_x,new_y,yerr=data['std'][(int)(size/2):], linestyle="None", mfc='red', fmt='-o')
+
+y_pred = 0.00051169*new_x
 
 # esta es la recta estimada
-plt.plot(data['Time'], y_pred)
+plt.plot(new_x, y_pred)
 
 plt.ylabel("Desplazamiento cuadrático medio [m^2]")
 plt.xlabel("Tiempo [s]")
 
 
-C = [x/1000000000 for x in range(268000,271342)]
+C = [x/1000000000 for x in range(411690,611690)]
 errors = []
 
 min_error = 99999999999999999999999999
 
 error = 0
 for c in C:
-    f_y = [x*c for x in data['Time']]
+    f_y = [x*c for x in new_x]
     for i in range(len(f_y)):
-        error += pow(data['z'][i] - f_y[i] ,2)
+        error += pow(new_y[i] - f_y[i] ,2)
     errors.append(error)
 
     if(error < min_error):
@@ -148,7 +159,6 @@ print(min_c)
 # plt.plot(C,errors,'r,')
 # plt.xlabel("Parametro Ajustado")
 # plt.ylabel("Error")
-
 
 plt.grid()
 plt.show()
