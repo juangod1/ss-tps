@@ -84,3 +84,5 @@ tp1.iml
 *.zip
 
 src/main/java/gasDiffusion/input/
+
+out

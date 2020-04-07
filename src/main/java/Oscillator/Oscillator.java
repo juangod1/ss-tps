@@ -6,19 +6,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class Oscillator {
-    double A = 1;
+    private double A = 1;
 
-    int numParticles = 1;
+    private int numParticles = 1;
 
-    double time = 0;
-    double delta_t = 0.001;
+    private double time = 0;
+    private double delta_t = 0.001;
 
-    double prev_acceleration = 0;
-    double prev_position = 1;
-    double prev_velocity = 0;
-    double prev_time = 0 - delta_t;
+    private double prev_acceleration = 0;
+    private double prev_position = 1;
 
-    Particle p = new Particle(0.015, -1*A*Force.gamma/(2*70), 0, new Point.Double(1,0), 1, 70);
+    private Particle p = new Particle(0.015, -1*A*Force.gamma/(2*70), 0, new Point.Double(1,0), 1, 70);
 
     public static void main(String[] args) throws IOException {
         FileWriter f = new FileWriter("./out", false);
@@ -28,10 +26,8 @@ public class Oscillator {
         FileWriter t = new FileWriter("./tableGearPredictorCorrector", false);
         Oscillator o = new Oscillator();
 
-        o.prev_time = o.time;
-
         while(o.time<=5){
-            t.append(o.time + ", " + o.p.getPosition().getX() + "\n");
+            t.append(String.valueOf(o.time)).append(", ").append(String.valueOf(o.p.getPosition().getX())).append("\n");
             f.append(String.valueOf(o.numParticles+5)).append("\n\n");
             f.append("0 0.2 0.1 1 0 0").append('\n');
             f.append("0 0.1 0.1 1 0 0").append('\n');
@@ -46,22 +42,20 @@ public class Oscillator {
         t.close();
     }
 
-    public void updateVelocityAndPosition(){
-        double current_velocity = this.p.getVx();
+    private void updateVelocityAndPosition(){
         double current_position = this.p.getPosition().getX();
         double current_acceleration = Force.oscillatorForce(p.getPosition().getX(), p.getVx())/p.getMass();
         //applyVerlet(this.p, current_acceleration);
         //applyBeeman(this.p, current_acceleration);
         //applyAnalytical(this.p);
         applyGearPredictorCorrector(p);
-        prev_velocity = current_velocity;
         prev_position = current_position;
         prev_acceleration = current_acceleration;
     }
 
-    Double gearR, gearR1, gearR2, gearR3, gearR4, gearR5, gearRP, gearR1P, gearR2P, gearR3P, gearR4P, gearR5P;
-    public void applyGearPredictorCorrector(Particle particle){
-        Double a0=3d/20,a1=251d/360,a2=1d,a3=11d/18,a4=1d/6,a5=1d/60;
+    private Double gearR, gearR1, gearR2, gearR3, gearR4, gearR5, gearRP, gearR1P, gearR2P, gearR3P, gearR4P, gearR5P;
+    private void applyGearPredictorCorrector(Particle particle){
+        double a0=3d/20,a1=251d/360,a2=1d,a3=11d/18,a4=1d/6,a5=1d/60;
         double r0 = 1;
 
         gearR = gearR==null? particle.getPosition().getX() :gearR;
@@ -116,8 +110,8 @@ public class Oscillator {
         particle.setPosition(new Point2D.Double(newPosition,0));
     }
 
-    public void applyAnalitical(Particle particle) {
-        double newPosition = Math.pow(Math.E, -(100*time/(2*70))) * Math.cos(Math.sqrt(Math.pow(10,4)/70 - 10000/(4*70*70))*time);
+    public void applyAnalytical(Particle particle) {
+        double newPosition = Math.pow(Math.E, -(100*time/(2*70))) * Math.cos(Math.sqrt(Math.pow(10,4)/70 - 100.0/196.0)*time);
         particle.setPosition(new Point2D.Double(newPosition, 0));
     }
 }
