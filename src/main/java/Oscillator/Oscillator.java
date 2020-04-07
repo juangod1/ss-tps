@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class Oscillator {
-    double A = 10;
+    double A = 1;
 
     int numParticles = 1;
 
@@ -18,7 +18,7 @@ public class Oscillator {
     double prev_velocity = 0;
     double prev_time = 0 - delta_t;
 
-    Particle p = new Particle(0.015, -1*A*Force.gamma/2, 0, new Point.Double(1,0), 1);
+    Particle p = new Particle(0.015, -1*A*Force.gamma/(2*70), 0, new Point.Double(1,0), 1, 70);
 
     public static void main(String[] args) throws IOException {
         FileWriter f = new FileWriter("./out", false);

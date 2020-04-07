@@ -10,12 +10,13 @@ public class Particle {
     private double vy;
     private double mass=1;
 
-    public Particle(double radius, double vx, double vy, Point2D.Double position, int id){
+    public Particle(double radius, double vx, double vy, Point2D.Double position, int id, double mass){
         this.position = position;
         this.radius = radius;
         this.id = id;
         this.vx = vx;
         this.vy = vy;
+        this.mass = mass;
     }
 
     public Particle(int id, double radius, double mass) {
