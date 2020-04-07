@@ -18,6 +18,13 @@ public class Oscillator {
 
     private Particle p = new Particle(0.015, -1*A*Force.gamma/(2*70), 0, new Point.Double(1,0), 1, 70);
 
+    private Double gearR = null;
+    private Double gearR1 = null;
+    private Double gearR2 = null;
+    private Double gearR3 = null;
+    private Double gearR4 = null;
+    private Double gearR5 = null;
+
     public static void main(String[] args) throws IOException {
         FileWriter f = new FileWriter("./out", false);
 //        FileWriter t = new FileWriter("./tableVerlet", false);
@@ -53,26 +60,25 @@ public class Oscillator {
         prev_acceleration = current_acceleration;
     }
 
-    private Double gearR, gearR1, gearR2, gearR3, gearR4, gearR5, gearRP, gearR1P, gearR2P, gearR3P, gearR4P, gearR5P;
     private void applyGearPredictorCorrector(Particle particle){
-        double a0=3d/20,a1=251d/360,a2=1d,a3=11d/18,a4=1d/6,a5=1d/60;
+        double a0=3d/16,a1=251d/360,a2=1d,a3=11d/18,a4=1d/6,a5=1d/60;
         double r0 = 1;
 
         gearR = gearR==null? particle.getPosition().getX() :gearR;
         gearR1 = gearR1==null? particle.getVx() :gearR1;
         gearR2 = gearR2==null? -1*Force.k*(particle.getPosition().getX()-r0)/particle.getMass() :gearR2;
         gearR3 = gearR3==null? -1*Force.k*gearR1/particle.getMass() :gearR3;
-        gearR4 = gearR4==null? -1*Force.k*gearR2/particle.getMass() :gearR4;
+        gearR4 = gearR4==null? Math.pow(Force.k/particle.getMass(), 2)*(particle.getPosition().getX()-r0) :gearR4;
         gearR5 = gearR5==null? -1*Force.k*gearR3/particle.getMass() :gearR5;
 
-        gearRP = gearR + gearR1*delta_t + gearR2*Math.pow(delta_t,2)/2 + gearR3*Math.pow(delta_t,3)/6 + gearR4*Math.pow(delta_t,4)/24 + gearR5*Math.pow(delta_t,5)/120;
-        gearR1P = gearR1 + gearR2*delta_t + gearR3*Math.pow(delta_t,2)/2 + gearR4*Math.pow(delta_t,3)/6 + gearR5*Math.pow(delta_t,4)/24;
-        gearR2P = gearR2 + gearR3*delta_t + gearR4*Math.pow(delta_t,2)/2 + gearR5*Math.pow(delta_t,3)/6;
-        gearR3P = gearR3 + gearR4*delta_t + gearR5*Math.pow(delta_t,2)/2;
-        gearR4P = gearR4 + gearR5*delta_t;
-        gearR5P = gearR5;
+        double gearRP = gearR + gearR1 * delta_t + gearR2 * Math.pow(delta_t, 2) / 2 + gearR3 * Math.pow(delta_t, 3) / 6 + gearR4 * Math.pow(delta_t, 4) / 24 + gearR5 * Math.pow(delta_t, 5) / 120;
+        double gearR1P = gearR1 + gearR2 * delta_t + gearR3 * Math.pow(delta_t, 2) / 2 + gearR4 * Math.pow(delta_t, 3) / 6 + gearR5 * Math.pow(delta_t, 4) / 24;
+        double gearR2P = gearR2 + gearR3 * delta_t + gearR4 * Math.pow(delta_t, 2) / 2 + gearR5 * Math.pow(delta_t, 3) / 6;
+        double gearR3P = gearR3 + gearR4 * delta_t + gearR5 * Math.pow(delta_t, 2) / 2;
+        double gearR4P = gearR4 + gearR5 * delta_t;
+        double gearR5P = gearR5;
 
-        double next_a = Force.oscillatorForce(gearRP,gearR1P);
+        double next_a = Force.oscillatorForce(gearRP, gearR1P)/particle.getMass();
         double dA = next_a - gearR2P;
         double dR2 = Math.pow(delta_t,2)*dA/2;
 
