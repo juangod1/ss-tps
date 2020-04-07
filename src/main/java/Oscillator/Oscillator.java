@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class Oscillator {
-    double A = 100;
+    double A = 10;
 
     int numParticles = 1;
 
@@ -28,8 +28,13 @@ public class Oscillator {
 
         int i = 0;
         while(i++<10000){
-            f.append(String.valueOf(o.numParticles)).append("\n\n");
-            f.append(String.valueOf(o.p.getPosition().getX())).append('\n');
+            f.append(String.valueOf(o.numParticles+5)).append("\n\n");
+            f.append("0 0.2 0.1 1 0 0").append('\n');
+            f.append("0 0.1 0.1 1 0 0").append('\n');
+            f.append("0 0 0.1 1 0 0").append('\n');
+            f.append("0 -0.1 0.1 1 0 0").append('\n');
+            f.append("0 -0.2 0.1 1 0 0").append('\n');
+            f.append(String.valueOf(o.p.getPosition().getX())).append(" 0 0.1 1 1 1").append('\n');
             o.updateVelocityAndPosition();
             o.time += o.delta_t;
         }
