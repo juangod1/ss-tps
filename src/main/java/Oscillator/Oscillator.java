@@ -8,10 +8,10 @@ public class Oscillator {
 
 
     double time = 0;
-    double delta_t = 0.01;
+    double delta_t = 0.001;
 
     double prev_position = 1;
-    double prev_velocity = -1*A*Force.gamma/2;
+    double prev_velocity = 0;
     double prev_time = 0 - delta_t;
 
     Particle p = new Particle(0.015, -1*A*Force.gamma/2, 0, new Point.Double(1,0), 1);
@@ -20,22 +20,24 @@ public class Oscillator {
         Oscillator o = new Oscillator();
 
         o.prev_time = o.time;
-        o.time += o.delta_t;
 
         while(true){
             o.updateVelocityAndPosition();
+            o.time += o.delta_t;
         }
     }
 
     public void updateVelocityAndPosition(){
-        prev_velocity = this.p.getVx();
-        prev_position = this.p.getPosition().getX();
+        double aux_velocity = this.p.getVx();
+        double aux_position = this.p.getPosition().getX();
         applyVerlet(this.p);
+        prev_velocity = aux_velocity;
+        prev_position = aux_position;
     }
 
     public void applyVerlet(Particle particle){
         double newPosition = 2*particle.getPosition().getX() - prev_position + Math.pow(delta_t, 2)*Force.oscillatorForce(particle.getPosition().getX(), particle.getVx())/particle.getMass();
-        double newVelocity = 2*particle.getVx() - prev_velocity + Math.pow(delta_t, 2)*Force.oscillatorForce(particle.getPosition().getX(), particle.getVx())/particle.getMass();
+        double newVelocity = (newPosition-prev_position)/(2*delta_t);
         particle.setPosition(new Point2D.Double(newPosition, 0));
         particle.setVx(newVelocity);
     }
