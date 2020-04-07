@@ -22,12 +22,16 @@ public class Oscillator {
 
     public static void main(String[] args) throws IOException {
         FileWriter f = new FileWriter("./out", false);
+//        FileWriter t = new FileWriter("./tableVerlet", false);
+//        FileWriter t = new FileWriter("./tableBeeman", false);
+//        FileWriter t = new FileWriter("./tableAnalytical", false);
+        FileWriter t = new FileWriter("./tableGearPredictorCorrector", false);
         Oscillator o = new Oscillator();
 
         o.prev_time = o.time;
 
-        int i = 0;
-        while(i++<10000){
+        while(o.time<=5){
+            t.append(o.time + ", " + o.p.getPosition().getX() + "\n");
             f.append(String.valueOf(o.numParticles+5)).append("\n\n");
             f.append("0 0.2 0.1 1 0 0").append('\n');
             f.append("0 0.1 0.1 1 0 0").append('\n');
@@ -39,6 +43,7 @@ public class Oscillator {
             o.time += o.delta_t;
         }
         f.close();
+        t.close();
     }
 
     public void updateVelocityAndPosition(){
@@ -47,6 +52,7 @@ public class Oscillator {
         double current_acceleration = Force.oscillatorForce(p.getPosition().getX(), p.getVx())/p.getMass();
         //applyVerlet(this.p, current_acceleration);
         //applyBeeman(this.p, current_acceleration);
+        //applyAnalytical(this.p);
         applyGearPredictorCorrector(p);
         prev_velocity = current_velocity;
         prev_position = current_position;
@@ -108,5 +114,10 @@ public class Oscillator {
         double corrected_v = particle.getVx() + (1d/3)*next_a*delta_t + (5d/6)*current_acceleration*delta_t - (1d/6)*prev_acceleration*delta_t;
         particle.setVx(corrected_v);
         particle.setPosition(new Point2D.Double(newPosition,0));
+    }
+
+    public void applyAnalitical(Particle particle) {
+        double newPosition = Math.pow(Math.E, -(100*time/(2*70))) * Math.cos(Math.sqrt(Math.pow(10,4)/70 - 10000/(4*70*70))*time);
+        particle.setPosition(new Point2D.Double(newPosition, 0));
     }
 }
