@@ -13,10 +13,9 @@ public class Oscillator {
     private double time = 0;
     private double delta_t = 0.001;
 
-    private double prev_acceleration = 0;
-    private double prev_position = 1;
-
     private Particle p = new Particle(0.015, -1*A*Force.gamma/(2*70), 0, new Point.Double(1,0), 1, 70);
+    private double prev_acceleration = 0;
+    private double prev_position = p.getPosition().getX() - delta_t*p.getVx() + Math.pow(delta_t,2)*Force.oscillatorForce(p.getPosition().getX(),p.getVx())/(p.getMass()*2);
 
     private Double gearR = null;
     private Double gearR1 = null;
