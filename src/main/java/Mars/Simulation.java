@@ -48,8 +48,8 @@ public class Simulation {
         s.initializeShip();
 
         while(!s.checkIfReachedMars()){
-            // if( me pase de marte como habiamos hablado )
-            //      return;
+            if(s.checkIfMissionFailed())
+                return;
 
             s.applyBeeman(s.earth);
             s.applyBeeman(s.mars);
@@ -69,6 +69,11 @@ public class Simulation {
 
         shipVx = (LAUNCH_SPEED+ORBITAL_EARTH_SPEED)*Math.cos(Math.PI/2 - angle)*(earth.y>=0?-1:1);
         shipVy = (LAUNCH_SPEED+ORBITAL_EARTH_SPEED)*Math.sin(Math.PI/2 - angle)*(earth.x>=0?-1:1);
+    }
+
+    private boolean checkIfMissionFailed(){
+        // aca va lo que habiamos hablado... de ver si me pase de la orbita
+        return false;
     }
 
     private void writeToFile(){
