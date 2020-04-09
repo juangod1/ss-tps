@@ -1,11 +1,14 @@
 package Mars;
 
 public class CelestialBody {
-    double theta,vt,radius,mass,distance;
+    double vx,vy,x,y,radius,mass;
 
-    public CelestialBody(double radius, double mass, double distance){
+    public CelestialBody(double vx0, double vy0, double x0, double y0, double radius, double mass){
         this.radius = radius;
         this.mass = mass;
-        this.distance = distance;
+        vx=vx0;
+        vy=vy0;
+        x=x0;
+        y=y0;
     }
 }

@@ -1,76 +1,89 @@
 package Mars;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import com.sun.javafx.PlatformUtil;
 
 public class Simulation {
-    // The units are km kg and radians
+    // The units are km kg seconds and radians
 
-    CelestialBody sun = new CelestialBody(696340, 1.989*Math.pow(10,30), 0);
-    CelestialBody earth = new CelestialBody(6371, 5.972*Math.pow(10,24), 149597870);
-    CelestialBody mars = new CelestialBody(3389.5, 6.39*Math.pow(10,23), 229000000);
+    CelestialBody sun = new CelestialBody(0,0,0,0,696340, 1.989*Math.pow(10,30));
+    CelestialBody earth = new CelestialBody(7.917904169940719, -2.867871052093815*Math.pow(10,1), -1.436232264182898*Math.pow(10,8), -4.222184246295860*Math.pow(10,7),6371,597219*Math.pow(10,19));
+    CelestialBody mars = new CelestialBody(2.499118636997282*Math.pow(10,1), -6.412328574419259*Math.pow(10,-1),-2.471238977495339*Math.pow(10,7), -2.183737229441134*Math.pow(10,8),3389.5, 641693*Math.pow(10,18));
 
-    double shipX, shipY, shipVx, shipVy;
+    double shipX=0, shipY=0, shipVx=0, shipVy=0;
+    int days=0;
 
-    public static void main(String[] args) throws IOException {
-        simulateWithStartingDay(0);
+    final double LAUNCH_DISTANCE = 1500;
+    final double LAUNCH_SPEED = 8;
+    final double ORBITAL_EARTH_SPEED = 7.12;
+
+    public static void main(String[] args) {
+        simulatePlanets(3652);
+
+        // aca la idea es simular la salida de la nave en todos los dias del archivo y guardamos el tiempo que tardo
+        for(int i=0;i<3652;i++){
+            simulateShip(0);
+        }
     }
 
-    private static void simulateWithStartingDay(int startingDay) throws IOException {
+    // La idea es primero escribir tipo 10 anios de trayectoria de la tierra y marte
+    private static void simulatePlanets(int days) {
         Simulation s = new Simulation();
 
-        BufferedReader earthCSV = new BufferedReader(new FileReader("./src/main/java/Mars/earth.csv"));
-        BufferedReader marsCSV = new BufferedReader(new FileReader("./src/main/java/Mars/mars.csv"));
-        int days = 3652;
-        days-=startingDay;
-
-        String earthRow="", marsRow;
-        if(startingDay==0){
-            earthRow = earthCSV.readLine();
-            earthCSV = new BufferedReader(new FileReader("./src/main/java/Mars/earth.csv"));
-        } else {
-            while(startingDay-->0) {
-                earthRow = earthCSV.readLine();
-                marsRow = marsCSV.readLine();
-            }
+        while(days-->0){
+            s.applyBeeman(s.earth);
+            s.applyBeeman(s.mars);
+            s.writeToFile();
         }
-
-        s.initializeShip(earthRow.split(" "));
-
-        while (days-->0) {
-            earthRow = earthCSV.readLine();
-            marsRow = marsCSV.readLine();
-
-            String[] earthData = earthRow.split(" ");
-            String[] marsData = marsRow.split(" ");
-
-            s.earth.theta = Helper.RAtoTheta(Double.parseDouble(earthData[2]),Double.parseDouble(earthData[3]),Double.parseDouble(earthData[4]));
-            s.mars.theta = Helper.RAtoTheta(Double.parseDouble(marsData[2]),Double.parseDouble(marsData[3]),Double.parseDouble(marsData[4]));
-
-            s.updateShipPosition();
-
-            if(s.checkIfReachedMars()){
-                System.out.println("Reached mars on:");
-                System.out.println(earthData[0]);
-            }
-        }
-
-        earthCSV.close();
-        marsCSV.close();
     }
 
-    private void initializeShip(String[] earthData){
+    private static void simulateShip(int departureDay){
+        Simulation s = new Simulation();
+        s.days += departureDay;
+
+        while(departureDay-->0){
+            s.applyBeeman(s.earth);
+            s.applyBeeman(s.mars);
+        }
+
+        s.initializeShip();
+
+        while(!s.checkIfReachedMars()){
+            // if( me pase de marte como habiamos hablado )
+            //      return;
+
+            s.applyBeeman(s.earth);
+            s.applyBeeman(s.mars);
+            s.applyBeemanToShip();
+            s.days+=1;
+        }
+
+        System.out.print("Reached mars on day: ");
+        System.out.print(s.days);
+    }
+
+    private void initializeShip(){
+        double angle = Math.atan(earth.y/earth.x);
+
+        shipX = earth.x + LAUNCH_DISTANCE*Math.cos(angle);
+        shipY = earth.y + LAUNCH_DISTANCE*Math.sin(angle);
+
+        shipVx = (LAUNCH_SPEED+ORBITAL_EARTH_SPEED)*Math.cos(Math.PI/2 - angle)*(earth.y>=0?-1:1);
+        shipVy = (LAUNCH_SPEED+ORBITAL_EARTH_SPEED)*Math.sin(Math.PI/2 - angle)*(earth.x>=0?-1:1);
+    }
+
+    private void writeToFile(){
 
     }
 
-    private void updateShipPosition(){
+    private void applyBeeman(CelestialBody body){
+
+    }
+
+    private void applyBeemanToShip(){
 
     }
 
     private boolean checkIfReachedMars(){
-
-
         return false;
     }
 }
