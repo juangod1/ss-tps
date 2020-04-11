@@ -51,8 +51,8 @@ public class Simulation {
         ship.x = earth.x + (earth.radius + LAUNCH_DISTANCE) * Math.cos(angle);
         ship.y = earth.y + (earth.radius + LAUNCH_DISTANCE) * Math.sin(angle);
 
-        ship.vx = (LAUNCH_SPEED + ORBITAL_EARTH_SPEED) * Math.cos(Math.PI / 2 - angle) * Math.signum(earth.vx);
-        ship.vy = (LAUNCH_SPEED + ORBITAL_EARTH_SPEED) * Math.sin(Math.PI / 2 - angle) * Math.signum(earth.vy);
+        ship.vx = (LAUNCH_SPEED + ORBITAL_EARTH_SPEED) * Math.abs(Math.cos(Math.PI / 2 - angle)) * Math.signum(earth.vx);
+        ship.vy = (LAUNCH_SPEED + ORBITAL_EARTH_SPEED) * Math.abs(Math.sin(Math.PI / 2 - angle)) * Math.signum(earth.vy);
     }
 
     private void initializeForce(CelestialBody body) {
