@@ -14,9 +14,9 @@ public class Simulation {
     private int days;
     private int delta_t = 86400; //seconds in a day
 
-    private final double LAUNCH_DISTANCE = 1500;
-    private final double LAUNCH_SPEED = 8;
-    private final double ORBITAL_EARTH_SPEED = 7.12;
+    private final double LAUNCH_DISTANCE = 1500 * 1000;
+    private final double LAUNCH_SPEED = 8 * 1000;
+    private final double ORBITAL_EARTH_SPEED = 7.12 * 1000;
     private final double G = 6.693 * Math.pow(10, -11);
 
     public static void main(String[] args) throws IOException {
@@ -32,20 +32,20 @@ public class Simulation {
     private void initialize() {
         days = 0;
 
-        sun = new CelestialBody(0,0,0,0,696340, 19891*Math.pow(10,26));
-        earth = new CelestialBody(7.917904169940719, -2.867871052093815*Math.pow(10,1), -1.436232264182898*Math.pow(10,8), -4.222184246295860*Math.pow(10,7),6371,597219*Math.pow(10,19));
-        mars = new CelestialBody(2.499118636997282*Math.pow(10,1), -6.412328574419259*Math.pow(10,-1),-2.471238977495339*Math.pow(10,7), -2.183737229441134*Math.pow(10,8),3389.5, 641693*Math.pow(10,18));
-        ship = new CelestialBody(0, 0, 0, 0, 1000,2*Math.pow(10,5));
+        sun = new CelestialBody(0,0,0,0,696340 * 1000, 19891*Math.pow(10,26));
+        earth = new CelestialBody(7.917904169940719 * 1000, -2.867871052093815*Math.pow(10,1) * 1000, -1.436232264182898*Math.pow(10,8) * 1000, -4.222184246295860*Math.pow(10,7) * 1000,6371 * 1000,597219*Math.pow(10,19));
+        mars = new CelestialBody(2.499118636997282*Math.pow(10,1) * 1000, -6.412328574419259*Math.pow(10,-1) * 1000,-2.471238977495339*Math.pow(10,7) * 1000, -2.183737229441134*Math.pow(10,8) * 1000,3389.5 * 1000, 641693*Math.pow(10,18));
+        ship = new CelestialBody(0, 0, 0, 0, 1000 * 1000,2*Math.pow(10,5));
 
         initializeShip();
 
-        initializeForce(sun);
+//        initializeForce(sun);
         initializeForce(earth);
         initializeForce(mars);
         initializeForce(ship);
     }
 
-    private void initializeShip(){
+    private void initializeShip() {
         double angle = Math.atan2(earth.y, earth.x);
 
         ship.x = earth.x + (earth.radius + LAUNCH_DISTANCE) * Math.cos(angle);
@@ -131,7 +131,7 @@ public class Simulation {
         days = departureDay;
 
         while (departureDay-->0) {
-            applyBeeman(sun);
+//            applyBeeman(sun);
             applyBeeman(earth);
             applyBeeman(mars);
         }
@@ -141,7 +141,7 @@ public class Simulation {
                 return;
 
             writeToFile(f);
-            applyBeeman(sun);
+//            applyBeeman(sun);
             applyBeeman(earth);
             applyBeeman(mars);
             applyBeeman(ship);
@@ -154,17 +154,17 @@ public class Simulation {
         System.out.print(days);
     }
 
-    private boolean checkIfMissionFailed(){
+    private boolean checkIfMissionFailed() {
         // aca va lo que habiamos hablado... de ver si me pase de la orbita
         return false;
     }
 
     private void writeToFile(FileWriter f) throws IOException {
         f.append(String.valueOf(4)).append("\n\n");
-        f.append(sun.x/1000000 + " " + sun.y/1000000 + " " + sun.radius/10000 + " 1 1 0\n");
-        f.append(earth.x/1000000 + " " + earth.y/1000000 + " " + earth.radius/1000 + " 0 0 1\n");
-        f.append(mars.x/1000000 + " " + mars.y/1000000 + " " + mars.radius/1000 + " 1 0 0\n");
-        f.append(ship.x/1000000 + " " + ship.y/1000000 + " " + ship.radius/1000 + " 0 0 0\n");
+        f.append(String.valueOf(sun.x / 1000000000)).append(" ").append(String.valueOf(sun.y / 1000000000)).append(" ").append(String.valueOf(sun.radius / 10000000)).append(" 1 1 0\n");
+        f.append(String.valueOf(earth.x / 1000000000)).append(" ").append(String.valueOf(earth.y / 1000000000)).append(" ").append(String.valueOf(earth.radius / 1000000)).append(" 0 0 1\n");
+        f.append(String.valueOf(mars.x / 1000000000)).append(" ").append(String.valueOf(mars.y / 1000000000)).append(" ").append(String.valueOf(mars.radius / 1000000)).append(" 1 0 0\n");
+        f.append(String.valueOf(ship.x / 1000000000)).append(" ").append(String.valueOf(ship.y / 1000000000)).append(" ").append(String.valueOf(ship.radius / 1000000)).append(" 0 0 0\n");
     }
 
     private boolean checkIfReachedMars(){
