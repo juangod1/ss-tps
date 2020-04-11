@@ -32,7 +32,7 @@ public class Simulation {
     private void initialize() {
         days = 0;
 
-        sun = new CelestialBody(0,0,0,0,696340, 1.989*Math.pow(10,30));
+        sun = new CelestialBody(0,0,0,0,696340, 19891*Math.pow(10,26));
         earth = new CelestialBody(7.917904169940719, -2.867871052093815*Math.pow(10,1), -1.436232264182898*Math.pow(10,8), -4.222184246295860*Math.pow(10,7),6371,597219*Math.pow(10,19));
         mars = new CelestialBody(2.499118636997282*Math.pow(10,1), -6.412328574419259*Math.pow(10,-1),-2.471238977495339*Math.pow(10,7), -2.183737229441134*Math.pow(10,8),3389.5, 641693*Math.pow(10,18));
         ship = new CelestialBody(0, 0, 0, 0, 1000,2*Math.pow(10,5));
@@ -69,7 +69,7 @@ public class Simulation {
         // SUN
         if (body != sun) {
             double distance = Math.sqrt(Math.pow(sun.x - body.x, 2) + Math.pow(sun.y - body.y, 2));
-            double force = G * sun.mass * body.mass / distance;
+            double force = G * sun.mass * body.mass / Math.pow(distance, 2);
             double angle = Math.atan2(Math.abs(sun.x - body.x), Math.abs(sun.y - body.y));
             forceX += force * Math.sin(angle) * ((body.x > sun.x) ? -1 : 1);
             forceY += force * Math.cos(angle) * ((body.y > sun.y) ? -1 : 1);
@@ -78,7 +78,7 @@ public class Simulation {
         // EARTH
         if (body != earth) {
             double distance = Math.sqrt(Math.pow(earth.x - body.x, 2) + Math.pow(earth.y - body.y, 2));
-            double force = G * earth.mass * body.mass / distance;
+            double force = G * earth.mass * body.mass / Math.pow(distance, 2);
             double angle = Math.atan2(Math.abs(earth.x - body.x), Math.abs(earth.y - body.y));
             forceX += force * Math.sin(angle) * ((body.x > earth.x) ? -1 : 1);
             forceY += force * Math.cos(angle) * ((body.y > earth.y) ? -1 : 1);
@@ -87,7 +87,7 @@ public class Simulation {
         // MARS
         if (body != mars) {
             double distance = Math.sqrt(Math.pow(mars.x - body.x, 2) + Math.pow(mars.y - body.y, 2));
-            double force = G * mars.mass * body.mass / distance;
+            double force = G * mars.mass * body.mass / Math.pow(distance, 2);
             double angle = Math.atan2(Math.abs(mars.x - body.x), Math.abs(mars.y - body.y));
             forceX += force * Math.sin(angle) * ((body.x > mars.x) ? -1 : 1);
             forceY += force * Math.cos(angle) * ((body.y > mars.y) ? -1 : 1);
@@ -96,7 +96,7 @@ public class Simulation {
         // SHIP
         if (body != ship) {
             double distance = Math.sqrt(Math.pow(ship.x - body.x, 2) + Math.pow(ship.y - body.y, 2));
-            double force = G * ship.mass * body.mass / distance;
+            double force = G * ship.mass * body.mass / Math.pow(distance, 2);
             double angle = Math.atan2(Math.abs(ship.x - body.x), Math.abs(ship.y - body.y));
             forceX += force * Math.sin(angle) * ((body.x > ship.x) ? -1 : 1);
             forceY += force * Math.cos(angle) * ((body.y > ship.y) ? -1 : 1);
