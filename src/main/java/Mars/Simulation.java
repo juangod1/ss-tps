@@ -141,7 +141,11 @@ public class Simulation {
             if (checkIfMissionFailed())
                 return;
 
-            writeToFile(f);
+            if(days>300000) return;
+
+            if(days%1000==0)
+                writeToFile(f);
+
 //            applyBeeman(sun);
             applyBeeman(earth);
             applyBeeman(mars);
