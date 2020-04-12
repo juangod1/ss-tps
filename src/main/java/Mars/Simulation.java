@@ -1,5 +1,7 @@
 package Mars;
 
+import com.sun.javafx.collections.NonIterableChange;
+
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -12,7 +14,7 @@ public class Simulation {
     private CelestialBody ship;
 
     private int delta;
-    private int delta_t = 500; //seconds in a day
+    private int delta_t = 500;
 
     private final double LAUNCH_DISTANCE = 1500 * 1000;
     private final double LAUNCH_SPEED = 8 * 1000;
@@ -20,7 +22,7 @@ public class Simulation {
     private final double G = 6.693 * Math.pow(10, -11);
 
     private int ONE_YEAR_IN_SECONDS = 31540000;
-    private int MISSION_DELTAS = 3*ONE_YEAR_IN_SECONDS/delta_t;
+    private int MISSION_DELTAS = 20*ONE_YEAR_IN_SECONDS/delta_t;
     private int DELTAS_PER_DAY = 24*60*60/delta_t;
 
     public static void main(String[] args) throws IOException {
@@ -147,11 +149,12 @@ public class Simulation {
                 System.out.print("Mission with departure date ");
                 System.out.print(deltas/DELTAS_PER_DAY);
                 System.out.println(" did not reach mars.");
+                System.out.println(Simulation.dmax);
                 return;
             }
 
             if(delta%1000==0)
-               // writeToFile(f);
+                //writeToFile(f);
 
 //            applyBeeman(sun);
             applyBeeman(earth);
@@ -177,8 +180,17 @@ public class Simulation {
         f.append(String.valueOf(ship.x / 1000000000)).append(" ").append(String.valueOf(ship.y / 1000000000)).append(" ").append(String.valueOf(ship.radius / 1500000)).append(" 0 0 0\n");
     }
 
+    static Double dmax=null;
+
     private boolean checkIfReachedMars(){
-        if(Math.sqrt(Math.pow(ship.x-mars.x,2)+Math.pow(ship.y-mars.y,2)) <= 1000 + mars.radius)
+        double d = Math.sqrt(Math.pow(ship.x-mars.x,2)+Math.pow(ship.y-mars.y,2));
+
+        if(Simulation.dmax==null)
+            Simulation.dmax=d;
+        else
+            Simulation.dmax = Simulation.dmax>d? d : Simulation.dmax;
+
+        if(d <= 1000 + mars.radius)
             return true;
 
         return false;
