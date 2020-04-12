@@ -25,8 +25,9 @@ public class Simulation {
     public static void main(String[] args) throws IOException {
         Simulation s = new Simulation();
 
+        int deltasPerDay = 24*60*60/s.delta_t;
         // aca la idea es simular la salida de la nave en distintos dias y guardamos el tiempo que tardo
-        for (int i=0; i<s.MISSION_DELTAS; i++) {
+        for (int i=0; i<s.MISSION_DELTAS; i+=deltasPerDay) {
             s.initialize();
             s.simulateShip(i);
         }
