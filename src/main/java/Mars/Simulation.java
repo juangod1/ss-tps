@@ -35,7 +35,7 @@ public class Simulation {
         sun = new CelestialBody(0,0,0,0,0,696340 * 1000, 19891*Math.pow(10,26));
         earth = new CelestialBody(1,7.917904169940719 * 1000, -2.867871052093815*Math.pow(10,1) * 1000, -1.436232264182898*Math.pow(10,8) * 1000, -4.222184246295860*Math.pow(10,7) * 1000,6371 * 1000,597219*Math.pow(10,19));
         mars = new CelestialBody(2,2.499118636997282*Math.pow(10,1) * 1000, -6.412328574419259*Math.pow(10,-1) * 1000,-2.471238977495339*Math.pow(10,7) * 1000, -2.183737229441134*Math.pow(10,8) * 1000,3389.5 * 1000, 641693*Math.pow(10,18));
-        ship = new CelestialBody(3,0, 0, 0, 0, 6000 * 1000,2*Math.pow(10,5));
+        ship = new CelestialBody(3,0, 0, 0, 0, 3389.5 * 1000/2,2*Math.pow(10,5));
 
         initializeShip();
 
@@ -166,10 +166,10 @@ public class Simulation {
 
     private void writeToFile(FileWriter f) throws IOException {
         f.append(String.valueOf(4)).append("\n\n");
-        f.append(String.valueOf(sun.x / 1000000000)).append(" ").append(String.valueOf(sun.y / 1000000000)).append(" ").append(String.valueOf(sun.radius / 10000000)).append(" 1 1 0\n");
-        f.append(String.valueOf(earth.x / 1000000000)).append(" ").append(String.valueOf(earth.y / 1000000000)).append(" ").append(String.valueOf(earth.radius / 1000000)).append(" 0 0 1\n");
-        f.append(String.valueOf(mars.x / 1000000000)).append(" ").append(String.valueOf(mars.y / 1000000000)).append(" ").append(String.valueOf(mars.radius / 1000000)).append(" 1 0 0\n");
-        f.append(String.valueOf(ship.x / 1000000000)).append(" ").append(String.valueOf(ship.y / 1000000000)).append(" ").append(String.valueOf(ship.radius / 1000000)).append(" 0 0 0\n");
+        f.append(String.valueOf(sun.x / 1000000000)).append(" ").append(String.valueOf(sun.y / 1000000000)).append(" ").append(String.valueOf(sun.radius / 100000000)).append(" 1 1 0\n");
+        f.append(String.valueOf(earth.x / 1000000000)).append(" ").append(String.valueOf(earth.y / 1000000000)).append(" ").append(String.valueOf(earth.radius / 1500000)).append(" 0 0 1\n");
+        f.append(String.valueOf(mars.x / 1000000000)).append(" ").append(String.valueOf(mars.y / 1000000000)).append(" ").append(String.valueOf(mars.radius / 1500000)).append(" 1 0 0\n");
+        f.append(String.valueOf(ship.x / 1000000000)).append(" ").append(String.valueOf(ship.y / 1000000000)).append(" ").append(String.valueOf(ship.radius / 1500000)).append(" 0 0 0\n");
     }
 
     private boolean checkIfReachedMars(){
