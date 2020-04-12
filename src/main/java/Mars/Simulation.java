@@ -12,7 +12,7 @@ public class Simulation {
     private CelestialBody ship;
 
     private int days;
-    private int delta_t = 86400; //seconds in a day
+    private int delta_t = 500; //seconds in a day
 
     private final double LAUNCH_DISTANCE = 1500 * 1000;
     private final double LAUNCH_SPEED = 8 * 1000;
@@ -32,10 +32,10 @@ public class Simulation {
     private void initialize() {
         days = 0;
 
-        sun = new CelestialBody(0,0,0,0,696340 * 1000, 19891*Math.pow(10,26));
-        earth = new CelestialBody(7.917904169940719 * 1000, -2.867871052093815*Math.pow(10,1) * 1000, -1.436232264182898*Math.pow(10,8) * 1000, -4.222184246295860*Math.pow(10,7) * 1000,6371 * 1000,597219*Math.pow(10,19));
-        mars = new CelestialBody(2.499118636997282*Math.pow(10,1) * 1000, -6.412328574419259*Math.pow(10,-1) * 1000,-2.471238977495339*Math.pow(10,7) * 1000, -2.183737229441134*Math.pow(10,8) * 1000,3389.5 * 1000, 641693*Math.pow(10,18));
-        ship = new CelestialBody(0, 0, 0, 0, 1000 * 1000,2*Math.pow(10,5));
+        sun = new CelestialBody(0,0,0,0,0,696340 * 1000, 19891*Math.pow(10,26));
+        earth = new CelestialBody(1,7.917904169940719 * 1000, -2.867871052093815*Math.pow(10,1) * 1000, -1.436232264182898*Math.pow(10,8) * 1000, -4.222184246295860*Math.pow(10,7) * 1000,6371 * 1000,597219*Math.pow(10,19));
+        mars = new CelestialBody(2,2.499118636997282*Math.pow(10,1) * 1000, -6.412328574419259*Math.pow(10,-1) * 1000,-2.471238977495339*Math.pow(10,7) * 1000, -2.183737229441134*Math.pow(10,8) * 1000,3389.5 * 1000, 641693*Math.pow(10,18));
+        ship = new CelestialBody(3,0, 0, 0, 0, 6000 * 1000,2*Math.pow(10,5));
 
         initializeShip();
 
@@ -47,19 +47,20 @@ public class Simulation {
 
     private void initializeShip() {
         double angle = Math.atan2(earth.y, earth.x);
+        if (angle < 0) angle += Math.PI;
 
-        ship.x = earth.x + (earth.radius + LAUNCH_DISTANCE) * Math.cos(angle);
-        ship.y = earth.y + (earth.radius + LAUNCH_DISTANCE) * Math.sin(angle);
+        ship.x = earth.x + (earth.radius + LAUNCH_DISTANCE) * Math.cos(angle) * Math.signum(earth.x);
+        ship.y = earth.y + (earth.radius + LAUNCH_DISTANCE) * Math.sin(angle) * Math.signum(earth.y);
 
-        ship.vx = (LAUNCH_SPEED + ORBITAL_EARTH_SPEED) * Math.abs(Math.cos(Math.PI / 2 - angle)) * Math.signum(earth.vx);
-        ship.vy = (LAUNCH_SPEED + ORBITAL_EARTH_SPEED) * Math.abs(Math.sin(Math.PI / 2 - angle)) * Math.signum(earth.vy);
+        ship.vx = (LAUNCH_SPEED + ORBITAL_EARTH_SPEED) * Math.cos(Math.PI / 2 - angle) * Math.signum(earth.vx);
+        ship.vy = (LAUNCH_SPEED + ORBITAL_EARTH_SPEED) * Math.sin(Math.PI / 2 - angle) * Math.signum(earth.vy);
     }
 
     private void initializeForce(CelestialBody body) {
         body.force = updateForce(body);
         double previousX = body.x - delta_t * body.vx + delta_t * delta_t * body.force.x / (2 * body.mass);
         double previousY = body.y - delta_t * body.vy + delta_t * delta_t * body.force.y / (2 * body.mass);
-        body.force.previous = updateForce(new CelestialBody(0, 0, previousX, previousY, body.radius, body.mass));
+        body.force.previous = updateForce(new CelestialBody(body.id, 0, 0, previousX, previousY, body.radius, body.mass));
     }
 
     private Force updateForce(CelestialBody body) {
@@ -67,7 +68,7 @@ public class Simulation {
         double forceY = 0;
 
         // SUN
-        if (body != sun) {
+        if (body.id != sun.id) {
             double distance = Math.sqrt(Math.pow(sun.x - body.x, 2) + Math.pow(sun.y - body.y, 2));
             double force = G * sun.mass * body.mass / Math.pow(distance, 2);
             double angle = Math.atan2(Math.abs(sun.x - body.x), Math.abs(sun.y - body.y));
@@ -76,7 +77,7 @@ public class Simulation {
         }
 
         // EARTH
-        if (body != earth) {
+        if (body.id != earth.id) {
             double distance = Math.sqrt(Math.pow(earth.x - body.x, 2) + Math.pow(earth.y - body.y, 2));
             double force = G * earth.mass * body.mass / Math.pow(distance, 2);
             double angle = Math.atan2(Math.abs(earth.x - body.x), Math.abs(earth.y - body.y));
@@ -85,7 +86,7 @@ public class Simulation {
         }
 
         // MARS
-        if (body != mars) {
+        if (body.id != mars.id) {
             double distance = Math.sqrt(Math.pow(mars.x - body.x, 2) + Math.pow(mars.y - body.y, 2));
             double force = G * mars.mass * body.mass / Math.pow(distance, 2);
             double angle = Math.atan2(Math.abs(mars.x - body.x), Math.abs(mars.y - body.y));
@@ -94,7 +95,7 @@ public class Simulation {
         }
 
         // SHIP
-        if (body != ship) {
+        if (body.id != ship.id) {
             double distance = Math.sqrt(Math.pow(ship.x - body.x, 2) + Math.pow(ship.y - body.y, 2));
             double force = G * ship.mass * body.mass / Math.pow(distance, 2);
             double angle = Math.atan2(Math.abs(ship.x - body.x), Math.abs(ship.y - body.y));
