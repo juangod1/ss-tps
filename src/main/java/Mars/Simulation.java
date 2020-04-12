@@ -20,14 +20,14 @@ public class Simulation {
     private final double G = 6.693 * Math.pow(10, -11);
 
     private int ONE_YEAR_IN_SECONDS = 31540000;
-    private int MISSION_DELTAS = 10*ONE_YEAR_IN_SECONDS/delta_t;
+    private int MISSION_DELTAS = 3*ONE_YEAR_IN_SECONDS/delta_t;
+    private int DELTAS_PER_DAY = 24*60*60/delta_t;
 
     public static void main(String[] args) throws IOException {
         Simulation s = new Simulation();
 
-        int deltasPerDay = 24*60*60/s.delta_t;
         // aca la idea es simular la salida de la nave en distintos dias y guardamos el tiempo que tardo
-        for (int i=0; i<s.MISSION_DELTAS; i+=deltasPerDay) {
+        for (int i=0; i<s.MISSION_DELTAS; i+=s.DELTAS_PER_DAY) {
             s.initialize();
             s.simulateShip(i);
         }
@@ -132,7 +132,8 @@ public class Simulation {
     }
 
     private void simulateShip(int departureDeltas) throws IOException {
-        FileWriter f = new FileWriter("./out" + departureDeltas, false);
+        int deltas = departureDeltas;
+        //FileWriter f = new FileWriter("./out" + departureDeltas, false);
         delta = departureDeltas;
 
         while (departureDeltas-->0) {
@@ -142,11 +143,15 @@ public class Simulation {
         }
 
         while (!checkIfReachedMars()) {
-            if (delta>MISSION_DELTAS)
+            if (delta>MISSION_DELTAS) {
+                System.out.print("Mission with departure date ");
+                System.out.print(deltas/DELTAS_PER_DAY);
+                System.out.println(" did not reach mars.");
                 return;
+            }
 
             if(delta%1000==0)
-                writeToFile(f);
+               // writeToFile(f);
 
 //            applyBeeman(sun);
             applyBeeman(earth);
@@ -155,10 +160,13 @@ public class Simulation {
 
             delta+=1;
         }
-        f.close();
+        //f.close();
 
-        System.out.print("Reached mars on delta: ");
-        System.out.print(delta);
+        System.out.print("REACHED MARS ORBIT with departure date ");
+        System.out.print(deltas/DELTAS_PER_DAY);
+        System.out.print(" after ");
+        System.out.print(delta*delta_t/DELTAS_PER_DAY);
+        System.out.println(" days of travel.");
     }
 
     private void writeToFile(FileWriter f) throws IOException {
@@ -170,6 +178,9 @@ public class Simulation {
     }
 
     private boolean checkIfReachedMars(){
+        if(Math.sqrt(Math.pow(ship.x-mars.x,2)+Math.pow(ship.y-mars.y,2)) <= 1000 + mars.radius)
+            return true;
+
         return false;
     }
 }
