@@ -1,7 +1,5 @@
 package Mars;
 
-import com.sun.javafx.collections.NonIterableChange;
-
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -25,6 +23,8 @@ public class Simulation {
     private int MISSION_DELTAS = 20*ONE_YEAR_IN_SECONDS/delta_t;
     private int DELTAS_PER_DAY = 24*60*60/delta_t;
 
+    private Double dmax;
+
     public static void main(String[] args) throws IOException {
         Simulation s = new Simulation();
 
@@ -37,6 +37,7 @@ public class Simulation {
     
     private void initialize() {
         delta = 0;
+        dmax = null;
 
         sun = new CelestialBody(0,0,0,0,0,696340 * 1000, 19891*Math.pow(10,26));
         earth = new CelestialBody(1,7.917904169940719 * 1000, -2.867871052093815*Math.pow(10,1) * 1000, -1.436232264182898*Math.pow(10,8) * 1000, -4.222184246295860*Math.pow(10,7) * 1000,6371 * 1000,597219*Math.pow(10,19));
@@ -64,9 +65,13 @@ public class Simulation {
 
     private void initializeForce(CelestialBody body) {
         body.force = updateForce(body);
-        double previousX = body.x - delta_t * body.vx + delta_t * delta_t * body.force.x / (2 * body.mass);
-        double previousY = body.y - delta_t * body.vy + delta_t * delta_t * body.force.y / (2 * body.mass);
-        body.force.previous = updateForce(new CelestialBody(body.id, 0, 0, previousX, previousY, body.radius, body.mass));
+        if (body.id == ship.id) {
+            body.force.previous = body.force;
+        } else {
+            double previousX = body.x - delta_t * body.vx + delta_t * delta_t * body.force.x / (2 * body.mass);
+            double previousY = body.y - delta_t * body.vy + delta_t * delta_t * body.force.y / (2 * body.mass);
+            body.force.previous = updateForce(new CelestialBody(body.id, 0, 0, previousX, previousY, body.radius, body.mass));
+        }
     }
 
     private Force updateForce(CelestialBody body) {
@@ -135,7 +140,7 @@ public class Simulation {
 
     private void simulateShip(int departureDeltas) throws IOException {
         int deltas = departureDeltas;
-        //FileWriter f = new FileWriter("./out" + departureDeltas, false);
+        FileWriter f = new FileWriter("./out" + departureDeltas * delta_t / (24*60*60), false);
         delta = departureDeltas;
 
         while (departureDeltas-->0) {
@@ -149,12 +154,12 @@ public class Simulation {
                 System.out.print("Mission with departure date ");
                 System.out.print(deltas/DELTAS_PER_DAY);
                 System.out.println(" did not reach mars.");
-                System.out.println(Simulation.dmax);
+                System.out.println(dmax - mars.radius);
                 return;
             }
 
             if(delta%1000==0)
-                //writeToFile(f);
+                writeToFile(f);
 
 //            applyBeeman(sun);
             applyBeeman(earth);
@@ -163,7 +168,7 @@ public class Simulation {
 
             delta+=1;
         }
-        //f.close();
+        f.close();
 
         System.out.print("REACHED MARS ORBIT with departure date ");
         System.out.print(deltas/DELTAS_PER_DAY);
@@ -180,17 +185,15 @@ public class Simulation {
         f.append(String.valueOf(ship.x / 1000000000)).append(" ").append(String.valueOf(ship.y / 1000000000)).append(" ").append(String.valueOf(ship.radius / 1500000)).append(" 0 0 0\n");
     }
 
-    static Double dmax=null;
-
     private boolean checkIfReachedMars(){
         double d = Math.sqrt(Math.pow(ship.x-mars.x,2)+Math.pow(ship.y-mars.y,2));
 
-        if(Simulation.dmax==null)
-            Simulation.dmax=d;
+        if(dmax==null)
+            dmax=d;
         else
-            Simulation.dmax = Simulation.dmax>d? d : Simulation.dmax;
+            dmax = dmax>d? d : dmax;
 
-        if(d <= 1000 + mars.radius)
+        if(d <= 1000*1000 + mars.radius)
             return true;
 
         return false;
