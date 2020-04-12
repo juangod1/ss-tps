@@ -11,7 +11,7 @@ public class Simulation {
     private CelestialBody mars;
     private CelestialBody ship;
 
-    private int days;
+    private int delta;
     private int delta_t = 500; //seconds in a day
 
     private final double LAUNCH_DISTANCE = 1500 * 1000;
@@ -19,18 +19,21 @@ public class Simulation {
     private final double ORBITAL_EARTH_SPEED = 7.12 * 1000;
     private final double G = 6.693 * Math.pow(10, -11);
 
+    private int ONE_YEAR_IN_SECONDS = 31540000;
+    private int MISSION_DELTAS = 10*ONE_YEAR_IN_SECONDS/delta_t;
+
     public static void main(String[] args) throws IOException {
         Simulation s = new Simulation();
 
         // aca la idea es simular la salida de la nave en distintos dias y guardamos el tiempo que tardo
-        for (int i=0; i<3652; i++) {
+        for (int i=0; i<s.MISSION_DELTAS; i++) {
             s.initialize();
             s.simulateShip(i);
         }
     }
     
     private void initialize() {
-        days = 0;
+        delta = 0;
 
         sun = new CelestialBody(0,0,0,0,0,696340 * 1000, 19891*Math.pow(10,26));
         earth = new CelestialBody(1,7.917904169940719 * 1000, -2.867871052093815*Math.pow(10,1) * 1000, -1.436232264182898*Math.pow(10,8) * 1000, -4.222184246295860*Math.pow(10,7) * 1000,6371 * 1000,597219*Math.pow(10,19));
@@ -127,23 +130,21 @@ public class Simulation {
         body.vy = newVy;
     }
 
-    private void simulateShip(int departureDay) throws IOException {
-        FileWriter f = new FileWriter("./out" + departureDay, false);
-        days = departureDay;
+    private void simulateShip(int departureDeltas) throws IOException {
+        FileWriter f = new FileWriter("./out" + departureDeltas, false);
+        delta = departureDeltas;
 
-        while (departureDay-->0) {
+        while (departureDeltas-->0) {
 //            applyBeeman(sun);
             applyBeeman(earth);
             applyBeeman(mars);
         }
 
         while (!checkIfReachedMars()) {
-            if (checkIfMissionFailed())
+            if (delta>MISSION_DELTAS)
                 return;
 
-            if(days>300000) return;
-
-            if(days%1000==0)
+            if(delta%1000==0)
                 writeToFile(f);
 
 //            applyBeeman(sun);
@@ -151,17 +152,12 @@ public class Simulation {
             applyBeeman(mars);
             applyBeeman(ship);
 
-            days+=1;
+            delta+=1;
         }
         f.close();
 
-        System.out.print("Reached mars on day: ");
-        System.out.print(days);
-    }
-
-    private boolean checkIfMissionFailed() {
-        // aca va lo que habiamos hablado... de ver si me pase de la orbita
-        return false;
+        System.out.print("Reached mars on delta: ");
+        System.out.print(delta);
     }
 
     private void writeToFile(FileWriter f) throws IOException {
