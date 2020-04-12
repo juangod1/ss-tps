@@ -154,7 +154,7 @@ public class Simulation {
                 System.out.print("Mission with departure date ");
                 System.out.print(deltas/DELTAS_PER_DAY);
                 System.out.println(" did not reach mars.");
-                System.out.println(dmax - mars.radius);
+                System.out.println(dmax);
                 return;
             }
 
@@ -186,14 +186,14 @@ public class Simulation {
     }
 
     private boolean checkIfReachedMars(){
-        double d = Math.sqrt(Math.pow(ship.x-mars.x,2)+Math.pow(ship.y-mars.y,2));
+        double d = Math.sqrt(Math.pow(ship.x-mars.x,2)+Math.pow(ship.y-mars.y,2)) - mars.radius;
 
         if(dmax==null)
             dmax=d;
         else
-            dmax = dmax>d? d : dmax;
+            dmax = dmax > d ? d : dmax;
 
-        if(d <= 1000*1000 + mars.radius)
+        if (d <= 1000*1000)
             return true;
 
         return false;
