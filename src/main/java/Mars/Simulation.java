@@ -125,6 +125,9 @@ public class Simulation {
         double newX = body.x + body.vx * delta_t + 2.0/3 * body.force.x * delta_t * delta_t / body.mass - 1.0/6 * body.force.previous.x * delta_t * delta_t / body.mass;
         double newY = body.y + body.vy * delta_t + 2.0/3 * body.force.y * delta_t * delta_t / body.mass - 1.0/6 * body.force.previous.y * delta_t * delta_t / body.mass;
 
+        body.x = newX;
+        body.y = newY;
+
         Force newForce = updateForce(body);
 
         double newVx = body.vx + 1.0/3 * newForce.x * delta_t / body.mass + 5.0/6 * body.force.x * delta_t / body.mass - 1.0/6 * body.force.previous.x * delta_t / body.mass;
@@ -132,8 +135,6 @@ public class Simulation {
 
         body.force = newForce;
 
-        body.x = newX;
-        body.y = newY;
         body.vx = newVx;
         body.vy = newVy;
     }
