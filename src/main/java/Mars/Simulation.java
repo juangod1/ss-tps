@@ -117,15 +117,37 @@ public class Simulation {
         return newForce;
     }
 
-    private void applyBeeman(CelestialBody body) {
+    private void applyBeeman(boolean toShip) {
+        updatePosition(sun);
+        updatePosition(earth);
+        updatePosition(mars);
+        if (toShip)
+            updatePosition(ship);
+
+
+        Force newForceSun = updateForce(sun);
+        Force newForceEarth = updateForce(earth);
+        Force newForceMars = updateForce(mars);
+        Force newForceShip = null;
+        if (toShip)
+            newForceShip = updateForce(ship);
+
+        updateVelocity(sun, newForceSun);
+        updateVelocity(earth, newForceEarth);
+        updateVelocity(mars, newForceMars);
+        if (toShip)
+            updateVelocity(ship, newForceShip);
+    }
+
+    private void updatePosition(CelestialBody body) {
         double newX = body.x + body.vx * delta_t + 2.0/3 * body.force.x * delta_t * delta_t / body.mass - 1.0/6 * body.force.previous.x * delta_t * delta_t / body.mass;
         double newY = body.y + body.vy * delta_t + 2.0/3 * body.force.y * delta_t * delta_t / body.mass - 1.0/6 * body.force.previous.y * delta_t * delta_t / body.mass;
 
         body.x = newX;
         body.y = newY;
+    }
 
-        Force newForce = updateForce(body);
-
+    private void updateVelocity(CelestialBody body, Force newForce) {
         double newVx = body.vx + 1.0/3 * newForce.x * delta_t / body.mass + 5.0/6 * body.force.x * delta_t / body.mass - 1.0/6 * body.force.previous.x * delta_t / body.mass;
         double newVy = body.vy + 1.0/3 * newForce.y * delta_t / body.mass + 5.0/6 * body.force.y * delta_t / body.mass - 1.0/6 * body.force.previous.y * delta_t / body.mass;
 
@@ -141,9 +163,7 @@ public class Simulation {
         delta = departureDeltas;
 
         while (departureDeltas-->0) {
-            applyBeeman(sun);
-            applyBeeman(earth);
-            applyBeeman(mars);
+            applyBeeman(false);
         }
 
         while (!checkIfReachedMars()) {
@@ -158,10 +178,7 @@ public class Simulation {
 //            if(delta%1000==0)
 //                writeToFile(f);
 
-            applyBeeman(sun);
-            applyBeeman(earth);
-            applyBeeman(mars);
-            applyBeeman(ship);
+            applyBeeman(true);
 
             delta+=1;
         }
