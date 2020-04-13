@@ -141,7 +141,7 @@ public class Simulation {
 
     private void simulateShip(int departureDeltas) throws IOException {
         int deltas = departureDeltas;
-        FileWriter f = new FileWriter("./out" + departureDeltas * delta_t / (24*60*60), false);
+//        FileWriter f = new FileWriter("./out" + departureDeltas * delta_t / (24*60*60), false);
         delta = departureDeltas;
 
         while (departureDeltas-->0) {
@@ -159,8 +159,8 @@ public class Simulation {
                 return;
             }
 
-            if(delta%1000==0)
-                writeToFile(f);
+//            if(delta%1000==0)
+//                writeToFile(f);
 
 //            applyBeeman(sun);
             applyBeeman(earth);
@@ -169,12 +169,12 @@ public class Simulation {
 
             delta+=1;
         }
-        f.close();
+//        f.close();
 
         System.out.print("REACHED MARS ORBIT with departure date ");
         System.out.print(deltas/DELTAS_PER_DAY);
         System.out.print(" after ");
-        System.out.print(delta*delta_t/DELTAS_PER_DAY);
+        System.out.print(delta/DELTAS_PER_DAY);
         System.out.println(" days of travel.");
     }
 
