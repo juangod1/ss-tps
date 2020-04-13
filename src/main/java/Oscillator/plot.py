@@ -5,6 +5,24 @@ errorsBeeman = []
 errorsVerlet = []
 errorsGear = []
 
+dataAnalytical = pd.read_csv("/home/agusosimani/Documents/ss-tp1/seis/tableAnalytical", names=["Time", "A"], header=None)
+dataBeeman = pd.read_csv("/home/agusosimani/Documents/ss-tp1/seis/tableBeeman", names=["Time", "A"], header=None)
+dataVerlet = pd.read_csv("/home/agusosimani/Documents/ss-tp1/seis/tableVerlet", names=["Time", "A"], header=None)
+dataGear = pd.read_csv("/home/agusosimani/Documents/ss-tp1/seis/tableGearPredictorCorrector", names=["Time", "A"], header=None)
+
+errorBeeman = 0
+errorVerlet = 0
+errorGear = 0
+
+for i in range(len(dataAnalytical)):
+    errorBeeman += pow(dataAnalytical["A"][i] - dataBeeman["A"][i], 2)/len(dataAnalytical)
+    errorVerlet += pow(dataAnalytical["A"][i] - dataVerlet["A"][i], 2)/len(dataAnalytical)
+    errorGear += pow(dataAnalytical["A"][i] - dataGear["A"][i], 2)/len(dataAnalytical)
+
+errorsBeeman.append(errorBeeman)
+errorsVerlet.append(errorVerlet)
+errorsGear.append(errorGear)
+
 dataAnalytical = pd.read_csv("/home/agusosimani/Documents/ss-tp1/cinco/tableAnalytical", names=["Time", "A"], header=None)
 dataBeeman = pd.read_csv("/home/agusosimani/Documents/ss-tp1/cinco/tableBeeman", names=["Time", "A"], header=None)
 dataVerlet = pd.read_csv("/home/agusosimani/Documents/ss-tp1/cinco/tableVerlet", names=["Time", "A"], header=None)
@@ -77,7 +95,7 @@ errorsBeeman.append(errorBeeman)
 errorsVerlet.append(errorVerlet)
 errorsGear.append(errorGear)
 
-times = [0.00001, 0.0001, 0.001, 0.01]
+times = [0.000001, 0.00001, 0.0001, 0.001, 0.01]
 ax = plt.axes(xscale='log', yscale='log')
 plt.plot(times, errorsVerlet, "o", linestyle="None", color="red", label="Verlet")
 plt.plot(times, errorsBeeman, "o", linestyle="None", color="green", label="Beeman")

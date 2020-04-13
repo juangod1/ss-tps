@@ -11,7 +11,7 @@ public class Oscillator {
     private int numParticles = 1;
 
     private double time = 0;
-    private double delta_t = 0.001;
+    private double delta_t = 0.000001;
 
     private Particle p = new Particle(0.015, -1*A*Force.gamma/(2*70), 0, new Point.Double(1,0), 1, 70);
     private double prev_acceleration = 0;
@@ -28,19 +28,23 @@ public class Oscillator {
         FileWriter f = new FileWriter("./out", false);
 //        FileWriter t = new FileWriter("./tableVerlet", false);
 //        FileWriter t = new FileWriter("./tableBeeman", false);
-//        FileWriter t = new FileWriter("./tableAnalytical", false);
-        FileWriter t = new FileWriter("./tableGearPredictorCorrector", false);
+        FileWriter t = new FileWriter("./tableAnalytical", false);
+//        FileWriter t = new FileWriter("./tableGearPredictorCorrector", false);
         Oscillator o = new Oscillator();
 
+        int i=0;
         while(o.time<=5){
-            t.append(String.valueOf(o.time)).append(", ").append(String.valueOf(o.p.getPosition().getX())).append("\n");
-            f.append(String.valueOf(o.numParticles+5)).append("\n\n");
-            f.append("0 0.2 0.1 1 0 0").append('\n');
-            f.append("0 0.1 0.1 1 0 0").append('\n');
-            f.append("0 0 0.1 1 0 0").append('\n');
-            f.append("0 -0.1 0.1 1 0 0").append('\n');
-            f.append("0 -0.2 0.1 1 0 0").append('\n');
-            f.append(String.valueOf(o.p.getPosition().getX())).append(" 0 0.1 1 1 1").append('\n');
+            if ((i % 1000) == 0 ) {
+                t.append(String.valueOf(o.time)).append(", ").append(String.valueOf(o.p.getPosition().getX())).append("\n");
+                f.append(String.valueOf(o.numParticles+5)).append("\n\n");
+                f.append("0 0.2 0.1 1 0 0").append('\n');
+                f.append("0 0.1 0.1 1 0 0").append('\n');
+                f.append("0 0 0.1 1 0 0").append('\n');
+                f.append("0 -0.1 0.1 1 0 0").append('\n');
+                f.append("0 -0.2 0.1 1 0 0").append('\n');
+                f.append(String.valueOf(o.p.getPosition().getX())).append(" 0 0.1 1 1 1").append('\n');
+            }
+            i++;
             o.updateVelocityAndPosition();
             o.time += o.delta_t;
         }
@@ -51,10 +55,10 @@ public class Oscillator {
     private void updateVelocityAndPosition(){
         double current_position = this.p.getPosition().getX();
         double current_acceleration = Force.oscillatorForce(p.getPosition().getX(), p.getVx())/p.getMass();
-        //applyVerlet(this.p, current_acceleration);
-        //applyBeeman(this.p, current_acceleration);
-        //applyAnalytical(this.p);
-        applyGearPredictorCorrector(p);
+//        applyVerlet(this.p, current_acceleration);
+//        applyBeeman(this.p, current_acceleration);
+        applyAnalytical(this.p);
+//        applyGearPredictorCorrector(p);
         prev_position = current_position;
         prev_acceleration = current_acceleration;
     }
