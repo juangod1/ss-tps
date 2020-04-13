@@ -46,7 +46,7 @@ public class Simulation {
 
         initializeShip();
 
-//        initializeForce(sun);
+        initializeForce(sun);
         initializeForce(earth);
         initializeForce(mars);
         initializeForce(ship);
@@ -59,19 +59,15 @@ public class Simulation {
         ship.x = earth.x + (earth.radius + LAUNCH_DISTANCE) * Math.cos(angle) * Math.signum(earth.x);
         ship.y = earth.y + (earth.radius + LAUNCH_DISTANCE) * Math.sin(angle) * Math.signum(earth.y);
 
-        ship.vx = (LAUNCH_SPEED + ORBITAL_EARTH_SPEED) * Math.cos(Math.PI / 2 - angle) * Math.signum(earth.vx);
-        ship.vy = (LAUNCH_SPEED + ORBITAL_EARTH_SPEED) * Math.sin(Math.PI / 2 - angle) * Math.signum(earth.vy);
+        ship.vx = (earth.vx + ORBITAL_EARTH_SPEED + LAUNCH_SPEED) * Math.cos(Math.PI / 2 - angle) * Math.signum(earth.vx);
+        ship.vy = (earth.vy + ORBITAL_EARTH_SPEED + LAUNCH_SPEED) * Math.sin(Math.PI / 2 - angle) * Math.signum(earth.vy);
     }
 
     private void initializeForce(CelestialBody body) {
         body.force = updateForce(body);
-        if (body.id == ship.id) {
-            body.force.previous = body.force;
-        } else {
-            double previousX = body.x - delta_t * body.vx + delta_t * delta_t * body.force.x / (2 * body.mass);
-            double previousY = body.y - delta_t * body.vy + delta_t * delta_t * body.force.y / (2 * body.mass);
-            body.force.previous = updateForce(new CelestialBody(body.id, 0, 0, previousX, previousY, body.radius, body.mass));
-        }
+        double previousX = body.x - delta_t * body.vx + delta_t * delta_t * body.force.x / (2 * body.mass);
+        double previousY = body.y - delta_t * body.vy + delta_t * delta_t * body.force.y / (2 * body.mass);
+        body.force.previous = updateForce(new CelestialBody(body.id, 0, 0, previousX, previousY, body.radius, body.mass));
     }
 
     private Force updateForce(CelestialBody body) {
@@ -145,7 +141,7 @@ public class Simulation {
         delta = departureDeltas;
 
         while (departureDeltas-->0) {
-//            applyBeeman(sun);
+            applyBeeman(sun);
             applyBeeman(earth);
             applyBeeman(mars);
         }
@@ -162,7 +158,7 @@ public class Simulation {
 //            if(delta%1000==0)
 //                writeToFile(f);
 
-//            applyBeeman(sun);
+            applyBeeman(sun);
             applyBeeman(earth);
             applyBeeman(mars);
             applyBeeman(ship);
