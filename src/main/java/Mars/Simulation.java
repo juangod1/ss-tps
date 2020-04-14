@@ -152,6 +152,7 @@ public class Simulation {
         double newVy = body.vy + 1.0/3 * newForce.y * delta_t / body.mass + 5.0/6 * body.force.y * delta_t / body.mass - 1.0/6 * body.force.previous.y * delta_t / body.mass;
 
         body.force = newForce;
+        body.force.previous.previous = null;
 
         body.vx = newVx;
         body.vy = newVy;
