@@ -43,8 +43,8 @@ public class SolarSystem {
         ship = new CelestialBody(3,0, 0, 0, 0, 3389.5 * 1000/2,2*Math.pow(10,5));
         double angle = Math.atan2(earth.y, earth.x);
 
-        ship.x = earth.x + (earth.radius + LAUNCH_DISTANCE) * Math.cos(angle) * Math.signum(earth.x);
-        ship.y = earth.y + (earth.radius + LAUNCH_DISTANCE) * Math.sin(angle) * Math.signum(earth.y);
+        ship.x = earth.x + (earth.radius + LAUNCH_DISTANCE) * Math.cos(angle);
+        ship.y = earth.y + (earth.radius + LAUNCH_DISTANCE) * Math.sin(angle);
 
         ship.vx = earth.vx + Math.abs((ORBITAL_EARTH_SPEED + LAUNCH_SPEED) * Math.sin(angle)) * Math.signum(earth.vx);
         ship.vy = earth.vy + Math.abs((ORBITAL_EARTH_SPEED + LAUNCH_SPEED) * Math.cos(angle)) * Math.signum(earth.vy);

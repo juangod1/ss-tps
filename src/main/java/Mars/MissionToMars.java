@@ -13,7 +13,7 @@ public class MissionToMars {
         SolarSystem s = new SolarSystem();
 
         // aca la idea es simular la salida de la nave en distintos dias y guardamos el tiempo que tardo
-        for (int i = 115*DELTAS_PER_DAY; i < MISSION_DELTAS; i += DELTAS_PER_DAY/48) {
+        for (int i = 97*DELTAS_PER_DAY; i < MISSION_DELTAS; i += DELTAS_PER_DAY/72) {
             s.initialize(delta_t, MISSION_DELTAS, DELTAS_PER_DAY);
             s.simulateShip(i);
         }
