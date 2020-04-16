@@ -20,7 +20,7 @@ public class Simulation {
     private final double G = 6.693 * Math.pow(10, -11);
 
     private int ONE_YEAR_IN_SECONDS = 31540000;
-    private int MISSION_DELTAS = 20*ONE_YEAR_IN_SECONDS/delta_t;
+    private int MISSION_DELTAS = 2*ONE_YEAR_IN_SECONDS/delta_t;
     private int DELTAS_PER_DAY = 24*60*60/delta_t;
 
     private Double dmax;
@@ -29,7 +29,7 @@ public class Simulation {
         Simulation s = new Simulation();
 
         // aca la idea es simular la salida de la nave en distintos dias y guardamos el tiempo que tardo
-        for (int i=0; i<s.MISSION_DELTAS; i+=s.DELTAS_PER_DAY) {
+        for (int i=167*s.DELTAS_PER_DAY; i<s.MISSION_DELTAS; i+=s.DELTAS_PER_DAY/24) {
             s.initialize();
             s.simulateShip(i);
         }
@@ -42,25 +42,24 @@ public class Simulation {
         sun = new CelestialBody(0,0,0,0,0,696340 * 1000, 19891*Math.pow(10,26));
         earth = new CelestialBody(1,7.917904169940719 * 1000, -2.867871052093815*Math.pow(10,1) * 1000, -1.436232264182898*Math.pow(10,8) * 1000, -4.222184246295860*Math.pow(10,7) * 1000,6371 * 1000,597219*Math.pow(10,19));
         mars = new CelestialBody(2,2.499118636997282*Math.pow(10,1) * 1000, -6.412328574419259*Math.pow(10,-1) * 1000,-2.471238977495339*Math.pow(10,7) * 1000, -2.183737229441134*Math.pow(10,8) * 1000,3389.5 * 1000, 641693*Math.pow(10,18));
-        ship = new CelestialBody(3,0, 0, 0, 0, 3389.5 * 1000/2,2*Math.pow(10,5));
-
-        initializeShip();
 
         initializeForce(sun);
         initializeForce(earth);
         initializeForce(mars);
-        initializeForce(ship);
     }
 
     private void initializeShip() {
+        ship = new CelestialBody(3,0, 0, 0, 0, 3389.5 * 1000/2,2*Math.pow(10,5));
+
         double angle = Math.atan2(earth.y, earth.x);
-        if (angle < 0) angle += Math.PI;
 
-        ship.x = earth.x + (earth.radius + LAUNCH_DISTANCE) * Math.cos(angle) * Math.signum(earth.x);
-        ship.y = earth.y + (earth.radius + LAUNCH_DISTANCE) * Math.sin(angle) * Math.signum(earth.y);
+        ship.x = earth.x + (earth.radius + LAUNCH_DISTANCE) * Math.cos(angle);
+        ship.y = earth.y + (earth.radius + LAUNCH_DISTANCE) * Math.sin(angle);
 
-        ship.vx = (earth.vx + ORBITAL_EARTH_SPEED + LAUNCH_SPEED) * Math.cos(Math.PI / 2 - angle) * Math.signum(earth.vx);
-        ship.vy = (earth.vy + ORBITAL_EARTH_SPEED + LAUNCH_SPEED) * Math.sin(Math.PI / 2 - angle) * Math.signum(earth.vy);
+        ship.vx = earth.vx + (ORBITAL_EARTH_SPEED + LAUNCH_SPEED) * Math.cos(angle);
+        ship.vy = earth.vy + (ORBITAL_EARTH_SPEED + LAUNCH_SPEED) * Math.sin(angle);
+
+        initializeForce(ship);
     }
 
     private void initializeForce(CelestialBody body) {
@@ -102,12 +101,14 @@ public class Simulation {
         }
 
         // SHIP
-        if (body.id != ship.id) {
-            double distance = Math.sqrt(Math.pow(ship.x - body.x, 2) + Math.pow(ship.y - body.y, 2));
-            double force = G * ship.mass * body.mass / Math.pow(distance, 2);
-            double angle = Math.atan2(Math.abs(ship.x - body.x), Math.abs(ship.y - body.y));
-            forceX += force * Math.sin(angle) * ((body.x > ship.x) ? -1 : 1);
-            forceY += force * Math.cos(angle) * ((body.y > ship.y) ? -1 : 1);
+        if(ship!=null){
+            if (body.id != ship.id) {
+                double distance = Math.sqrt(Math.pow(ship.x - body.x, 2) + Math.pow(ship.y - body.y, 2));
+                double force = G * ship.mass * body.mass / Math.pow(distance, 2);
+                double angle = Math.atan2(Math.abs(ship.x - body.x), Math.abs(ship.y - body.y));
+                forceX += force * Math.sin(angle) * ((body.x > ship.x) ? -1 : 1);
+                forceY += force * Math.cos(angle) * ((body.y > ship.y) ? -1 : 1);
+            }
         }
 
         Force newForce = new Force();
@@ -160,12 +161,16 @@ public class Simulation {
 
     private void simulateShip(int departureDeltas) throws IOException {
         int deltas = departureDeltas;
-//        FileWriter f = new FileWriter("./out" + departureDeltas * delta_t / (24*60*60), false);
+        FileWriter f = new FileWriter("./out" + departureDeltas * delta_t / (24*60*60), false);
         delta = departureDeltas;
 
         while (departureDeltas-->0) {
             applyBeeman(false);
         }
+
+        initializeShip();
+
+        writeToFile(f);
 
         while (!checkIfReachedMars()) {
             if (delta>MISSION_DELTAS) {
@@ -176,14 +181,14 @@ public class Simulation {
                 return;
             }
 
-//            if(delta%1000==0)
-//                writeToFile(f);
+            if(delta%1000==0)
+                writeToFile(f);
 
             applyBeeman(true);
 
             delta+=1;
         }
-//        f.close();
+        f.close();
 
         System.out.print("REACHED MARS ORBIT with departure date ");
         System.out.print(deltas/DELTAS_PER_DAY);
