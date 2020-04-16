@@ -41,15 +41,13 @@ public class SolarSystem {
 
     private void initializeShip() {
         ship = new CelestialBody(3,0, 0, 0, 0, 3389.5 * 1000/2,2*Math.pow(10,5));
-
         double angle = Math.atan2(earth.y, earth.x);
-        if (angle < 0) angle += Math.PI;
 
         ship.x = earth.x + (earth.radius + LAUNCH_DISTANCE) * Math.cos(angle) * Math.signum(earth.x);
         ship.y = earth.y + (earth.radius + LAUNCH_DISTANCE) * Math.sin(angle) * Math.signum(earth.y);
 
-        ship.vx = earth.vx + Math.abs((ORBITAL_EARTH_SPEED + LAUNCH_SPEED) * Math.cos(angle)) * Math.signum(earth.vx);
-        ship.vy = earth.vy + Math.abs((ORBITAL_EARTH_SPEED + LAUNCH_SPEED) * Math.sin(angle)) * Math.signum(earth.vy);
+        ship.vx = earth.vx + Math.abs((ORBITAL_EARTH_SPEED + LAUNCH_SPEED) * Math.sin(angle)) * Math.signum(earth.vx);
+        ship.vy = earth.vy + Math.abs((ORBITAL_EARTH_SPEED + LAUNCH_SPEED) * Math.cos(angle)) * Math.signum(earth.vy);
 
         initializeForce(ship);
     }
@@ -173,7 +171,7 @@ public class SolarSystem {
                 return;
             }
 
-            if(delta%1000==0)
+            if(delta%10==0)
                 writeToFile(f);
 
             applyBeeman(true);
@@ -187,6 +185,7 @@ public class SolarSystem {
         System.out.print(" after ");
         System.out.print(delta/DELTAS_PER_DAY);
         System.out.println(" days of travel.");
+        System.exit(0);
     }
 
     private void writeToFile(FileWriter f) throws IOException {
