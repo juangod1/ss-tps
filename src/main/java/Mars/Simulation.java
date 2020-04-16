@@ -15,12 +15,12 @@ public class Simulation {
     private int delta_t = 500;
 
     private final double LAUNCH_DISTANCE = 1500 * 1000;
-    private final double LAUNCH_SPEED = 8 * 1000;
+    private final double LAUNCH_SPEED = 10 * 1000;
     private final double ORBITAL_EARTH_SPEED = 7.12 * 1000;
     private final double G = 6.693 * Math.pow(10, -11);
 
     private int ONE_YEAR_IN_SECONDS = 31540000;
-    private int MISSION_DELTAS = 2*ONE_YEAR_IN_SECONDS/delta_t;
+    private int MISSION_DELTAS = ONE_YEAR_IN_SECONDS/delta_t;
     private int DELTAS_PER_DAY = 24*60*60/delta_t;
 
     private Double dmax;
@@ -29,7 +29,7 @@ public class Simulation {
         Simulation s = new Simulation();
 
         // aca la idea es simular la salida de la nave en distintos dias y guardamos el tiempo que tardo
-        for (int i=167*s.DELTAS_PER_DAY; i<s.MISSION_DELTAS; i+=s.DELTAS_PER_DAY/24) {
+        for (int i=0; i<s.MISSION_DELTAS; i+=s.DELTAS_PER_DAY) {
             s.initialize();
             s.simulateShip(i);
         }
@@ -56,8 +56,8 @@ public class Simulation {
         ship.x = earth.x + (earth.radius + LAUNCH_DISTANCE) * Math.cos(angle);
         ship.y = earth.y + (earth.radius + LAUNCH_DISTANCE) * Math.sin(angle);
 
-        ship.vx = earth.vx + (ORBITAL_EARTH_SPEED + LAUNCH_SPEED) * Math.cos(angle);
-        ship.vy = earth.vy + (ORBITAL_EARTH_SPEED + LAUNCH_SPEED) * Math.sin(angle);
+        ship.vx = earth.vx + Math.abs((ORBITAL_EARTH_SPEED + LAUNCH_SPEED) * Math.cos(angle))*Math.signum(earth.vx);
+        ship.vy = earth.vy + Math.abs((ORBITAL_EARTH_SPEED + LAUNCH_SPEED) * Math.sin(angle))*Math.signum(earth.vy);
 
         initializeForce(ship);
     }
