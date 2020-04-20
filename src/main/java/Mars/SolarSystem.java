@@ -204,7 +204,7 @@ public class SolarSystem {
     }
 
     private void writeToFile(FileWriter f) throws IOException {
-        f.append(String.valueOf(4)).append("\n\n");
+        f.append(String.valueOf(5)).append("\n\n");
         f.append(String.valueOf(sun.x / 1000000000)).append(" ").append(String.valueOf(sun.y / 1000000000)).append(" ").append(String.valueOf(sun.radius / 100000000)).append(" 1 1 0\n");
         f.append(String.valueOf(earth.x / 1000000000)).append(" ").append(String.valueOf(earth.y / 1000000000)).append(" ").append(String.valueOf(earth.radius / 1500000)).append(" 0 0 1\n");
         f.append(String.valueOf(mars.x / 1000000000)).append(" ").append(String.valueOf(mars.y / 1000000000)).append(" ").append(String.valueOf(mars.radius / 1500000)).append(" 1 0 0\n");
