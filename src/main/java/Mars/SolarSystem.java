@@ -9,6 +9,7 @@ public class SolarSystem {
     private CelestialBody sun;
     private CelestialBody earth;
     private CelestialBody mars;
+    private CelestialBody venus;
     private CelestialBody ship;
 
     private int delta;
@@ -33,10 +34,12 @@ public class SolarSystem {
         sun = new CelestialBody(0,0,0,0,0,696340 * 1000, 19891*Math.pow(10,26));
         earth = new CelestialBody(1,7.917904169940719 * 1000, -2.867871052093815*Math.pow(10,1) * 1000, -1.436232264182898*Math.pow(10,8) * 1000, -4.222184246295860*Math.pow(10,7) * 1000,6371 * 1000,597219*Math.pow(10,19));
         mars = new CelestialBody(2,2.499118636997282*Math.pow(10,1) * 1000, -6.412328574419259*Math.pow(10,-1) * 1000,-2.471238977495339*Math.pow(10,7) * 1000, -2.183737229441134*Math.pow(10,8) * 1000,3389.5 * 1000, 641693*Math.pow(10,18));
+        venus = new CelestialBody(4, -1.277430863250054*Math.pow(10,1) * 1000, -3.283269283110196*Math.pow(10,1) * 1000, -1.001685942527938*Math.pow(10,8) * 1000, 3.867126784527869*Math.pow(10,7) * 1000,6051.8 * 1000 , 486732*Math.pow(10,19));
 
         initializeForce(sun);
         initializeForce(earth);
         initializeForce(mars);
+        initializeForce(venus);
     }
 
     private void initializeShip() {
@@ -90,6 +93,15 @@ public class SolarSystem {
             forceY += force * Math.cos(angle) * ((body.y > mars.y) ? -1 : 1);
         }
 
+        // VENUS
+        if (body.id != venus.id) {
+            double distance = Math.sqrt(Math.pow(venus.x - body.x, 2) + Math.pow(venus.y - body.y, 2));
+            double force = G * venus.mass * body.mass / Math.pow(distance, 2);
+            double angle = Math.atan2(Math.abs(venus.x - body.x), Math.abs(venus.y - body.y));
+            forceX += force * Math.sin(angle) * ((body.x > venus.x) ? -1 : 1);
+            forceY += force * Math.cos(angle) * ((body.y > venus.y) ? -1 : 1);
+        }
+
         // SHIP
         if (ship != null) {
             if (body.id != ship.id) {
@@ -112,6 +124,7 @@ public class SolarSystem {
         updatePosition(sun);
         updatePosition(earth);
         updatePosition(mars);
+        updatePosition(venus);
         if (toShip)
             updatePosition(ship);
 
@@ -119,6 +132,7 @@ public class SolarSystem {
         Force newForceSun = updateForce(sun);
         Force newForceEarth = updateForce(earth);
         Force newForceMars = updateForce(mars);
+        Force newForceVenus = updateForce(venus);
         Force newForceShip = null;
         if (toShip)
             newForceShip = updateForce(ship);
@@ -126,6 +140,7 @@ public class SolarSystem {
         updateVelocity(sun, newForceSun);
         updateVelocity(earth, newForceEarth);
         updateVelocity(mars, newForceMars);
+        updateVelocity(venus, newForceVenus);
         if (toShip)
             updateVelocity(ship, newForceShip);
     }
@@ -193,6 +208,7 @@ public class SolarSystem {
         f.append(String.valueOf(sun.x / 1000000000)).append(" ").append(String.valueOf(sun.y / 1000000000)).append(" ").append(String.valueOf(sun.radius / 100000000)).append(" 1 1 0\n");
         f.append(String.valueOf(earth.x / 1000000000)).append(" ").append(String.valueOf(earth.y / 1000000000)).append(" ").append(String.valueOf(earth.radius / 1500000)).append(" 0 0 1\n");
         f.append(String.valueOf(mars.x / 1000000000)).append(" ").append(String.valueOf(mars.y / 1000000000)).append(" ").append(String.valueOf(mars.radius / 1500000)).append(" 1 0 0\n");
+        f.append(String.valueOf(venus.x / 1000000000)).append(" ").append(String.valueOf(venus.y / 1000000000)).append(" ").append(String.valueOf(venus.radius / 1500000)).append(" 1 1 1\n");
         f.append(String.valueOf(ship.x / 1000000000)).append(" ").append(String.valueOf(ship.y / 1000000000)).append(" ").append(String.valueOf(ship.radius / 1500000)).append(" 0 0 0\n");
     }
 
