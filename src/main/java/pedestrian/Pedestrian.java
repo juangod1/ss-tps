@@ -7,7 +7,7 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
 public class Pedestrian {
-    double tau=2, velocityDrive=2, A=-100, B=1;
+    double tau=2, velocityDrive=12, A=-100, B=100;
     int id, Red, Green, Blue;
 
     double mass=70, vx=0, vy=0, x, y, goalX, goalY;

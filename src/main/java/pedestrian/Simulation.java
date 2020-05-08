@@ -6,11 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Simulation {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {/*
         Pedestrian p = new Pedestrian(0.2,0,2,1, 0, 100, 0, 0);
         Pedestrian p2 = new Pedestrian(2.1,0.9,0,0, 1, 0, 0, 100);
-        Pedestrian p3 = new Pedestrian(1,0.9,-1,0, 1, 0, 244, 100);
-        Pedestrian p4 = new Pedestrian(-1,0.9,1,0, 1, 244, 0, 100);
+        Pedestrian p3 = new Pedestrian(1,0.9,0,-1, 1, 0, 244, 100);
+        Pedestrian p4 = new Pedestrian(0,0.9,1,0, 1, 244, 0, 100);*/
+
+        Pedestrian p = new Pedestrian(0.3,0,-0.5,10, 0, 100, 0, 0);
+        Pedestrian p2 = new Pedestrian(0.1,-4,0,6, 1, 0, 0, 100);
+        Pedestrian p3 = new Pedestrian(-0.3,6,0.5,-4, 1, 0, 244, 100);
+        Pedestrian p4 = new Pedestrian(0,10,0,0, 1, 244, 0, 100);
 
         List<Pedestrian> list = new ArrayList<>();
         list.add(p);
@@ -39,7 +44,9 @@ public class Simulation {
 
             p.vx = drivingForce.x/p.mass*dt + socialForce.x/p.mass*dt;
             p.vy = drivingForce.y/p.mass*dt + socialForce.y/p.mass*dt;
+        }
 
+        for(Pedestrian p : list){
             p.x = p.x + p.vx*dt;
             p.y = p.y + p.vy*dt;
         }
@@ -61,7 +68,7 @@ public class Simulation {
                     .append(Double.toString(p.goalY)).append(" ")
                     .append(Double.toString(p.Red)).append(" ")
                     .append(Double.toString(p.Green)).append(" ")
-                    .append(Double.toString(p.Blue)).append(" 0.05 ").append("\n");
+                    .append(Double.toString(p.Blue)).append(" 0.07 ").append("\n");
         }
     }
 }
