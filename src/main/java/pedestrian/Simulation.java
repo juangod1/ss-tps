@@ -13,9 +13,9 @@ public class Simulation {
         Pedestrian p4 = new Pedestrian(0,0.9,1,0, 1, 244, 0, 100);*/
 
         Pedestrian p = new Pedestrian(0.3,0,-0.5,10, 0, 100, 0, 0);
-        Pedestrian p2 = new Pedestrian(0.1,-4,0,6, 1, 0, 0, 100);
+        Pedestrian p2 = new Pedestrian(0.3,-4,0.2,6, 1, 0, 0, 100);
         Pedestrian p3 = new Pedestrian(-0.3,6,0.5,-4, 1, 0, 244, 100);
-        Pedestrian p4 = new Pedestrian(0,10,0,0, 1, 244, 0, 100);
+        Pedestrian p4 = new Pedestrian(-0.1,10,-0.2,0, 1, 244, 0, 100);
 
         List<Pedestrian> list = new ArrayList<>();
         list.add(p);
@@ -27,28 +27,36 @@ public class Simulation {
 
         FileWriter f = new FileWriter("./pedestrian", false);
 
-        for(int i=0;i<1000;i++){
+        for(int i=0;i<10400;i++){
             s.writeToFile(f);
             s.updatePedestrians();
         }
-
     }
 
-    double dt = 0.1;
+    double dt = 0.001;
     List<Pedestrian> list;
 
     public void updatePedestrians(){
         for(Pedestrian p : list){
             Vector drivingForce = p.drivingForce();
+            p.drivingForce = drivingForce;
             Vector socialForce = p.socialForce(list);
+            p.socialForce = socialForce;
 
-            p.vx = drivingForce.x/p.mass*dt + socialForce.x/p.mass*dt;
-            p.vy = drivingForce.y/p.mass*dt + socialForce.y/p.mass*dt;
-        }
+            if (!p.initialized) {
+                p.prevx = p.x - p.vx * dt;
+                p.prevy = p.y - p.vy * dt;
+            }
 
-        for(Pedestrian p : list){
-            p.x = p.x + p.vx*dt;
-            p.y = p.y + p.vy*dt;
+            double nextx = 2 * p.x - p.prevx + (drivingForce.x/p.mass)*dt*dt + (socialForce.x/p.mass)*dt*dt;
+            double nexty = 2 * p.y - p.prevy + (drivingForce.y/p.mass)*dt*dt + (socialForce.y/p.mass)*dt*dt;
+
+            p.vy = (nextx - p.prevx)/(2*dt);
+            p.vy = (nexty - p.prevy)/(2*dt);
+            p.prevx = p.x;
+            p.prevy = p.y;
+            p.x = nextx;
+            p.y = nexty;
         }
     }
 

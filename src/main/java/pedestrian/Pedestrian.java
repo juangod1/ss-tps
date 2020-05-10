@@ -7,10 +7,13 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
 public class Pedestrian {
-    double tau=2, velocityDrive=12, A=-100, B=100;
+    double tau=0.5, velocityDrive=1, A=2000, B=0.08;
     int id, Red, Green, Blue;
-
+    boolean initialized;
+    double prevx, prevy;
     double mass=70, vx=0, vy=0, x, y, goalX, goalY;
+    Vector drivingForce;
+    Vector socialForce;
 
     public Pedestrian(double x, double y, double goalX, double goalY, int id, int Red, int Green, int Blue){
         this.x = x;
@@ -21,6 +24,9 @@ public class Pedestrian {
         this.Red = Red;
         this.Green = Green;
         this.Blue = Blue;
+        this.initialized = false;
+        drivingForce = new Vector(0,0);
+        socialForce = new Vector(0,0);
     }
 
     public Vector drivingForce(){
@@ -28,20 +34,20 @@ public class Pedestrian {
         double angle = Math.atan2(goalDistance.y, goalDistance.x);
 
         return new Vector(
-                mass*(cos(angle)*velocityDrive-vx)/tau,
-                mass*(sin(angle)*velocityDrive-vy)/tau
+                drivingForce.x + mass*(cos(angle)*velocityDrive-vx)/tau,
+                drivingForce.y + mass*(sin(angle)*velocityDrive-vy)/tau
         );
     }
 
     public Vector socialForce(List<Pedestrian> list){
-        Vector ans = new Vector(0,0);
+        Vector ans = new Vector(socialForce.x,socialForce.y);
 
         for(Pedestrian p : list){
             if(p.equals(this)) continue;
 
             Vector neighborDistance = new Vector(p.x-x,p.y-y);
             double angle = Math.atan2(neighborDistance.y, neighborDistance.x);
-            double forceValue = A*Math.exp(-1*neighborDistance.module()/B);
+            double forceValue = -1*A*Math.exp(-1*neighborDistance.module()/B);
 
             ans.x += forceValue*cos(angle);
             ans.y += forceValue*sin(angle);
