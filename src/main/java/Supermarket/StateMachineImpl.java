@@ -4,6 +4,7 @@ import Supermarket.Interfaces.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Vector;
 
 public class StateMachineImpl implements StateMachine {
@@ -12,11 +13,15 @@ public class StateMachineImpl implements StateMachine {
     private double clock;
     private Agent agent;
     private Vector currentDestination;
+    private int pickingTime;
 
     public StateMachineImpl() {
         state = State.GOING;
         currentTargetIndex = 0;
         clock = 0;
+        Random r = new Random();
+        // Picking Time: 60-90 seconds
+        pickingTime = r.nextInt(31) + 60;
     }
 
     public State getState() {
@@ -43,6 +48,7 @@ public class StateMachineImpl implements StateMachine {
                     if (currentDestination.equals(agent.getPosition())) {
                         int indexCaja = caja.whereToGo();
                         currentDestination = caja.position(indexCaja);
+                        // TODO: llamar a add
                         state = State.QUEUEING;
                     }
                 } else {
@@ -69,8 +75,7 @@ public class StateMachineImpl implements StateMachine {
             case BUYING:
                 //TODO: ask for dt from main
                 clock += 4;
-                // TODO: define time of waiting
-                if (clock > 12) {
+                if (clock > pickingTime) {
                     currentTargetIndex++;
                     state = State.LEAVING;
                 }
