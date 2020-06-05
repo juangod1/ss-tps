@@ -48,14 +48,16 @@ public class StateMachineImpl implements StateMachine {
         Agent updatedAgent = null;
         switch (state) {
             case GOING:
+            case LEAVING:
                 if (currentTargetIndex >= agent.getShoppingListSize()) {
                     Caja caja = Caja.getInstance();
                     currentDestination = caja.getSectorPosition();
                     if (distance(currentDestination, agent.getPosition()) < 0.01) {
                         if (queuePosition == null) {
                             queueIndex = caja.whereToGo();
-                            queuePosition = caja.position(queueIndex);
-                        } else if (distance(queuePosition, agent.getPosition()) < 0.01) {
+                            currentDestination = caja.position(queueIndex);
+                            queuePosition = currentDestination;
+                        } else {
                             caja.add(queueIndex, agent.getShoppingListSize(), agent);
                             state = State.QUEUEING;
                         }
@@ -64,36 +66,33 @@ public class StateMachineImpl implements StateMachine {
                     Graph graph = Graph.getInstance();
                     Target target = agent.getTarget(currentTargetIndex);
                     currentDestination = graph.nextPoint(agent.getPosition(), target.getPosition());
-                    // Product in shopping list is already visible
+                    // Target in shopping list is less than 2 meters apart
                     if (distance(currentDestination, target.getPosition()) < 2) {
                         state = State.APPROXIMATING;
-                        break;
                     }
                 }
                 updatedAgent = om.moveAgent(agent, currentDestination, neighbours, walls);
+
+                if (state == State.LEAVING && distance(agent.getPosition(), agent.getTarget(currentTargetIndex - 1).getPosition()) > 2) {
+                    state = State.GOING;
+                }
                 break;
             case APPROXIMATING:
-                updatedAgent = om.moveAgent(agent, currentDestination, neighbours, walls);
                 if (distance(updatedAgent.getPosition(), currentDestination) < 0.1) {
                     state = State.BUYING;
                     clock = 0;
                 }
+                updatedAgent = om.moveAgent(agent, currentDestination, neighbours, walls);
                 break;
             case BUYING:
                 //TODO: ask for dt from main
                 int dt = 4;
-                clock += dt;
+
                 if (clock > pickingTime) {
                     currentTargetIndex++;
                     state = State.LEAVING;
                 }
-                break;
-            case LEAVING:
-                Graph graph = Graph.getInstance();
-                currentDestination = graph.goBackToAisle(agent.getPosition());
-                updatedAgent = om.moveAgent(agent, currentDestination, neighbours, walls);
-                if (distance(updatedAgent.getPosition(), currentDestination) < 2)
-                    state = State.GOING;
+                clock += dt;
                 break;
             case QUEUEING:
                 Caja caja = Caja.getInstance();
