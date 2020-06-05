@@ -12,7 +12,9 @@ public class StateMachineImpl implements StateMachine {
     private int currentTargetIndex;
     private double clock;
     private Agent agent;
-    private Vector currentDestination;
+    private Vector<Double> currentDestination;
+    private int queueIndex;
+    private Vector<Double> queuePosition;
     private int pickingTime;
 
     public StateMachineImpl() {
@@ -22,6 +24,7 @@ public class StateMachineImpl implements StateMachine {
         Random r = new Random();
         // Picking Time: 60-90 seconds
         pickingTime = r.nextInt(31) + 60;
+        queuePosition = null;
     }
 
     public State getState() {
@@ -30,6 +33,10 @@ public class StateMachineImpl implements StateMachine {
 
     public void setAgent(Agent agent) {
         this.agent = agent;
+    }
+
+    private double distance(Vector<Double> from, Vector<Double> to) {
+        return Math.sqrt(Math.pow(from.get(0) - to.get(0),2) + Math.pow(from.get(1) - to.get(1),2));
     }
 
     public Optional<Agent> getUpdatedAgent() throws InvalidPositionException {
@@ -44,20 +51,21 @@ public class StateMachineImpl implements StateMachine {
                 if (currentTargetIndex >= agent.getShoppingListSize()) {
                     Caja caja = Caja.getInstance();
                     currentDestination = caja.getSectorPosition();
-                    // TODO: change to delta
-                    if (currentDestination.equals(agent.getPosition())) {
-                        int indexCaja = caja.whereToGo();
-                        currentDestination = caja.position(indexCaja);
-                        // TODO: llamar a add
-                        state = State.QUEUEING;
+                    if (distance(currentDestination, agent.getPosition()) < 0.01) {
+                        if (queuePosition == null) {
+                            queueIndex = caja.whereToGo();
+                            queuePosition = caja.position(queueIndex);
+                        } else if (distance(queuePosition, agent.getPosition()) < 0.01) {
+                            caja.add(queueIndex, agent.getShoppingListSize(), agent);
+                            state = State.QUEUEING;
+                        }
                     }
                 } else {
                     Graph graph = Graph.getInstance();
                     Target target = agent.getTarget(currentTargetIndex);
                     currentDestination = graph.nextPoint(agent.getPosition(), target.getPosition());
                     // Product in shopping list is already visible
-                    // TODO: hablarlo
-                    if (currentDestination.equals(target.getPosition())) {
+                    if (distance(currentDestination, target.getPosition()) < 2) {
                         state = State.APPROXIMATING;
                         break;
                     }
@@ -66,15 +74,15 @@ public class StateMachineImpl implements StateMachine {
                 break;
             case APPROXIMATING:
                 updatedAgent = om.moveAgent(agent, currentDestination, neighbours, walls);
-                // TODO: distancia
-                if (updatedAgent.getPosition().equals(currentDestination)) {
+                if (distance(updatedAgent.getPosition(), currentDestination) < 0.1) {
                     state = State.BUYING;
                     clock = 0;
                 }
                 break;
             case BUYING:
                 //TODO: ask for dt from main
-                clock += 4;
+                int dt = 4;
+                clock += dt;
                 if (clock > pickingTime) {
                     currentTargetIndex++;
                     state = State.LEAVING;
@@ -84,8 +92,7 @@ public class StateMachineImpl implements StateMachine {
                 Graph graph = Graph.getInstance();
                 currentDestination = graph.goBackToAisle(agent.getPosition());
                 updatedAgent = om.moveAgent(agent, currentDestination, neighbours, walls);
-                // TODO: distancia
-                if (updatedAgent.getPosition().equals(currentDestination))
+                if (distance(updatedAgent.getPosition(), currentDestination) < 2)
                     state = State.GOING;
                 break;
             case QUEUEING:
@@ -94,8 +101,7 @@ public class StateMachineImpl implements StateMachine {
                 // Agent already exited supermarket
                 if (currentDestination == null) return Optional.empty();
                 // Agent is already in the correct position of the queue
-                // TODO: distancia
-                if (currentDestination.equals(agent.getPosition())) return Optional.of(agent);
+                if (distance(currentDestination, agent.getPosition()) < 0.01) return Optional.of(agent);
 
                 updatedAgent = om.moveAgent(agent, currentDestination, neighbours, walls);
                 break;
