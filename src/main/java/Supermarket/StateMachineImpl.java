@@ -2,17 +2,22 @@ package Supermarket;
 
 import Supermarket.Interfaces.*;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Vector;
+
+import static java.lang.Thread.sleep;
 
 public class StateMachineImpl implements StateMachine {
     private State state;
     private int currentTargetIndex;
     private double clock;
     private Agent agent;
-    private Vector<Double> currentDestination;
+    public Vector<Double> currentDestination;
+    public Vector<Double> target;
     private int queueIndex;
     private Vector<Double> queuePosition;
     private int pickingTime;
@@ -39,73 +44,98 @@ public class StateMachineImpl implements StateMachine {
         return Math.sqrt(Math.pow(from.get(0) - to.get(0),2) + Math.pow(from.get(1) - to.get(1),2));
     }
 
-    public Optional<Agent> getUpdatedAgent() throws InvalidPositionException {
-        SupermarketCIM cim = SupermarketCIM.getInstance();
-        List<Agent> neighbours = cim.getNeighbours(agent);
-        List<Segment> walls = cim.getWalls(agent);
-        OperationalModelModule om = OperationalModelModule.getInstance();
+    public String stateToColorString(State s){
+        switch (s){
+            case GOING:
+                return " 1 1 0\n";
+            case APPROXIMATING:
+                return " 1 0 0\n";
+            case LEAVING:
+                return " 1 0 1\n";
+            case BUYING:
+                return " 0 1 0\n";
+            default:
+                return " 0 0 0\n";
+        }
+    }
 
+    public static void main(String args[]) throws InvalidPositionException, IOException {
+        StateMachineImpl sm = new StateMachineImpl();
+
+        Vector<Double> v1 = new Vector<>(0,0);v1.add(0,0.0);v1.add(1,20.0);
+        Vector<Double> v2 = new Vector<>(0,0);v2.add(0,0.0);v2.add(1,0.0);
+
+        Agent agent = new Agent(1,v1,v2,null,sm);
+
+        Vector<Double> asdf = new Vector<>(0,0);asdf.add(0,0.0);asdf.add(1,20.0);
+        sm.currentDestination = asdf;
+
+        Vector<Double> fdsa = new Vector<>(0,0);fdsa.add(0,0.0);fdsa.add(1,10.0);
+        sm.target = fdsa;
+
+        FileWriter f = new FileWriter("./out", false);
+
+        while(agent.getAgentState() != State.QUEUEING){
+            f.append(String.valueOf(3)).append("\n\n");
+            f.append(String.valueOf(agent.getPosition().get(0))).append(" ").append(String.valueOf(agent.getPosition().get(1))).append(" ").append(sm.stateToColorString(sm.getState()));
+            f.append(String.valueOf(sm.target.get(0))).append(" ").append(String.valueOf(sm.target.get(1))).append(" ").append(" 1 1 1\n");
+            f.append(String.valueOf(v2.get(0))).append(" ").append(String.valueOf(v2.get(1))).append(" ").append(" 1 1 1\n");
+
+            sm.getUpdatedAgent().get();
+        }
+        f.append(String.valueOf(3)).append("\n\n");
+        f.append(String.valueOf(agent.getPosition().get(0))).append(" ").append(String.valueOf(agent.getPosition().get(1))).append(" ").append(" 0 0 1\n");
+        f.append(String.valueOf(sm.target.get(0))).append(" ").append(String.valueOf(sm.target.get(1))).append(" ").append(" 1 1 1\n");
+        f.append(String.valueOf(v2.get(0))).append(" ").append(String.valueOf(v2.get(1))).append(" ").append(" 1 1 1\n");
+        f.close();
+    }
+    public boolean flag=false;
+    public Optional<Agent> getUpdatedAgent(){
         Agent updatedAgent = null;
+
         switch (state) {
             case GOING:
             case LEAVING:
-                if (currentTargetIndex >= agent.getShoppingListSize()) {
-                    Caja caja = Caja.getInstance();
-                    currentDestination = caja.getSectorPosition();
-                    if (distance(currentDestination, agent.getPosition()) < 0.01) {
-                        if (queuePosition == null) {
-                            queueIndex = caja.whereToGo();
-                            currentDestination = caja.position(queueIndex);
-                            queuePosition = currentDestination;
-                        } else {
-                            caja.add(queueIndex, agent.getShoppingListSize(), agent);
-                            state = State.QUEUEING;
-                        }
+                if (flag) {
+
+                    Vector<Double> caja = new Vector<>(0,0);caja.add(0,0.0);caja.add(1,0.0);
+
+                    currentDestination.set(1, currentDestination.get(1)-0.1);
+
+                    if (distance(caja, agent.getPosition()) < 0.01) {
+                        state = State.QUEUEING;
                     }
                 } else {
-                    Graph graph = Graph.getInstance();
-                    Target target = agent.getTarget(currentTargetIndex);
-                    currentDestination = graph.nextPoint(agent.getPosition(), target.getPosition());
+                    currentDestination.set(1, currentDestination.get(1)-0.1);
                     // Target in shopping list is less than 2 meters apart
-                    if (distance(currentDestination, target.getPosition()) < 2) {
+                    if (distance(currentDestination, target) <= 2 && state == State.GOING) {
                         state = State.APPROXIMATING;
                     }
                 }
-                updatedAgent = om.moveAgent(agent, currentDestination, neighbours, walls);
+                agent.setPosition(currentDestination);
 
-                if (state == State.LEAVING && distance(agent.getPosition(), agent.getTarget(currentTargetIndex - 1).getPosition()) > 2) {
+                if (state == State.LEAVING && distance(agent.getPosition(), target) > 2) {
                     state = State.GOING;
+                    flag = true;
                 }
                 break;
             case APPROXIMATING:
-                if (distance(updatedAgent.getPosition(), currentDestination) < 0.1) {
+                currentDestination.set(1, currentDestination.get(1)-0.1);
+                if (distance(agent.getPosition(), target) < 0.1) {
                     state = State.BUYING;
                     clock = 0;
                 }
-                updatedAgent = om.moveAgent(agent, currentDestination, neighbours, walls);
+                agent.setPosition(currentDestination);
                 break;
             case BUYING:
-                //TODO: ask for dt from main
-                int dt = 4;
-
-                if (clock > pickingTime) {
-                    currentTargetIndex++;
+                clock+=1;
+                if(clock>50)
                     state = State.LEAVING;
-                }
-                clock += dt;
                 break;
             case QUEUEING:
-                Caja caja = Caja.getInstance();
-                currentDestination = caja.getPositionOf(agent.getId());
-                // Agent already exited supermarket
-                if (currentDestination == null) return Optional.empty();
-                // Agent is already in the correct position of the queue
-                if (distance(currentDestination, agent.getPosition()) < 0.01) return Optional.of(agent);
-
-                updatedAgent = om.moveAgent(agent, currentDestination, neighbours, walls);
                 break;
         }
-        return Optional.of(updatedAgent);
+        return Optional.of(agent);
     }
 
 
